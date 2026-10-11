@@ -36,6 +36,7 @@ Uma decisão por arquivo, no modelo `_modelo.md`.
 | [ADR-0023](ADR-0023-sem-fk-entre-modulos.md) | Sem chave estrangeira entre schemas de módulos diferentes | Aceita | Modelo de dados |
 | [ADR-0024](ADR-0024-armazenamento-de-arquivos-blob.md) | Arquivos no Azure Blob Storage privado, entregues por URL assinada | Aceita | Modelo de dados |
 | [ADR-0025](ADR-0025-tempo-real-e-sino-nas-tres-aplicacoes.md) | Tempo real nas três aplicações e sino único por usuário | Aceita | Revisão das notificações |
+| [ADR-0026](ADR-0026-acesso-interno-keycloak-so-autenticacao.md) | Keycloak só para autenticação; usuários, permissões e escopo no SmartCorbans | Proposta | Revisão do módulo Acesso |
 
 ## Premissas
 
