@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="11 197 560 560" width="512" height="512">
+  <!-- Parte de cima: vermelho (com corte do cifrão) -->
+  <path fill="#900a10" fill-rule="evenodd" d="M465 232 H238 A176 176 0 0 0 238 584 H350 A36 36 0 0 0 350 512 H238 A104 104 0 0 1 238 304 H465 A36 36 0 0 0 465 232 Z M283 266 H298 V304 H283 Z"/>
+  <!-- Parte de baixo: branco (com corte do cifrão) -->
+  <path fill="#ffffff" fill-rule="evenodd" d="M240 370 H344 A176 176 0 0 1 344 722 H126 A36 36 0 0 1 126 650 H344 A104 104 0 0 0 344 442 H240 A36 36 0 0 1 240 370 Z M283 650 H298 V688 H283 Z"/>
+</svg>

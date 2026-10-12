@@ -1,10 +1,25 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>
   (function() {
     var saved = localStorage.getItem('smartcorbans-theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
     }
   })();
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    var current = document.documentElement.getAttribute('data-theme') || 'light';
+    var label = document.getElementById('themeLabel');
+    if (label) label.textContent = current === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
 </script>
 </head><body>
 <title>SmartCorbans C4 Componentes</title>
@@ -19,10 +34,6 @@
   --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
-  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
-  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
   --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
@@ -79,7 +90,6 @@ li{max-width:70ch}
 code{font-family:var(--mono);font-size:.9em}
 
 :root{--comp:#b8343a;--comp-ink:#ffffff;--supp:#5a2528;--cont-line:#900a10}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}}
 :root[data-theme="dark"]{--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}
 .k-box{fill:var(--comp)} .k-supp{fill:var(--supp)} .k-name{fill:var(--comp-ink);font:600 13.5px var(--sans)} .k-type{fill:var(--comp-ink);opacity:.72;font:400 10.5px var(--mono)} .k-desc{fill:var(--comp-ink);opacity:.92;font:400 11px var(--sans)}
 .o-box{fill:var(--surface);stroke:var(--cont-line);stroke-width:1.6} .o-name{fill:var(--ink);font:600 13.5px var(--sans)} .o-type{fill:var(--muted);font:400 10.5px var(--mono)}

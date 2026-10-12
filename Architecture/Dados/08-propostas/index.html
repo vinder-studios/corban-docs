@@ -10,58 +10,26 @@
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>
   (function() {
-    const saved = localStorage.getItem('smartcorbans-theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    var saved = localStorage.getItem('smartcorbans-theme');
+    if (saved === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
     } else {
       document.documentElement.setAttribute('data-theme', 'light');
     }
   })();
-
-  document.addEventListener('DOMContentLoaded', function() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
-      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: isDark ? 'dark' : 'neutral',
-      securityLevel: 'loose',
-      fontFamily: '"IBM Plex Sans", sans-serif'
-    });
-    updateThemeLabel();
-  });
-
   function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    const next = current === 'dark' ? 'light' : 'dark';
+    var current = document.documentElement.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('smartcorbans-theme', next);
     updateThemeLabel();
   }
-
   function updateThemeLabel() {
-    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    const label = document.getElementById('themeLabel');
-    if (label) {
-      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
-    }
+    var current = document.documentElement.getAttribute('data-theme') || 'light';
+    var label = document.getElementById('themeLabel');
+    if (label) label.textContent = current === 'dark' ? 'Escuro' : 'Claro';
   }
-
-  function toggleMermaidCode(id) {
-    const diagram = document.getElementById('diagram-' + id);
-    const code = document.getElementById('code-' + id);
-    const btn = document.getElementById('toggle-btn-' + id);
-    if (code.style.display === 'block') {
-      code.style.display = 'none';
-      diagram.style.display = 'block';
-      btn.textContent = 'Ver Código Mermaid';
-    } else {
-      code.style.display = 'block';
-      diagram.style.display = 'none';
-      btn.textContent = 'Ver Diagrama Renderizado';
-    }
-  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
 </script>
 
   <style>
@@ -96,38 +64,6 @@
   --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #131315;
-    --surface: #1c1c1f;
-    --surface-elevated: #242429;
-    --ink: #ececef;
-    --muted: #a3a3ab;
-    --line: #3a3a40;
-    --edge: #8c8c95;
-    --brand: #b8141d;
-    --brand-hover: #c91e27;
-    --brand-ink: #ffffff;
-    --brand-soft: #381518;
-    --person: #2c2c31;
-    --person-ink: #f2f2f4;
-    --ext: #26262a;
-    --ext-ink: #ececef;
-    --ext-stroke: #6d6d75;
-    --evo: #18181b;
-    --chip: #3a1c1e;
-    --chip-border: #52272a;
-    --card-border: #2f2f35;
-    --accent: #4c82f0;
-    --accent-soft: #17243d;
-    --green: #3fb950;
-    --green-soft: #122619;
-    --amber: #d29922;
-    --amber-soft: #2d2208;
-    color-scheme: dark;
-  }
 }
 
 :root[data-theme="dark"] {
@@ -460,9 +396,6 @@ th, td {
 tr:last-child td { border-bottom: 0; }
 tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
 :root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
-}
 th {
   font-family: var(--mono);
   font-size: 11.5px;
