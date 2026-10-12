@@ -1,4 +1,18 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>
+<!doctype html><html><head>
+  <link rel="icon" type="image/png" href="../../../../assets/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="../../../../assets/favicon.svg">
+  <link rel="shortcut icon" href="../../../../assets/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../../assets/apple-touch-icon.png">
+  <link rel="manifest" href="../../../../assets/site.webmanifest"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+/* Brand logo & dynamic theme icon switching */
+.logo-icon { display: inline-block; vertical-align: middle; }
+.logo-dark { display: none !important; }
+.logo-light { display: inline-block !important; }
+:root[data-theme="dark"] .logo-dark { display: inline-block !important; }
+:root[data-theme="dark"] .logo-light { display: none !important; }
+.brand-link { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; font-weight: 600; color: inherit; }
+.brand-link:hover { color: var(--brand); }
+</style><script>
   (function() {
     var saved = localStorage.getItem('smartcorbans-theme');
     if (saved === 'dark') {
@@ -99,7 +113,7 @@ code{font-family:var(--mono);font-size:.9em}
 <div class="wrap">
   <header>
     <div class="eyebrow"><b>C4 Model</b> · Nível 3 de 4 · Componentes do CRM (UI) · <a href="../../Containers/index.html">Voltar ao Container</a> · <a href="../../index.html">Hub C4</a> · <a href="../../../../index.html">Início da doc</a></div>
-    <h1><span class="smart">Smart</span>Corbans — Componentes do CRM</h1>
+    <h1><img src="../../../../assets/icone-s.svg" class="logo-icon logo-light" alt="SmartCorbans" width="26" height="26" style="vertical-align:middle;margin-right:8px;"><img src="../../../../assets/icone-s-branco.svg" class="logo-icon logo-dark" alt="SmartCorbans" width="26" height="26" style="vertical-align:middle;margin-right:8px;"><span class="smart">Smart</span>Corbans — Componentes do CRM</h1>
     <p class="lede">O container CRM aberto: a casca da aplicação com o cliente de tempo real e a rota pública do Modo TV, 14 features pelas cinco seções da navegação, e os mesmos pacotes do monorepo do Admin.</p>
     <div class="meta"><span>v0.2 · Draft</span><span>Base: Containers v0.2 · CRM, Documento de Produto</span><span>Feature-Based · monorepo pnpm + Turborepo</span></div>
   </header>

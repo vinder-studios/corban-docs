@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="11 197 560 560" width="512" height="512"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><defs>
+    <!-- Cortes do cifrão (vazados) -->
+    <mask id="cortes">
+      <rect x="0" y="0" width="600" height="800" fill="#fff"></rect>
+      <rect x="283" y="264" width="15" height="42" fill="#000"></rect>
+      <rect x="283" y="650" width="15" height="42" fill="#000"></rect>
+    </mask>
+  </defs><g mask="url(#cortes)" fill="none" stroke-width="72" stroke-linecap="round">
+    <!-- Parte de cima: vermelho -->
+    <path d="M 465 268 H 238 A 140 140 0 0 0 238 548 H 350" stroke="#900a10"></path>
+    <!-- Parte de baixo: preto -->
+    <path d="M 240 406 H 344 A 140 140 0 0 1 344 686 H 126" stroke="#000000"></path>
+  </g></svg>
