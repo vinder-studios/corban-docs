@@ -634,12 +634,20 @@
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 20px;
+      padding: 22px 26px;
       font-family: var(--mono);
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: var(--ink);
       overflow-x: auto;
+      white-space: pre;
+    }
+    .tree-box a {
+      color: var(--brand);
+      text-decoration: none;
+    }
+    .tree-box a:hover {
+      text-decoration: underline;
     }
     .tree-box .comment {
       color: var(--muted);
@@ -1068,25 +1076,43 @@
       <p class="section-desc">Mapeamento dos diretórios deste repositório para rápida localização de arquivos:</p>
     </div>
 
-    <div class="tree-box">
-<span class="folder">Docs/</span>
-├── <span class="folder">index.html</span>                         <span class="comment">Portal inicial da documentação (esta página)</span>
-├── <span class="folder">README.md</span>                          <span class="comment">Visão geral executiva da documentação</span>
-├── <span class="folder">Product Specification/</span>             <span class="comment">Especificação funcional e regras de negócio</span>
-│   ├── <span class="folder">spec.md</span>                        <span class="comment">Especificação Geral (visão de produto, RNFs e RN-SC)</span>
-│   ├── <span class="folder">Admin/</span>                         <span class="comment">15 módulos: Cargos, Usuários, Lojas, Funis, Ofertas, Regras...</span>
-│   ├── <span class="folder">CRM/</span>                           <span class="comment">14 módulos: Leads, Clientes, Simulações, Propostas, Créditos...</span>
-│   └── <span class="folder">Marketing/</span>                     <span class="comment">3 módulos: Prospecção, Carteira Ativa, Dashboard</span>
-└── <span class="folder">Architecture/</span>                      <span class="comment">Arquitetura de software e decisões de engenharia</span>
-    ├── <span class="folder">C4/</span>                            <span class="comment">Hub do C4 Model e diagramas interativos</span>
-    │   ├── <span class="folder">index.html</span>                 <span class="comment">Portal central dos 7 diagramas C4</span>
-    │   ├── <span class="folder">Context/index.html</span>         <span class="comment">Nível 1: Contexto do Sistema</span>
-    │   ├── <span class="folder">Containers/index.html</span>      <span class="comment">Nível 2: Containers de Software</span>
-    │   ├── <span class="folder">Components/</span>                <span class="comment">Nível 3: API, Admin, CRM e Marketing</span>
-    │   └── <span class="folder">Implantation/index.html</span>    <span class="comment">Topologia física de Implantação em Produção</span>
-    ├── <span class="folder">ADR/</span>                           <span class="comment">Decisões de Arquitetura (ADR-0001 a ADR-0025)</span>
-    └── <span class="folder">Dados/</span>                         <span class="comment">Modelo de dados lógico: 12 schemas relacionais</span>
-    </div>
+    <div class="tree-box"><span class="folder">Docs/</span>
+├── <a href="index.html">index.html</a>                         <span class="comment">Portal inicial da documentação (esta página)</span>
+├── <a href="README.md">README.md</a>                          <span class="comment">Visão geral executiva do repositório</span>
+├── <a href="Product Specification/index.html" class="folder">Product Specification/</a>             <span class="comment">Especificação funcional e regras de negócio</span>
+│   ├── <a href="Product Specification/index.html">index.html</a>                     <span class="comment">Catálogo central dos 32 módulos e 3 SPAs</span>
+│   ├── <a href="Product Specification/spec.html">spec.html</a>                      <span class="comment">Especificação Geral (visão de produto, RNFs e RN-SC)</span>
+│   ├── <a href="Product Specification/Admin/index.html" class="folder">Admin/</a>                         <span class="comment">15 módulos: Lojas, Funis, Cargos, Ofertas...</span>
+│   │   ├── <a href="Product Specification/Admin/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação Admin</span>
+│   │   ├── <a href="Product Specification/Admin/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do Admin</span>
+│   │   ├── <a href="Product Specification/Admin/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
+│   │   └── <span class="folder">&lt;Módulo&gt;/</span>                  <span class="comment">index.html + README.md (com Matriz de Permissões)</span>
+│   ├── <a href="Product Specification/CRM/index.html" class="folder">CRM/</a>                           <span class="comment">14 módulos: Leads, Clientes, Simulações, Metas...</span>
+│   │   ├── <a href="Product Specification/CRM/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação CRM</span>
+│   │   ├── <a href="Product Specification/CRM/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do CRM</span>
+│   │   ├── <a href="Product Specification/CRM/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
+│   │   └── <span class="folder">&lt;Módulo&gt;/</span>                  <span class="comment">index.html + README.md (com Matriz de Permissões)</span>
+│   └── <a href="Product Specification/Marketing/index.html" class="folder">Marketing/</a>                     <span class="comment">3 módulos: Prospecção, Carteira Ativa, Dashboard</span>
+│       ├── <a href="Product Specification/Marketing/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação Marketing</span>
+│       ├── <a href="Product Specification/Marketing/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do Marketing</span>
+│       ├── <a href="Product Specification/Marketing/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
+│       └── <span class="folder">&lt;Módulo&gt;/</span>                  <span class="comment">index.html + README.md (com Matriz de Permissões)</span>
+└── <a href="Architecture/C4/index.html" class="folder">Architecture/</a>                      <span class="comment">Arquitetura de software e decisões de engenharia</span>
+    ├── <a href="Architecture/C4/index.html" class="folder">C4/</a>                            <span class="comment">Hub do C4 Model e diagramas interativos</span>
+    │   ├── <a href="Architecture/C4/index.html">index.html</a>                 <span class="comment">Portal central dos 7 diagramas C4</span>
+    │   ├── <a href="Architecture/C4/Context/index.html">Context/index.html</a>         <span class="comment">Nível 1: Contexto do Sistema</span>
+    │   ├── <a href="Architecture/C4/Containers/index.html">Containers/index.html</a>      <span class="comment">Nível 2: Containers de Software</span>
+    │   ├── <a href="Architecture/C4/Components/API/index.html">Components/API/index.html</a>  <span class="comment">Nível 3: Componentes da API .NET 10</span>
+    │   ├── <a href="Architecture/C4/Components/Admin/index.html">Components/Admin/index.html</a><span class="comment">Nível 3: Componentes do Admin</span>
+    │   ├── <a href="Architecture/C4/Components/CRM/index.html">Components/CRM/index.html</a>  <span class="comment">Nível 3: Componentes do CRM</span>
+    │   ├── <a href="Architecture/C4/Components/Marketing/index.html">Components/Marketing/...</a>   <span class="comment">Nível 3: Componentes do Marketing</span>
+    │   └── <a href="Architecture/C4/Implantation/index.html">Implantation/index.html</a>    <span class="comment">Topologia física de Implantação Cloud</span>
+    ├── <a href="Architecture/ADR/index.html" class="folder">ADR/</a>                           <span class="comment">Decisões de Arquitetura (25 registros)</span>
+    │   ├── <a href="Architecture/ADR/index.html">index.html</a>                 <span class="comment">Catálogo geral de ADRs (ADR-0001 a ADR-0025)</span>
+    │   └── <span class="folder">&lt;0001-slug&gt;/</span>               <span class="comment">index.html + README.md por decisão</span>
+    └── <a href="Architecture/Dados/index.html" class="folder">Dados/</a>                         <span class="comment">Modelo de dados lógico: 13 schemas relacionais</span>
+        ├── <a href="Architecture/Dados/index.html">index.html</a>                 <span class="comment">Catálogo de Persistência (PostgreSQL)</span>
+        └── <span class="folder">&lt;01-modulo&gt;/</span>               <span class="comment">index.html + README.md por schema</span></div>
   </section>
 
   <!-- Footer -->
