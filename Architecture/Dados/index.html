@@ -719,7 +719,7 @@ footer {
     <div class="eyebrow"><b>Modelo Lógico de Dados</b> · PostgreSQL Flexible Server</div>
     <h1>Persistência &amp; Modelo de Dados Relacional</h1>
     <p style="color:var(--muted);font-size:16px;margin:0;max-width:75ch">
-      Especificação lógica completa das entidades, relacionamentos e restrições de banco de dados do SmartCorbans. Modelagem organizada por schemas de domínio, sem chaves estrangeiras entre módulos (<a href="../ADR/0023-sem-fk-entre-modulos/index.html" style="color:var(--brand);text-decoration:underline">ADR-0023</a>) e com isolamento estrito via DbContext por camada (<a href="../ADR/0012-ef-core-dbcontext-por-modulo/index.html" style="color:var(--brand);text-decoration:underline">ADR-0012</a>).
+      Especificação lógica completa das entidades, relacionamentos e restrições de banco de dados do SmartCorbans. Modelagem com 11 schemas de domínio e 4 de apoio (audit, integration, jobs, notifications), Acesso fora do modelo (Keycloak até ADR-0026), sem chaves estrangeiras entre módulos (<a href="../ADR/0023-sem-fk-entre-modulos/index.html" style="color:var(--brand);text-decoration:underline">ADR-0023</a>) e com isolamento estrito via DbContext por camada (<a href="../ADR/0012-ef-core-dbcontext-por-modulo/index.html" style="color:var(--brand);text-decoration:underline">ADR-0012</a>).
     </p>
   </header>
 
@@ -727,7 +727,7 @@ footer {
   <div class="metrics-bar">
     <div class="metric-item">
       <span class="metric-value brand">12</span>
-      <span class="metric-label">Schemas de Domínio</span>
+      <span class="metric-label">Módulos da API (15 Schemas)</span>
     </div>
     <div class="metric-item">
       <span class="metric-value">UUID v7</span>
@@ -751,7 +751,7 @@ footer {
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
       <div class="filter-pills">
-        <button class="filter-pill active" data-group="all" onclick="setGroup('all', this)">Todos os Módulos (13)</button>
+        <button class="filter-pill active" data-group="all" onclick="setGroup('all', this)">Todos os Documentos (12 Módulos + Acesso)</button>
         <button class="filter-pill" data-group="core" onclick="setGroup('core', this)">Estrutura &amp; Comercial</button>
         <button class="filter-pill" data-group="sales" onclick="setGroup('sales', this)">Operação &amp; Vendas</button>
         <button class="filter-pill" data-group="engage" onclick="setGroup('engage', this)">Atendimento &amp; Marketing</button>

@@ -14,7 +14,7 @@
 
 ## Como usar
 
-> **Catálogo publicado em HTML:** Todos os 12 schemas relacionais e diagramas ER interativos estão disponíveis no [Catálogo de Persistência (HTML)](index.html).
+> **Catálogo publicado em HTML:** Todos os 12 módulos de dados (15 schemas relacionais: 11 de domínio + 4 de apoio) e diagramas ER interativos estão disponíveis no [Catálogo de Persistência (HTML)](index.html).
 
 Um documento por módulo da API, com o diagrama ER (Mermaid) e as tabelas. É o modelo **lógico** que os `DbContext`s implementam (ADR-0012); o físico (tipos exatos, índices finos) fecha nas migrations. Cada módulo é validado antes do seguinte. O texto dos documentos é em português; os nomes no banco, em inglês.
 

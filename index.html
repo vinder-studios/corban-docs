@@ -719,7 +719,7 @@
       <a href="Architecture/C4/index.html">C4 Model</a>
       <a href="Architecture/ADR/index.html">Decisões (ADRs)</a>
       <a href="Architecture/Dados/index.html">Modelo de Dados</a>
-      <a href="Product Specification/index.html">Especificação de Produto</a>
+      <a href="Product%20Specification/index.html">Especificação de Produto</a>
     </div>
     <div class="nav-actions">
       <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema claro/escuro" onclick="toggleTheme()">
@@ -746,7 +746,7 @@
       <a href="Architecture/ADR/index.html" class="btn btn-secondary">
         <span>Decisões de Arquitetura (25 ADRs)</span>
       </a>
-      <a href="Product Specification/index.html" class="btn btn-secondary">
+      <a href="Product%20Specification/index.html" class="btn btn-secondary">
         <span>Especificação de Produto (v2.6)</span>
       </a>
     </div>
@@ -771,8 +771,8 @@
       <div class="metric-label">Monolito modular em .NET 10 + Worker na Azure</div>
     </div>
     <div class="metric-item">
-      <div class="metric-value">12 Schemas</div>
-      <div class="metric-label">PostgreSQL Flexible Server sem FK entre módulos</div>
+      <div class="metric-value">12 Módulos</div>
+      <div class="metric-label">15 schemas no PostgreSQL (11 domínio + 4 apoio; Acesso fora)</div>
     </div>
   </div>
 
@@ -834,11 +834,11 @@
       <div class="pillar-card">
         <div class="pillar-top">
           <span class="pillar-tag">Persistência</span>
-          <span class="pillar-tag neutral">12 Schemas</span>
+          <span class="pillar-tag neutral">12 Módulos de Dados</span>
         </div>
         <h3 class="pillar-title">Modelo de Dados Lógico</h3>
         <p class="pillar-desc">
-          Estrutura relacional no PostgreSQL Flexible Server privado com isolamento modular estrito: um schema por módulo de domínio e zero chaves estrangeiras entre módulos.
+          Estrutura relacional no PostgreSQL Flexible Server privado com isolamento modular estrito: 11 schemas de domínio mais 4 de apoio (audit, integration, jobs, notifications), com Acesso delegado ao Keycloak (fora do modelo até ADR-0026) e zero chaves estrangeiras entre módulos.
         </p>
         <ul class="pillar-list">
           <li><b>Identificadores:</b> UUID v7 ordenável gerado pela aplicação.</li>
@@ -865,10 +865,10 @@
         <ul class="pillar-list">
           <li><b>Admin (15 módulos):</b> Cargos, Usuários, Lojas, Times, Funis, Ofertas.</li>
           <li><b>CRM (14 módulos):</b> Leads, Clientes, Simulação, Propostas, Modo TV.</li>
-          <li><b>Marketing (3 módulos):</b> Prospecção, Higienização e Carteira Ativa.</li>
+          <li><b>Marketing (3 módulos):</b> Prospecção (com Higienização), Carteira Ativa e Dashboard.</li>
           <li><b>Especificação Geral:</b> Regras transversais (RN-SC) e RNFs.</li>
         </ul>
-        <a href="Product Specification/index.html" class="pillar-btn">
+        <a href="Product%20Specification/index.html" class="pillar-btn">
           <span>Ler Especificação Geral</span>
           <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
@@ -1073,10 +1073,10 @@
         <div class="role-title">📋 Product &amp; Business</div>
         <p class="role-desc">Compreenda a visão do negócio, as regras transversais de correspondente bancário, as matrizes de permissões e os 32 módulos.</p>
         <div class="role-links">
-          <a href="Product Specification/index.html">→ Especificação Geral de Produto</a>
-          <a href="Product Specification/Admin/index.html">→ Documento de Produto · Admin</a>
-          <a href="Product Specification/CRM/index.html">→ Documento de Produto · CRM</a>
-          <a href="Product Specification/Marketing/index.html">→ Documento de Produto · Marketing</a>
+          <a href="Product%20Specification/index.html">→ Especificação Geral de Produto</a>
+          <a href="Product%20Specification/Admin/index.html">→ Documento de Produto · Admin</a>
+          <a href="Product%20Specification/CRM/index.html">→ Documento de Produto · CRM</a>
+          <a href="Product%20Specification/Marketing/index.html">→ Documento de Produto · Marketing</a>
         </div>
       </div>
     </div>
@@ -1093,23 +1093,23 @@
     <div class="tree-box"><span class="folder">Docs/</span>
 ├── <a href="index.html">index.html</a>                         <span class="comment">Portal inicial da documentação (esta página)</span>
 ├── <a href="README.md">README.md</a>                          <span class="comment">Visão geral executiva do repositório</span>
-├── <a href="Product Specification/index.html" class="folder">Product Specification/</a>             <span class="comment">Especificação funcional e regras de negócio</span>
-│   ├── <a href="Product Specification/index.html">index.html</a>                     <span class="comment">Catálogo central dos 32 módulos e 3 SPAs</span>
-│   ├── <a href="Product Specification/spec.html">spec.html</a>                      <span class="comment">Especificação Geral (visão de produto, RNFs e RN-SC)</span>
-│   ├── <a href="Product Specification/Admin/index.html" class="folder">Admin/</a>                         <span class="comment">15 módulos: Lojas, Funis, Cargos, Ofertas...</span>
-│   │   ├── <a href="Product Specification/Admin/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação Admin</span>
-│   │   ├── <a href="Product Specification/Admin/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do Admin</span>
-│   │   ├── <a href="Product Specification/Admin/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
+├── <a href="Product%20Specification/index.html" class="folder">Product Specification/</a>             <span class="comment">Especificação funcional e regras de negócio</span>
+│   ├── <a href="Product%20Specification/index.html">index.html</a>                     <span class="comment">Catálogo central dos 32 módulos e 3 SPAs</span>
+│   ├── <a href="Product%20Specification/spec.html">spec.html</a>                      <span class="comment">Especificação Geral (visão de produto, RNFs e RN-SC)</span>
+│   ├── <a href="Product%20Specification/Admin/index.html" class="folder">Admin/</a>                         <span class="comment">15 módulos: Lojas, Funis, Cargos, Ofertas...</span>
+│   │   ├── <a href="Product%20Specification/Admin/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação Admin</span>
+│   │   ├── <a href="Product%20Specification/Admin/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do Admin</span>
+│   │   ├── <a href="Product%20Specification/Admin/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
 │   │   └── <span class="folder">&lt;Módulo&gt;/</span>                  <span class="comment">index.html + README.md (com Matriz de Permissões)</span>
-│   ├── <a href="Product Specification/CRM/index.html" class="folder">CRM/</a>                           <span class="comment">14 módulos: Leads, Clientes, Simulações, Metas...</span>
-│   │   ├── <a href="Product Specification/CRM/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação CRM</span>
-│   │   ├── <a href="Product Specification/CRM/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do CRM</span>
-│   │   ├── <a href="Product Specification/CRM/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
+│   ├── <a href="Product%20Specification/CRM/index.html" class="folder">CRM/</a>                           <span class="comment">14 módulos: Leads, Clientes, Simulações, Metas...</span>
+│   │   ├── <a href="Product%20Specification/CRM/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação CRM</span>
+│   │   ├── <a href="Product%20Specification/CRM/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do CRM</span>
+│   │   ├── <a href="Product%20Specification/CRM/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
 │   │   └── <span class="folder">&lt;Módulo&gt;/</span>                  <span class="comment">index.html + README.md (com Matriz de Permissões)</span>
-│   └── <a href="Product Specification/Marketing/index.html" class="folder">Marketing/</a>                     <span class="comment">3 módulos: Prospecção, Carteira Ativa, Dashboard</span>
-│       ├── <a href="Product Specification/Marketing/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação Marketing</span>
-│       ├── <a href="Product Specification/Marketing/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do Marketing</span>
-│       ├── <a href="Product Specification/Marketing/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
+│   └── <a href="Product%20Specification/Marketing/index.html" class="folder">Marketing/</a>                     <span class="comment">3 módulos: Prospecção, Carteira Ativa, Dashboard</span>
+│       ├── <a href="Product%20Specification/Marketing/index.html">index.html</a>                 <span class="comment">Catálogo interativo da aplicação Marketing</span>
+│       ├── <a href="Product%20Specification/Marketing/spec.html">spec.html</a>                  <span class="comment">Documento de Produto do Marketing</span>
+│       ├── <a href="Product%20Specification/Marketing/relacionamentos.html">relacionamentos.html</a>       <span class="comment">Relacionamentos e Regras de Negócio</span>
 │       └── <span class="folder">&lt;Módulo&gt;/</span>                  <span class="comment">index.html + README.md (com Matriz de Permissões)</span>
 └── <a href="Architecture/C4/index.html" class="folder">Architecture/</a>                      <span class="comment">Arquitetura de software e decisões de engenharia</span>
     ├── <a href="Architecture/C4/index.html" class="folder">C4/</a>                            <span class="comment">Hub do C4 Model e diagramas interativos</span>
@@ -1124,7 +1124,7 @@
     ├── <a href="Architecture/ADR/index.html" class="folder">ADR/</a>                           <span class="comment">Decisões de Arquitetura (25 registros)</span>
     │   ├── <a href="Architecture/ADR/index.html">index.html</a>                 <span class="comment">Catálogo geral de ADRs (ADR-0001 a ADR-0025)</span>
     │   └── <span class="folder">&lt;0001-slug&gt;/</span>               <span class="comment">index.html + README.md por decisão</span>
-    └── <a href="Architecture/Dados/index.html" class="folder">Dados/</a>                         <span class="comment">Modelo de dados lógico: 13 schemas relacionais</span>
+    └── <a href="Architecture/Dados/index.html" class="folder">Dados/</a>                         <span class="comment">Modelo de dados: 12 módulos (15 schemas: 11 domínio + 4 apoio)</span>
         ├── <a href="Architecture/Dados/index.html">index.html</a>                 <span class="comment">Catálogo de Persistência (PostgreSQL)</span>
         └── <span class="folder">&lt;01-modulo&gt;/</span>               <span class="comment">index.html + README.md por schema</span></div>
   </section>
@@ -1135,7 +1135,7 @@
       <a href="Architecture/C4/index.html">C4 Model</a>
       <a href="Architecture/ADR/index.html">Decisões de Arquitetura</a>
       <a href="Architecture/Dados/index.html">Modelo de Dados</a>
-      <a href="Product Specification/index.html">Especificação Geral</a>
+      <a href="Product%20Specification/index.html">Especificação Geral</a>
       <a href="README.md">README do Repositório</a>
     </div>
     <div class="footer-copy">
