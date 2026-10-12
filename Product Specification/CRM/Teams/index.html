@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Times · CRM — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">CRM</a>
+      <span class="sep">/</span>
+      <span class="current">Times</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do CRM
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Simulations/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Simulações</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Chat/index.html" >Chat</option><option value="../Clients/index.html" >Clientes</option><option value="../Credits/index.html" >Créditos</option><option value="../Dashboard/index.html" >Dashboard</option><option value="../Goals/index.html" >Metas</option><option value="../Leads/index.html" >Leads</option><option value="../Members/index.html" >Membros</option><option value="../MultiplierTable/index.html" >Tabelas Multiplicadoras</option><option value="../Proposals/index.html" >Propostas</option><option value="../Rankings/index.html" >Rankings</option><option value="../Reports/index.html" >Relatórios</option><option value="../Settings/index.html" >Configurações</option><option value="../Simulations/index.html" >Simulações</option><option value="../Teams/index.html" selected>Times</option></select>
+    <span class="pager-btn disabled">Próximo →</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · CRM · Geral
+    </div>
+    <h1>Times <span class="app-badge crm">CRM</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">CRM · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.3 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-crm-times">Corban CRM · Times</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</p>
+<p><b>Versão:</b> 0.3</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.3</td><td>Esclarece que a lista de Membros disponíveis para associação é a de <b>Membros da Loja pelo vínculo direto</b> (<span class="badge rule-badge">RN-USR-15</span>), com ou sem Time — sem esse vínculo, um Membro só apareceria na Loja depois de ter Time, e só ganharia Time aparecendo na lista.</td></tr><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Adiciona <span class="badge rule-badge">RN-TIM-03</span>: a lista de Membros disponíveis para associação exclui quem tem Cargo com alguma linha de escopo <code>all</code> — mesmo filtro já usado em Membros (<span class="badge rule-badge">RN-MBR-02</span>).</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidade, campos, estados, requisitos funcionais (RF-TIM) e regras de negócio (RN-TIM) próprios.</p>
+<blockquote><p><b>Mesma lógica do módulo Membros: recorte com escopo <code>store</code> de algo que hoje só existe no Admin.</b> A entidade Time e seu ciclo de vida (campos, inativação em dois modos, exclusão com migração) são exatamente os já definidos no módulo de Lojas (Admin), Aba Times — não redefinidos aqui. Este módulo acrescenta uma capacidade de interface que <b>não existe no Admin</b>: associar/desassociar um Membro a partir da tela do Time (lá, a associação só acontece no sentido inverso, pelo cadastro do usuário).</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Permitir que uma Loja parceira gerencie os próprios Times — criar, editar, associar Segmento, compor com Membros — sem depender do tenant operador nem de acesso ao Admin.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de Loja</b> — usuário com permissão de gestão deste módulo, escopo <code>store</code>.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<p>Reaproveita a entidade <b>Time</b> do módulo de Lojas (Admin) — Nome, Segmento (opcional, no máximo um), Status (Ativo/Inativando/Inativo) — sem campos novos.</p>
+<p><b><span class="badge rule-badge">RN-TIM-01</span> — Associação de Membro é unitária, nunca em lote.</b> Diferente da Aba Segmentos (que lista várias linhas para marcar de uma vez), a associação de Membro ao Time é <b>um de cada vez</b> — não existe seleção múltipla nem ação em lote nesta tela.</p>
+<p><b><span class="badge rule-badge">RN-TIM-02</span> — Associar um Membro que já tem Time move, com confirmação explícita.</b> Como todo Membro tem no máximo um Time (<span class="badge rule-badge">RN-USR-02</span>, módulo de Usuários — sem alteração), associá-lo a um Time novo quando ele já pertence a outro <b>substitui</b> a associação anterior. A ação exige confirmação, avisando explicitamente que o Membro sai do Time atual antes de entrar no novo — nunca silenciosa.</p>
+<p><b><span class="badge rule-badge">RN-TIM-03</span> — A lista de Membros disponíveis exclui quem tem Cargo de escopo <code>all</code>.</b> Mesmo filtro já aplicado em Membros (<span class="badge rule-badge">RN-MBR-02</span>, módulo CRM · Membros): um usuário cujo Cargo tenha ao menos uma linha de permissão em escopo <code>all</code> não aparece como opção para associar a um Time, mesmo que esse usuário já pertença à Loja. Consistente com o princípio geral — nada de escopo <code>all</code> é alcançável a partir das telas de escopo <code>store</code>.</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-tim-01-gest-o-de-times-da-loja"><span class="badge rf-badge">RF-TIM-01</span> — Gestão de Times da Loja</h2>
+<p><b>Como</b> gestor de Loja, <b>eu quero</b> listar, criar, editar e excluir os Times da minha Loja, e associar/desassociar Segmento <b>para</b> estruturar minha operação sem depender do Admin.</p>
+<p><b>Comportamento esperado:</b> idêntico ao já definido em <span class="badge rf-badge">RF-LOJ-02</span>/03 (módulo de Lojas, Admin) — inativação em dois modos (<span class="badge rule-badge">RN-LOJ-03</span>), cancelamento da inativação agendada ao reativar (<span class="badge rule-badge">RN-LOJ-04</span>), exclusão com migração de membros ou redistribuição de itens (<span class="badge rule-badge">RN-LOJ-05</span>). Escopo restrito à própria Loja do usuário.</p>
+<h2 id="rf-tim-02-associa-o-de-membro-ao-time"><span class="badge rf-badge">RF-TIM-02</span> — Associação de Membro ao Time</h2>
+<p><b>Como</b> gestor de Loja, <b>eu quero</b> associar ou desassociar um Membro a um Time <b>para</b> compor minha equipe.</p>
+<p><b>Comportamento esperado:</b> a partir da tela do Time, o gestor associa um Membro por vez (<span class="badge rule-badge">RN-TIM-01</span>). Se o Membro escolhido já pertence a outro Time da Loja, o sistema pede confirmação antes de mover (<span class="badge rule-badge">RN-TIM-02</span>). Desassociar é direto — o Membro fica sem Time (estado válido, <span class="badge rule-badge">RN-USR-02</span>).</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-TIM-01</span></b> — Associação de Membro ao Time é unitária, nunca em lote.</li>
+<li><b><span class="badge rule-badge">RN-TIM-02</span></b> — Associar Membro que já tem Time move, com confirmação explícita.</li>
+<li><b><span class="badge rule-badge">RN-TIM-03</span></b> — Lista de Membros disponíveis exclui quem tem Cargo de escopo <code>all</code>.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Idênticos ao módulo de Lojas (Admin), §6 — Ativo / Inativando / Inativo, sem alteração.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a entidade Time em si (definida no módulo de Lojas, Admin — este módulo só opera sobre ela com escopo <code>store</code>), a gestão de Membros (módulo próprio, CRM), nem qualquer ação sobre outra Loja.</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Lojas</b> (Admin) — entidade Time, campos, regras de ciclo de vida.</li>
+<li><b>Segmentos</b> (Admin) — lista de Segmentos para associação.</li>
+<li><b>Membros</b> (CRM) — lista de Membros da própria Loja (vínculo direto, <span class="badge rule-badge">RN-USR-15</span> — com ou sem Time), para associação ao Time, já filtrada por <span class="badge rule-badge">RN-TIM-03</span> (equivalente a <span class="badge rule-badge">RN-MBR-02</span>, aplicado aqui do lado do Time).</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Leads</b> (CRM) — a composição de Times determina a elegibilidade de operador na distribuição interna (<span class="badge rule-badge">RN-LED-04</span>).</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem — módulo é, por construção, um recorte do que já existe em Lojas (Admin), mais a capacidade nova de associação unitária de Membro, filtrada por Cargo (<span class="badge rule-badge">RN-TIM-03</span>).</p>
+<hr class="divider">
+<p><i>Fim do documento. Times v0.3 — módulo da aplicação CRM.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-crm-times-matriz-de-permiss-es">Corban CRM · Times — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM · Grupo Gestão</p>
+<p><b>Documento pai:</b> Corban CRM · Times (módulo v0.3)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre o recurso <code>crm_teams</code>. Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<blockquote><p><b>Por que <code>crm_teams</code>, não <code>teams</code>.</b> O Admin já declara <code>teams</code> (módulo de Lojas, Matriz de Permissões) — mesma entidade Time, mas com alcance diferente: lá <code>teams</code> oferece <code>all</code>, aqui só <code>store</code> existe, e este módulo soma uma capacidade que o Admin não tem (associar Membro pela tela do Time, <span class="badge rf-badge">RF-TIM-02</span>). Mesmo critério já usado para <code>members</code>/<code>users</code>: nome de recurso distinto por aplicação até a pendência de arquitetura (prefixo <code>app:</code> vs. tabela recurso→aplicação, registrada no guia de acompanhamento) ser resolvida.</p></blockquote>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>view</code></td><td><code>store</code></td></tr><tr><td><code>create</code></td><td><code>store</code></td></tr><tr><td><code>edit</code></td><td><code>store</code></td></tr><tr><td><code>manage_members</code></td><td><code>store</code></td></tr><tr><td><code>inactivate</code></td><td><code>store</code></td></tr><tr><td><code>delete</code></td><td><code>store</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-notas-sobre-as-a-es">2. Notas sobre as ações</h2>
+<p><b>Todas em <code>store</code>, sem <code>all</code>/<code>team</code>/<code>self</code></b> — mesmo critério de Membros e Tabelas Multiplicadoras: é gestão da Loja inteira, sem recorte menor definido.</p>
+<p><b><code>manage_members</code> é ação própria, separada de <code>edit</code>.</b> Cobre <span class="badge rf-badge">RF-TIM-02</span> (associar/desassociar Membro) — a capacidade que não existe no Admin. <code>edit</code> cobre só Nome e Segmento do Time.</p>
+<p><b>Sem ação de reativar.</b> Diferente de Membros (que tem <code>inactivate</code>/<code>reactivate</code> distintos), o ciclo de vida do Time é o de Lojas (Admin) — Ativo/Inativando/Inativo — e reativar durante a drenagem (<span class="badge rule-badge">RN-LOJ-04</span>) é uma consequência de <code>inactivate</code>, não uma permissão própria: quem pode inativar também pode reverter antes da drenagem terminar.</p>
+<p><b><code>delete</code> inclui a escolha de migrar membros ou redistribuir (<span class="badge rule-badge">RN-LOJ-05</span>)</b> — não é uma ação separada.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Times v0.1.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do CRM</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · CRM</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

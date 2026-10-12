@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ADR-0019 · Segredos no Key Vault, lidos por Managed Identity; banco sem senha — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.adr-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 320px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .adr-num { color: var(--brand); margin-right: 6px; }
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 32px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+.decision-callout {
+  background: var(--surface);
+  border-left: 4px solid var(--brand);
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.decision-callout h3 { margin-top: 4px; }
+
+.review-callout {
+  background: var(--surface);
+  border-left: 4px solid var(--accent);
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <a href="../index.html">ADRs</a>
+      <span class="sep">/</span>
+      <span class="current">ADR-0019</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Todos os ADRs
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="adr-pager">
+    <a href="../0018-postgresql-flexible-server-privado/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> ADR-0018</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../0001-keycloak-sem-feijucaauth/index.html" >ADR-0001 — Keycloak atual como provedor de identidade, sem a FeijucaAuth</option><option value="../0002-login-pela-api/index.html" >ADR-0002 — Login pela API, com a tela própria do Shell Público</option><option value="../0003-postgresql/index.html" >ADR-0003 — PostgreSQL como banco de dados</option><option value="../0004-azure-e-netlify/index.html" >ADR-0004 — Backend na Azure, aplicações web na Netlify</option><option value="../0005-dotnet-10/index.html" >ADR-0005 — Backend em .NET 10, com Clean Architecture e CQRS</option><option value="../0006-monolito-modular/index.html" >ADR-0006 — Uma API em monolito modular</option><option value="../0007-worker-separado/index.html" >ADR-0007 — Worker em processo separado, com o mesmo código de domínio</option><option value="../0008-fila-de-jobs-no-postgresql/index.html" >ADR-0008 — Fila de jobs no próprio PostgreSQL, sem broker</option><option value="../0009-api-replica-unica/index.html" >ADR-0009 — API com réplica única, sem escalonamento automático</option><option value="../0010-tempo-real-signalr/index.html" >ADR-0010 — Tempo real com SignalR na API, sem backplane</option><option value="../0011-webhooks-na-api/index.html" >ADR-0011 — Webhooks recebidos pela própria API</option><option value="../0012-ef-core-dbcontext-por-modulo/index.html" >ADR-0012 — EF Core com Npgsql, um DbContext por módulo</option><option value="../0013-mediatr-12/index.html" >ADR-0013 — CQRS e eventos de domínio com MediatR 12.x</option><option value="../0014-modulo-pasta-projeto-por-camada/index.html" >ADR-0014 — Módulo como pasta, com um projeto .NET por camada</option><option value="../0015-tempo-real-no-marketing/index.html" >ADR-0015 — Tempo real também no Marketing, para notificações e andamento</option><option value="../0016-tres-sites-netlify/index.html" >ADR-0016 — Um site na Netlify por aplicação, em subdomínios</option><option value="../0017-azure-container-apps/index.html" >ADR-0017 — API, Worker e migração no Azure Container Apps</option><option value="../0018-postgresql-flexible-server-privado/index.html" >ADR-0018 — Azure Database for PostgreSQL Flexible Server, com acesso privado</option><option value="../0019-key-vault-managed-identity/index.html" selected>ADR-0019 — Segredos no Key Vault, lidos por Managed Identity; banco sem senha</option><option value="../0020-nat-gateway-sob-demanda/index.html" >ADR-0020 — NAT Gateway com IP de saída fixo só quando exigido</option><option value="../0021-regiao-brazil-south/index.html" >ADR-0021 — Recursos da Azure na região Brazil South</option><option value="../0022-homologacao-mesma-forma/index.html" >ADR-0022 — Homologação com a mesma forma de produção, descrita em código</option><option value="../0023-sem-fk-entre-modulos/index.html" >ADR-0023 — Sem chave estrangeira entre schemas de módulos diferentes</option><option value="../0024-armazenamento-de-arquivos-blob/index.html" >ADR-0024 — Arquivos no Azure Blob Storage privado, entregues por URL assinada</option><option value="../0025-tempo-real-e-sino-nas-tres-aplicacoes/index.html" >ADR-0025 — Tempo real nas três aplicações e sino único por usuário</option></select>
+    <a href="../0020-nat-gateway-sob-demanda/index.html" class="pager-btn">ADR-0020 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow"><b>Registro de Decisão de Arquitetura</b> · SmartCorbans</div>
+    <h1><span class="adr-num">ADR-0019</span> Segredos no Key Vault, lidos por Managed Identity; banco sem senha</h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge accepted">Aceita</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Data da Decisão</span>
+      <span class="meta-value">2026-10-10</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Decisores</span>
+      <span class="meta-value">Rafael da Conceição</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Origem</span>
+      <span class="meta-value">P-15 (<code>C4/04-implantacao.md</code>)</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1">
+      <span class="meta-label">Módulos &amp; Camadas Afetadas</span>
+      <span class="meta-value">C4 · Implantação; configuração da API, do Worker e do job de migração; <a href="../0018-postgresql-flexible-server-privado/index.html" class="inline-link"><b>ADR-0018</b></a></span>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <article>
+    
+            <section>
+              <h2>1. Contexto</h2>
+              <p>O backend usa segredos de sistemas externos e do banco:</p>
+<ul>
+<li>o cliente com acesso à Admin API do Keycloak, que cria usuários e define senhas (<a href="../0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>, <a href="../0002-login-pela-api/index.html" class="inline-link"><b>ADR-0002</b></a>) — o mais sensível;</li>
+<li>as chaves do AbacatePay e da Huggy;</li>
+<li>os segredos que validam a origem dos webhooks (<a href="../0011-webhooks-na-api/index.html" class="inline-link"><b>ADR-0011</b></a>);</li>
+<li>o acesso ao PostgreSQL (<a href="../0018-postgresql-flexible-server-privado/index.html" class="inline-link"><b>ADR-0018</b></a>).</li>
+</ul>
+            </section>
+            
+
+            <section class="sec-decision">
+              <h2>2. Decisão</h2>
+              <div class="decision-callout">
+                <p><b>Os segredos ficam no Azure Key Vault e são lidos por Managed Identity</b>; <b>o banco é acessado sem senha</b>, por autenticação Microsoft Entra com a mesma identidade.</p>
+<ul>
+<li>API, Worker e job de migração têm cada um a sua identidade gerenciada, com acesso só aos segredos de que precisam.</li>
+<li>Nenhum segredo no código, no repositório, no pipeline ou em variável de ambiente.</li>
+<li>Troca de segredo no Key Vault, sem novo deploy; todo acesso registrado.</li>
+<li>No ambiente local, segredos pelos user secrets do .NET, nunca commitados.</li>
+</ul>
+              </div>
+            </section>
+            
+
+            <section>
+              <h2>3. Alternativas consideradas</h2>
+              <div class="tablewrap"><table>
+<thead><tr>
+<th>Alternativa</th>
+<th>A favor</th>
+<th>Contra</th>
+<th>Por que não</th>
+</tr></thead><tbody>
+<tr>
+<td>Segredos do Container Apps</td>
+<td>Sem recurso a mais</td>
+<td>Espalhados por app; sem registro central; troca em cada app</td>
+<td>Pior controle para o segredo do Keycloak</td>
+</tr>
+<tr>
+<td>Variáveis de ambiente no pipeline</td>
+<td>Nada na Azure</td>
+<td>Segredo passa pelo pipeline e por quem o acessa</td>
+<td>Caminho mais fácil de vazar</td>
+</tr>
+<tr>
+<td>Banco com usuário e senha no Key Vault</td>
+<td>Padrão conhecido</td>
+<td>Mais uma senha crítica para guardar e trocar</td>
+<td>A identidade gerenciada elimina a senha</td>
+</tr>
+</tbody></table></div>
+            </section>
+            
+
+            <section>
+              <h2>4. Consequências</h2>
+              <ul>
+<li><b>Ganhos:</b> nenhuma senha de banco existe; segredos externos centralizados e auditados; troca sem deploy.</li>
+<li><b>Custos e riscos aceitos:</b> Key Vault e identidades para configurar; o ambiente local usa outro caminho; o papel do banco ligado à identidade precisa das permissões certas por schema (<a href="../0012-ef-core-dbcontext-por-modulo/index.html" class="inline-link"><b>ADR-0012</b></a>).</li>
+<li><b>O que muda nos documentos:</b> Implantação passa a citar esta ADR no lugar da P-15; <a href="../0018-postgresql-flexible-server-privado/index.html" class="inline-link"><b>ADR-0018</b></a> deixa de prever a string de conexão no Key Vault.</li>
+</ul>
+            </section>
+            
+
+            <section class="sec-review">
+              <h2>5. Quando revisar</h2>
+              <div class="review-callout">
+                <p>Se algum segredo precisar ser compartilhado com um sistema fora da Azure.</p>
+              </div>
+            </section>
+            
+
+            <section>
+              <h2>Histórico de status</h2>
+              <div class="tablewrap"><table>
+<thead><tr>
+<th>Data</th>
+<th>Status</th>
+<th>Observação</th>
+</tr></thead><tbody>
+<tr>
+<td>2026-10-10</td>
+<td>Aceita</td>
+<td>Premissa P-15 aceita pelo usuário, com autenticação sem senha no banco.</td>
+</tr>
+</tbody></table></div>
+            </section>
+            
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../C4/index.html">Hub C4 Model</a>
+      <a href="../index.html">Catálogo de ADRs</a>
+      <a href="../../Dados/index.html">Modelo de Dados</a>
+      <a href="README.md" target="_blank">Ver Fonte Markdown (.md)</a>
+    </div>
+    <div>SmartCorbans · Arquitetura de Software · Decisão registrada e imutável</div>
+  </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Origem de Venda · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Origem de Venda</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../SalesFunnel/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Funis de Vendas</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" selected>Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../Segments/index.html" class="pager-btn">Segmentos <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Cadastros *(sem destino de navegação: o módulo vive no cadastro de Lead)*
+    </div>
+    <h1>Origem de Venda <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Cadastros *(sem destino de navegação: o módulo vive no cadastro de Lead)*</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.8 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-origem-de-venda">Corban Admin · Origem de Venda</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Cadastros <i>(sem destino de navegação: o módulo vive no cadastro de Lead)</i></p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.8</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Fecha o comportamento da exclusão: a lead mantém o rótulo como texto, desvinculado do cadastro (<span class="badge rule-badge">RN-ORI-04</span>).</td></tr><tr><td>0.3</td><td>Define os escopos iniciais.</td></tr><tr><td>0.4</td><td>Ajusta os escopos: <b><code>view</code> sem permissão</b> (acesso universal), <code>create</code> em <code>all</code>/<code>store</code>, <b><code>delete</code> apenas em <code>all</code></b> — excluir afeta todas as Lojas e não deve caber a escopo de loja.</td></tr><tr><td>0.5</td><td><b>Reconcilia o módulo com o resto do produto.</b> Origem de Venda deixa de ser "o único consumidor é Leads": Relatórios também a consome, e o campo passa a ser <b>opcional</b> na lead (<span class="badge rule-badge">RN-ORI-06</span>; leads automáticas nascem sem ela). Distingue a Origem de Venda da <b>Origem da lead</b> (campo do sistema, módulo de Leads) e da Tag de campanha (Funis). Fecha o item aberto do rótulo órfão (Relatórios agrupam pelo rótulo, <span class="badge rule-badge">RN-REL-17</span>), define o caso da Origem excluída enquanto selecionada, e a <span class="badge rule-badge">RN-ORI-03</span> passa a ignorar maiúsculas e espaços nas pontas. Reordena esta tabela.</td></tr><tr><td>0.6</td><td><b>A Origem de Venda passa a ter lugar no Sheet da Lead</b>: campo editável do bloco Dados de Marketing (Layout de Lead v0.6, <span class="badge rule-badge">RN-LAY-07</span>), que antes não existia em nenhum bloco. Corrige a <span class="badge rule-badge">RN-ORI-01</span> ("diferente dos demais cadastros da seção": Regiões e Status de Proposta também não bloqueiam; Produtos, Promotoras e Segmentos bloqueiam), anota que o módulo não tem destino de navegação e cita o Layout de Lead entre os consumidores. (Levantamento do Admin, segunda passada.)</td></tr><tr><td>0.7</td><td><b>A Proposta passa a ser consumidora</b>: tem o seu próprio campo Origem de Venda (a Tag "Origem"), copiado da Lead na criação e independente depois; capturado no cadastro manual e na importação de Propostas (decisão do usuário, levantamento do CRM). §3 e §7 acompanham.</td></tr><tr><td>0.8</td><td><b>Acompanha o Marketing (decisão do usuário).</b> (1) <b>Corrige a <span class="badge rule-badge">RN-ORI-06</span>:</b> as Leads de Prospecção e Carteira Ativa deixam de nascer sem Origem de Venda e passam a herdar a da Lista ou da Varredura, copiada na injeção; as da Huggy e de landing page continuam sem. (2) <b>Nova <span class="badge rule-badge">RN-ORI-07</span>:</b> a Lista de Prospecção e a Varredura guardam uma Origem de Venda opcional, no mesmo Combobox criável e com as mesmas permissões, e a exclusão de uma Origem preserva o rótulo como texto também nelas. (3) O Marketing (Prospecção, Carteira Ativa e o filtro do Dashboard) entra como consumidor em §3 e §7</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidade, requisitos funcionais (RF-ORI) e regras de negócio (RN-ORI) próprios.</p>
+<blockquote><p><b>Este módulo é diferente dos demais Cadastros.</b> Origem de Venda <b>não tem página própria</b> nem destino de navegação. Ela existe exclusivamente como um combobox dentro do cadastro de Lead, onde é consultada, criada e excluída sem sair daquele fluxo. Por isso este módulo tem um conjunto reduzido de artefatos — não há Lista, não há Detalhe, não há Mapa de Telas no sentido usual.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Manter o rótulo que identifica por onde uma venda chegou. É um cadastro auxiliar, gerido no ponto de uso: o operador que cadastra uma lead e não encontra a origem certa na lista cria ali mesmo, sem interromper o atendimento.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Quem cadastra leads</b> — usuário com acesso ao cadastro de Lead. É quem consome, cria e exclui Origens de Venda, no combobox.</li>
+</ul>
+<p>Não há um "gestor de cadastros" separado: o módulo não tem tela administrativa própria.</p>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<p><b>Origem de Venda.</b> Rótulo que identifica a procedência de uma lead. Cadastro <b>livre do tenant</b>, criado no ponto de uso.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Único campo da entidade.</td></tr></tbody></table></div>
+<p><b>Sem código, sem descrição, sem status.</b> Deliberado:</p>
+<ul>
+<li><b>Sem código</b> — não há integração nem referência externa que justifique um identificador curto.</li>
+<li><b>Sem descrição</b> — o nome é autoexplicativo por natureza ("Indicação", "Facebook", "Porta a porta").</li>
+<li><b>Sem status (ativo/inativo)</b> — não faz sentido inativar algo que se exclui diretamente do combobox. O ciclo de vida é criar/excluir, sem estado intermediário.</li>
+</ul>
+<p><b>Onde vive.</b> Combobox <b>opcional</b> no cadastro manual de Lead (módulo de Leads, CRM) e no bloco <b>Dados de Marketing</b> do Sheet da Lead (módulo de Layout de Lead, <span class="badge rule-badge">RN-LAY-07</span>), onde é o <b>único campo editável</b> do bloco. Também na <b>Lista de Prospecção</b> e na <b>Varredura</b> (módulo de Marketing), de onde é copiada às Leads injetadas (<span class="badge rule-badge">RN-ORI-06</span>, <span class="badge rule-badge">RN-ORI-07</span>). Também no cadastro manual de <b>Proposta</b> e, como coluna opcional, na importação de Propostas (módulo de Propostas): a Origem de Venda da Proposta nasce copiada da Lead, quando há, e depois é <b>independente</b> dela. É lida também por Relatórios, que agrupam e filtram por ela (<span class="badge rule-badge">RN-REL-17</span>). Apesar de documentado no Admin, o recurso <code>sale_origins</code> é exercido no CRM e no Marketing — mais um caso para a pendência de arquitetura das permissões (o catálogo precisa declarar a aplicação de cada recurso, <span class="badge rule-badge">RN-USR-16</span>).</p>
+<blockquote><p><b>Não confundir com a Origem da lead.</b> São campos diferentes da Lead: a <b>Origem da lead</b> é do sistema (Campanha, Orgânica, Recontato, Prospecção, Carteira Ativa ou Manual — módulo de Leads, <span class="badge rule-badge">RN-LED-12</span>) e define se a lead cobra; a <b>Origem de Venda</b> é um rótulo livre do tenant, escolhido pelo operador ("Indicação", "Porta a porta"). Há ainda a Tag de categoria <b>Origem</b> de campanha de marketing (<span class="badge rule-badge">RN-FNL-06</span>, módulo de Funis de Vendas).</p></blockquote>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-ori-01-consultar-criar-e-excluir-origem-de-venda-no-ponto-de-uso"><span class="badge rf-badge">RF-ORI-01</span> — Consultar, criar e excluir Origem de Venda no ponto de uso</h2>
+<p><b>Como</b> usuário cadastrando uma lead, <b>eu quero</b> escolher a origem da venda numa lista com busca — e criar ou excluir uma origem ali mesmo — <b>para</b> registrar a procedência correta sem interromper o cadastro.</p>
+<p><b>Comportamento esperado:</b> o campo é um <b>Combobox</b> (componente do Design System) na variante <b>criável</b>, com seleção única, <b>opcional</b> — pode ficar em branco, e quem selecionou uma Origem pode limpá-la (<span class="badge rule-badge">RN-ORI-06</span>):</p>
+<ul>
+<li><b>Consultar</b> — a lista mostra as Origens existentes, filtráveis por texto conforme a digitação.</li>
+<li><b>Criar</b> — quando a busca não retorna resultado, a lista exibe a ação "Criar nova: '[termo digitado]'". Ao acionar, a Origem é criada e já fica selecionada na lead em edição.</li>
+<li><b>Excluir</b> — cada item da lista oferece uma ação de excluir, disparando confirmação (<span class="badge rule-badge">RN-ORI-02</span>).</li>
+</ul>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-ORI-01</span> — Sem bloqueio de exclusão.</b> Diferente de Produtos, Promotoras e Segmentos (cuja exclusão é bloqueada por vínculo), Origem de Venda <b>não tem vínculo bloqueante</b> — como Regiões (cascata) e Status de Proposta (migração): pode ser excluída a qualquer momento, mesmo estando em uso por leads existentes.</p>
+<p><b><span class="badge rule-badge">RN-ORI-04</span> — Exclusão preserva o histórico como texto.</b> Ao excluir uma Origem, as leads que a referenciavam <b>mantêm o rótulo como texto</b>, desvinculado do cadastro. O histórico daquelas leads continua legível — a lead que veio de "Indicação" continua dizendo "Indicação" —, mas o valor deixa de existir como opção selecionável e vira dado solto.</p>
+<p>Consequências a considerar na implementação:</p>
+<ul>
+<li>O rótulo órfão <b>não volta a se vincular</b> se alguém criar depois uma Origem com o mesmo nome. Serão duas coisas distintas: o texto histórico e o novo cadastro.</li>
+<li><b>Relatórios e filtros agrupam pelo rótulo (o texto):</b> o texto órfão e um cadastro de mesmo nome caem na mesma linha (<span class="badge rule-badge">RN-REL-17</span>, módulo de Relatórios).</li>
+<li><b>Lead com rótulo órfão:</b> ao abrir a lead, o campo mostra o texto como valor atual, marcado "(origem excluída)". O usuário pode mantê-lo, trocá-lo ou limpá-lo.</li>
+<li><b>Origem excluída enquanto selecionada numa lead em edição</b> (por quem edita, ou por outra pessoa enquanto a lead estava aberta): o campo volta ao vazio com um aviso, e a lead só é salva depois de escolher outra Origem ou deixar o campo em branco.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-ORI-02</span> — Exclusão exige confirmação reforçada por digitação.</b> Apesar de não haver bloqueio, a exclusão é definitiva e feita de dentro de um fluxo de trabalho — o risco de acionamento acidental é alto. Por isso usa o nível mais forte de confirmação do produto: dialog exigindo que o usuário <b>digite o nome exato</b> da Origem para liberar o botão.</p>
+<p><b><span class="badge rule-badge">RN-ORI-05</span> — Origem é tenant-wide; o acesso é assimétrico por ação.</b> A Origem de Venda <b>não pertence a Loja nenhuma</b> — é cadastro único do tenant. As três ações têm níveis de acesso deliberadamente diferentes:</p>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Acesso</th><th>Por quê</th></tr></thead><tbody><tr><td><b>Consultar</b></td><td>Universal, sem permissão</td><td>O campo vive no cadastro de lead; esconder a lista impediria quem cadastra de usar o campo</td></tr><tr><td><b>Criar</b></td><td>Escopo <code>all</code> ou <code>store</code></td><td>Criação acontece no meio do atendimento; exigir <code>all</code> quebraria o fluxo</td></tr><tr><td><b>Excluir</b></td><td>Apenas escopo <code>all</code></td><td>Excluir afeta todas as Lojas, inclusive as que usam a Origem — não cabe a escopo de loja</td></tr></tbody></table></div>
+<p>Consequência a registrar: um usuário com <code>create:store</code> cria Origens que <b>todas as Lojas passam a ver</b>. O escopo qualifica quem age, não restringe o dado. Já em <code>delete</code>, o <code>store</code> não é oferecido justamente para evitar o inverso — alguém de uma loja apagando algo que outra usa.</p>
+<p><b><span class="badge rule-badge">RN-ORI-03</span> — Nome único no tenant.</b> Não existem duas Origens de Venda com o mesmo nome, <b>ignorando maiúsculas/minúsculas e espaços nas pontas</b> ("indicação" e "Indicação " são a mesma) <i>(decisão desta revisão)</i>. A tentativa de criar uma duplicata é impedida — na prática, o Combobox já teria encontrado a existente na busca, então este caso é raro.</p>
+<p><b><span class="badge rule-badge">RN-ORI-06</span> — Origem de Venda é opcional na lead.</b> O campo pode ficar em branco, e quem o preencheu pode limpá-lo. Leads criadas automaticamente pela <b>Huggy</b> e por <b>landing page</b> nascem sem Origem de Venda; o operador pode preenchê-la depois, na ficha. As Leads do <b>Marketing</b> (Prospecção e Carteira Ativa) nascem com a Origem de Venda <b>da Lista ou da Varredura</b> que as injetou, copiada no momento da injeção, quando ela tiver (Marketing, <span class="badge rule-badge">RN-MKT-01</span>); depois disso o rótulo é da Lead, e o operador pode alterá-lo ou limpá-lo. Relatórios mostram as leads sem ela em "Sem origem de venda" (<span class="badge rule-badge">RN-REL-17</span>).</p>
+<p><b><span class="badge rule-badge">RN-ORI-07</span> — A Lista de Prospecção e a Varredura também têm Origem de Venda.</b> É um campo opcional, no mesmo Combobox criável e com as mesmas permissões (<code>sale_origins:create</code>, <code>sale_origins:delete</code>). A Lead recebe o rótulo vigente da Lista ou da Varredura <b>no momento da injeção</b>; mudá-lo depois não altera as Leads já injetadas. Ao excluir uma Origem (<span class="badge rule-badge">RN-ORI-04</span>), a Lista ou a Varredura que a referenciava <b>mantém o rótulo como texto</b>, como as leads. <i>(Decisão do usuário, levantamento do Marketing.)</i></p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-ORI-01</span></b> — Sem bloqueio de exclusão; não há vínculo que impeça.</li>
+<li><b><span class="badge rule-badge">RN-ORI-02</span></b> — Exclusão exige confirmação reforçada por digitação.</li>
+<li><b><span class="badge rule-badge">RN-ORI-03</span></b> — Nome único no tenant, ignorando maiúsculas e espaços nas pontas.</li>
+<li><b><span class="badge rule-badge">RN-ORI-04</span></b> — Exclusão preserva o rótulo nas leads como texto desvinculado.</li>
+<li><b><span class="badge rule-badge">RN-ORI-05</span></b> — Origem é tenant-wide; escopo <code>store</code> qualifica quem age, não restringe o dado.</li>
+<li><b><span class="badge rule-badge">RN-ORI-06</span></b> — Origem de Venda é opcional na lead; as da Huggy e de landing page nascem sem ela, e as do Marketing herdam a da Lista ou da Varredura.</li>
+<li><b><span class="badge rule-badge">RN-ORI-07</span></b> — Lista de Prospecção e Varredura também guardam uma Origem de Venda opcional; a exclusão preserva o rótulo como texto.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Origem de Venda <b>não tem estados</b> — existe ou não existe. Sem ativo/inativo, sem rascunho.</p>
+<p>Transições: (inexistente) → criada, pelo Combobox; criada → excluída, com confirmação por digitação.</p>
+<hr class="divider">
+<h1 id="7-depend-ncias-e-o-que-o-m-dulo-exp-e">7. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b> nada.</p>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Leads (CRM)</b> — a lista de Origens, para o Combobox opcional do cadastro e da ficha da lead.</li>
+<li><b>Layout de Lead (Admin)</b> — hospeda o campo no bloco Dados de Marketing do Sheet da Lead, como o único campo editável do bloco (<span class="badge rule-badge">RN-LAY-07</span>).</li>
+<li><b>Marketing</b> — a lista de Origens, para o campo opcional da Lista de Prospecção e da Varredura (<span class="badge rule-badge">RN-ORI-07</span>), e o filtro por Origem de Venda do Dashboard.</li>
+<li><b>Propostas (CRM)</b> — o campo Origem de Venda da Proposta (a Tag "Origem", <span class="badge rule-badge">RN-PRP-13</span>), com o mesmo Combobox criável e a mesma lista; lido também pelos relatórios de Propostas (Admin · Relatórios, <span class="badge rule-badge">RN-REL-16</span>).</li>
+<li><b>Relatórios</b> (Admin e CRM) — o rótulo, como dimensão de filtro e de agrupamento.</li>
+</ul>
+<hr class="divider">
+<h1 id="8-itens-abertos">8. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Origem de Venda v0.8 — módulo da aplicação Admin, seção Cadastros. Sem página própria; vive no cadastro de Lead.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-origem-de-venda-matriz-de-permiss-es">Corban Admin · Origem de Venda — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Cadastros</p>
+<p><b>Documento pai:</b> Corban Admin · Origem de Venda (módulo v0.4)</p>
+<p><b>Versão:</b> 0.2</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre apenas o recurso deste módulo (<code>sale_origins</code>). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>sale_origins</code></td><td><code>view</code></td><td>— _(sem permissão: acesso universal)_</td></tr><tr><td><code>sale_origins</code></td><td><code>create</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>sale_origins</code></td><td><code>delete</code></td><td><code>all</code></td></tr></tbody></table></div>
+<p><b>Sem <code>edit</code>, <code>inactivate</code> nem <code>reactivate.</code></b> A entidade tem um campo só (nome) e nenhum estado — o ciclo de vida é criar/excluir, sem edição nem inativação (módulo §6).</p>
+<hr class="divider">
+<h2 id="2-tr-s-n-veis-de-acesso-deliberadamente-diferentes">2. Três níveis de acesso deliberadamente diferentes</h2>
+<p>Este módulo é o único da seção em que as três ações têm tratamentos distintos. Cada um responde a um risco diferente:</p>
+<p><b><code>view</code> — sem permissão, acesso universal.</b> Qualquer usuário autenticado enxerga a lista de Origens. Não há chave no catálogo para isso. A razão: o campo vive dentro do cadastro de lead, e esconder a lista de alguém que cadastra leads produziria leads sem origem — o oposto do que o cadastro existe para garantir.</p>
+<p><b><code>create</code> — <code>all</code> e <code>store</code>.</b> A Origem é criada no ponto de uso, no meio de um atendimento. Exigir escopo <code>all</code> significaria que só um administrador do tenant poderia criar uma origem nova, quebrando justamente o fluxo que este módulo existe para permitir. Um usuário com <code>create:store</code> cria Origens que <b>todo o tenant</b> passa a ver — o escopo qualifica quem age, não restringe o dado (<span class="badge rule-badge">RN-ORI-05</span>).</p>
+<p><b><code>delete</code> — apenas <code>all</code>.</b> Aqui o escopo <code>store</code> <b>não</b> é oferecido, deliberadamente: excluir uma Origem afeta todas as Lojas, inclusive as que a estão usando. Dar esse poder a um usuário de escopo de loja seria deixá-lo apagar algo alheio. Criar é barato e reversível; excluir não é.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p>_Fim do documento. Matriz de Permissões — Origem de Venda v0.2._</p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

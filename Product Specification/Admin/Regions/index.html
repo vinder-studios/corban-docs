@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Regiões · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Regiões</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../ProposalStatus/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Status de Proposta</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" selected>Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../Reports/index.html" class="pager-btn">Relatórios <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Cadastros
+    </div>
+    <h1>Regiões <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Cadastros</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.7 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-regi-es">Corban Admin · Regiões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Cadastros</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.7</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td><b>Oferta deixa de se associar diretamente a Região</b> — a região de uma Oferta é derivada da Promotora que compõe sua Tabela de Convênio. Em compensação, <b>Loja passa a se associar a Região</b>. Nasce a regra de visibilidade de ofertas por região (<span class="badge rule-badge">RN-REG-04</span>).</td></tr><tr><td>0.3</td><td>Fecha a regra de visibilidade: Loja <b>sem</b> Região vê todas as ofertas, sem restrição; interseção de uma única Região em comum já basta para a oferta aparecer.</td></tr><tr><td>0.4</td><td>Fecha os itens abertos: bloqueio por Promotoras/Lojas confirmado; hierarquia entre Regiões descartada (estrutura plana é definitiva); Região confirmada como rótulo livre, sem vínculo com dados de endereço estruturados.</td></tr><tr><td>0.5</td><td><b>Inativar ou excluir uma Região com vínculos deixa de ser bloqueado e passa a remover os vínculos, com confirmação em dois passos</b> (decisão do usuário, na revisão de Promotoras): o primeiro passo descreve o impacto e o segundo exige digitar o nome da Região. Vale para Promotoras e Lojas, e para inativação e exclusão. Reescreve <span class="badge rule-badge">RN-REG-02</span> e <span class="badge rule-badge">RN-REG-03</span>; §6, §7 e §8 acompanham. Corrige ainda: o §2 dizia que Regiões são associadas a "Promotoras e Ofertas" (a Oferta não se associa a Região; são Promotoras e Lojas); o §3 ainda citava "Tabela de Convênio" (a Oferta referencia a Promotora direto); o <span class="badge rf-badge">RF-REG-01</span> prometia exclusão só para Regiões "nunca usadas". Reordena esta tabela.</td></tr><tr><td>0.6</td><td>Revisão do módulo: o <b>§3</b> deixa de dizer que a Região "não conhece quem a usa" (o diálogo de dois passos consulta os vínculos, <span class="badge rule-badge">RN-REG-02</span>); o <b>§9</b> fecha o item sobre o aviso da primeira Região (ele existe nos artefatos de Lojas; a regra no módulo de Lojas fica registrada para a revisão dele) e a consequência passa a constar na <span class="badge rule-badge">RN-REG-04</span>; a <b><span class="badge rule-badge">RN-REG-04</span></b> passa a "dois casos e uma definição" (a tabela tinha uma linha de definição no lugar de um caso).</td></tr><tr><td>0.7</td><td><b>Reordena as regras no corpo</b> (estavam 01, 02, 04, 03). <b>A regra de visibilidade é aplicada fora de Ofertas</b>: o motor de Simulações e as Tabelas Multiplicadoras também a aplicam, e a distribuição de leads <b>não</b> usa Região (<span class="badge rule-badge">RN-LED-03</span>); §3, §7, §8 e a <span class="badge rule-badge">RN-REG-04</span> acompanham. <b>§9 ganha o item "código editável e integrações"</b>, que constava só em Segmentos e Produtos. (Levantamento do Admin, segunda passada.)</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-REG) e regras de negócio (RN-REG) próprios.</p>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Manter o cadastro dos recortes geográficos com que o tenant trabalha. A Região é um qualificador: outros cadastros do produto podem ser associados a uma ou mais Regiões, restringindo seu alcance geográfico.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de cadastros</b> — usuário cujas permissões efetivas incluem a gestão deste módulo. Tipicamente um Cargo de escopo <code>all</code>, já que Região é cadastro tenant-wide.</li>
+<li><b>Demais usuários</b> — consomem Regiões indiretamente, ao associá-las a Promotoras e Lojas.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<p><b>Região.</b> Recorte geográfico definido pelo tenant. Cadastro <b>livre do tenant</b> — não é catálogo fixo (não é uma lista de UFs do IBGE); cada tenant define os recortes que fazem sentido para a sua operação, que podem ser estados, grupos de estados, cidades ou qualquer outro corte.</p>
+<p><b>É um rótulo livre, e só isso.</b> Região não tem estrutura interna nem vínculo com dados geográficos do sistema:</p>
+<ul>
+<li><b>Sem hierarquia</b> — Regiões não contêm outras Regiões. Não existe "Sudeste" agrupando "São Paulo" e "Rio de Janeiro"; se o tenant precisar dos dois recortes, cria os dois como Regiões independentes e associa cada Promotora/Loja às que couberem.</li>
+<li><b>Sem vínculo com endereço</b> — não há mapeamento entre Região e UF/cidade estruturados. O sistema não infere a Região de ninguém a partir de endereço; a associação é sempre manual e explícita.</li>
+</ul>
+<p>Campos:</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Como aparece em toda a interface (ex.: "Sudeste", "Grande São Paulo").</td></tr><tr><td>Código</td><td>Sim</td><td>Identificador curto (ex.: <code>SE</code>, <code>GDE-SP</code>). <b>Único no tenant</b>, formato livre, editável após a criação.</td></tr><tr><td>Status</td><td>Sim</td><td>Ativo / Inativo (ver §6).</td></tr></tbody></table></div>
+<p><b>Sem campo de descrição.</b> Diferente de Segmentos e Produtos, Região não tem descrição — nome e código bastam para identificá-la.</p>
+<p><b>Quem se associa a Região.</b> A associação parte sempre do outro lado — a Região não guarda quem a usa, só consulta os vínculos ao ser inativada ou excluída (<span class="badge rule-badge">RN-REG-02</span>):</p>
+<ul>
+<li><b>Promotoras</b> podem ser associadas a uma ou mais Regiões.</li>
+<li><b>Lojas</b> podem ser associadas a uma ou mais Regiões.</li>
+</ul>
+<p><b>Oferta não se associa diretamente a Região.</b> A região de uma Oferta é <b>derivada</b>: a Oferta referencia uma Promotora, e é a Promotora que carrega as Regiões. Uma Oferta cuja Promotora não tem Região associada é uma <b>oferta global</b> — vale para qualquer Loja, independentemente de região.</p>
+<p>Nenhuma outra entidade do produto usa Região no momento. A distribuição de leads entre Lojas, em particular, <b>não</b> usa Região (<span class="badge rule-badge">RN-LED-03</span>).</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-reg-01-gest-o-de-regi-es-crud"><span class="badge rf-badge">RF-REG-01</span> — Gestão de regiões (CRUD)</h2>
+<p><b>Como</b> gestor de cadastros, <b>eu quero</b> criar, consultar, editar e inativar Regiões <b>para</b> poder restringir geograficamente promotoras e ofertas.</p>
+<p><b>Comportamento esperado:</b> o gestor cadastra nome e código. A listagem permite busca por nome/código e filtro por status. A edição cobre ambos os campos, incluindo o código. A inativação é o caminho padrão de descontinuação; a exclusão definitiva também existe (<span class="badge rule-badge">RN-REG-03</span>). Inativar ou excluir uma Região com vínculos os remove, após confirmação em dois passos (<span class="badge rule-badge">RN-REG-02</span>).</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-REG-01</span> — Cadastro livre do tenant.</b> Regiões não são catálogo fixo do sistema — cada tenant define os recortes que quiser, no nível de granularidade que fizer sentido.</p>
+<p><b><span class="badge rule-badge">RN-REG-02</span> — Inativar ou excluir uma Região com vínculos remove os vínculos, com confirmação em dois passos.</b> <i>(Antes, os vínculos bloqueavam a ação.)</i> Uma Região associada a Promotoras e/ou Lojas <b>pode</b> ser inativada ou excluída: a ação remove a Região de todas as Promotoras e Lojas que a tinham. Antes de aplicar, abre-se um diálogo de <b>dois passos</b>:</p>
+<ol>
+<li><b>Impacto</b> — descreve o que vai acontecer: quantas Promotoras e Lojas são afetadas e, entre elas, quais <b>ficarão sem Região</b>. Uma Promotora sem Região passa a ser global — suas ofertas aparecem para todas as Lojas (<span class="badge rule-badge">RN-PRM-05</span>, módulo de Promotoras). Uma Loja sem Região passa a ver todas as ofertas (<span class="badge rule-badge">RN-REG-04</span>).</li>
+<li><b>Confirmação por digitação</b> — o gestor digita o nome da Região para liberar o botão.</li>
+</ol>
+<p>O diálogo só aparece quando há vínculos: sem eles, a inativação segue o fluxo simples (confirmação descritiva) e a exclusão, a confirmação reforçada por digitação. <b>Os vínculos removidos não voltam</b> se a Região for reativada — a reassociação é manual, nos módulos de Promotoras e de Lojas. <i>(Decisão desta revisão:)</i> o efeito sobre Promotoras e Lojas é consequência da permissão de inativar ou excluir Região, sem exigir permissão de edição daqueles módulos; a operação é <b>atômica</b> (a Região e os vínculos mudam juntos ou não mudam); e a auditoria registra a Região e os vínculos removidos.</p>
+<p><b><span class="badge rule-badge">RN-REG-03</span> — Exclusão definitiva existe, com a mesma cascata e a mesma confirmação.</b> Região pode ser excluída em definitivo. Havendo vínculos, valem o diálogo de dois passos e a remoção de vínculos de <span class="badge rule-badge">RN-REG-02</span>, e a exclusão em si não pode ser desfeita. Uma Região <b>Inativa</b> nunca tem vínculos (a inativação os removeu), então excluí-la não dispara cascata.</p>
+<p><b><span class="badge rule-badge">RN-REG-04</span> — Visibilidade de ofertas por região.</b> É a razão de ser deste cadastro: Região existe para produzir esse recorte. A regra tem dois casos, conforme a situação da Loja, e uma definição:</p>
+<div class="tablewrap"><table><thead><tr><th>Situação da Loja</th><th>O que ela enxerga</th></tr></thead><tbody><tr><td><b>Sem Região associada</b></td><td><b>Todas as ofertas</b>, sem restrição alguma. Ausência de região significa ausência de recorte, não recorte vazio.</td></tr><tr><td><b>Com Região(ões) associada(s)</b></td><td>As ofertas cuja Promotora tenha <b>ao menos uma Região em comum</b> com a Loja — interseção parcial basta, não é preciso correspondência total —, <b>mais</b> as ofertas globais.</td></tr></tbody></table></div>
+<p><b>Oferta global</b> é aquela cuja Promotora não tem nenhuma Região associada. Vale para qualquer Loja, em qualquer caso acima.</p>
+<p><i>A regra é enunciada aqui porque nasce do domínio de Região, mas é aplicada fora dele: no domínio de Ofertas, no motor de Simulações (que filtra as Ofertas por Região, <span class="badge rule-badge">RN-SIM-01</span>) e nas Tabelas Multiplicadoras (<span class="badge rule-badge">RN-MUT-01</span>). A distribuição de leads entre Lojas <b>não</b> a usa (<span class="badge rule-badge">RN-LED-03</span>).</i></p>
+<p><i>Consequência operacional: como Loja sem Região vê tudo, associar a primeira Região a uma Loja — ou a uma Promotora — <b>reduz</b> o que é visto, o que é contraintuitivo ("adicionar" costuma ampliar). A confirmação correspondente vive nos módulos de Promotoras (<span class="badge rule-badge">RN-PRM-06</span>) e de Lojas.</i></p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-REG-01</span></b> — Cadastro livre do tenant, não catálogo fixo do sistema.</li>
+<li><b><span class="badge rule-badge">RN-REG-02</span></b> — Inativar ou excluir Região com vínculos remove os vínculos, com confirmação em dois passos (impacto + digitação do nome); não volta se reativar.</li>
+<li><b><span class="badge rule-badge">RN-REG-03</span></b> — Exclusão definitiva existe, com a mesma cascata e a mesma confirmação.</li>
+<li><b><span class="badge rule-badge">RN-REG-04</span></b> — Loja sem região vê tudo; Loja com região vê as ofertas com interseção de ao menos uma região + as ofertas globais.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Região:</b></p>
+<ul>
+<li><b>Ativa</b> — disponível para ser associada a Promotoras e Lojas.</li>
+<li><b>Inativa</b> — não recebe novas associações e não tem vínculos (a inativação os removeu, <span class="badge rule-badge">RN-REG-02</span>).</li>
+</ul>
+<p>Transições: ativa → inativa (remove os vínculos, se houver, com confirmação em dois passos — <span class="badge rule-badge">RN-REG-02</span>); inativa → ativa (livre — os vínculos removidos não voltam); ativa/inativa → excluída (<span class="badge rule-badge">RN-REG-03</span>; a cascata só ocorre numa Região Ativa com vínculos).</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p>Trata apenas do cadastro da Região. <b>Não</b> inclui: a associação de Promotoras a Regiões (módulo de Promotoras), a de Lojas (módulo de Lojas), nem a aplicação da regra de visibilidade <span class="badge rule-badge">RN-REG-04</span> (módulos de Ofertas, Simulações e Tabelas Multiplicadoras). Em todos os casos, a lógica vive do lado do outro domínio, com uma exceção: a remoção dos vínculos ao inativar ou excluir a Região (<span class="badge rule-badge">RN-REG-02</span>), que é disparada daqui.</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b> nada — é cadastro-base.</p>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Promotoras</b> — a lista de Regiões ativas, para associação.</li>
+<li><b>Lojas</b> — a lista de Regiões ativas, para associação.</li>
+<li><b>Promotoras e Lojas</b> — têm a Região removida quando ela é inativada ou excluída (<span class="badge rule-badge">RN-REG-02</span>).</li>
+<li><b>Ofertas, Simulações e Tabelas Multiplicadoras</b> — indiretamente: consomem a região da Promotora e a da Loja para aplicar <span class="badge rule-badge">RN-REG-04</span> (Ofertas define a regra; Simulações filtra as Ofertas por Região; Tabelas Multiplicadoras lista as Ofertas que a Loja enxerga, <span class="badge rule-badge">RN-MUT-01</span>). Nenhum deles associa Região diretamente.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<ol>
+<li><b>Código editável e integrações.</b> Mesmo item registrado em Segmentos, Produtos e Promotoras: o código é editável após a criação; se alguma integração externa vier a referenciar a Região por código, editá-lo passa a ser ação de risco. Reavaliar quando as integrações forem definidas.</li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Regiões v0.7 — módulo da aplicação Admin, seção Cadastros.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-regi-es-matriz-de-permiss-es">Corban Admin · Regiões — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Cadastros</p>
+<p><b>Documento pai:</b> Corban Admin · Regiões (módulo v0.1)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre apenas o recurso deste módulo (<code>regions</code>). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>regions</code></td><td><code>view</code></td><td><code>all</code></td></tr><tr><td><code>regions</code></td><td><code>create</code></td><td><code>all</code></td></tr><tr><td><code>regions</code></td><td><code>edit</code></td><td><code>all</code></td></tr><tr><td><code>regions</code></td><td><code>inactivate</code></td><td><code>all</code></td></tr><tr><td><code>regions</code></td><td><code>reactivate</code></td><td><code>all</code></td></tr><tr><td><code>regions</code></td><td><code>delete</code></td><td><code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-por-que-tudo-em-escopo-all">2. Por que tudo em escopo <code>all</code></h2>
+<p>Região é cadastro <b>tenant-wide</b> — não pertence a Loja nem a Time. Escopos <code>store</code>, <code>team</code> e <code>self</code> não têm significado. Mesma estrutura das Matrizes de Segmentos e Produtos, pelo mesmo motivo.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Regiões v0.1.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

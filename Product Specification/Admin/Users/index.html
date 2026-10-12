@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Usuários · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Usuários</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Stores/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Lojas</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" selected>Usuários</option></select>
+    <span class="pager-btn disabled">Próximo →</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Acesso
+    </div>
+    <h1>Usuários <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Acesso</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.7 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-usu-rios">Corban Admin · Usuários</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Acesso</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Documento companheiro:</b> Corban Admin · Usuários — Matriz de Permissões</p>
+<p><b>Versão:</b> 0.7</p>
+<p><b>Data:</b> [a definir]</p>
+<p><b>Autor:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.7</td><td><b>Senha inicial sem troca obrigatória</b> (decisão do usuário, D-05 em <code>Architecture/C4/01-contexto.md</code>). <span class="badge rf-badge">RF-USR-03</span> reescrito: o gestor define a senha e o usuário acessa de imediato, podendo trocá-la quando quiser; não há troca obrigatória no primeiro login, convite nem recuperação de senha por e-mail. <span class="badge rule-badge">RN-USR-08</span> reescrita. <b>O estado Convidado deixa de existir</b> (§7). A identidade fica no Keycloak (D-07); SSO e recuperação de senha saem das dependências. O Console sai de "Depende de": o Owner nasce na implantação.</td></tr><tr><td>0.6</td><td><b>Reconcilia o soft-delete com Lojas</b>: o estado Excluído existe, só em cascata da exclusão da Loja (<span class="badge rule-badge">RN-LOJ-08</span>, <span class="badge rule-badge">RN-LOJ-15</span>), e o e-mail do excluído fica liberado (decisão do usuário). <b>Só leads são redistribuídas</b> na inativação (decisão do usuário): a Proposta acompanha a Lead, os Atores permanecem, e "atendimento" não é categoria; fecha o item 3 de CRM · Membros. <b>Nova <span class="badge rule-badge">RN-USR-17</span></b>: a auditoria da gestão de acesso (RN012 da v1.2) não veio na cisão. <span class="badge rf-badge">RF-USR-02</span> corrigido: o usuário gerencia as próprias sessões pelo menu da conta (Shell Privado, §9), e não há mais as telas "Meu perfil" e "Minhas sessões" aqui. <span class="badge rule-badge">RN-USR-12</span> prevê Time e Loja que não existem mais. Seletor de Cargo só com Cargos ativos. Corrige <span class="badge rf-badge">RF-USR-04</span> → <span class="badge rf-badge">RF-USR-03</span>, o aviso estrutural já revogado (Loja contém Operações), os Atores (citam a Loja), os consumidores no §8 e registra as <span class="badge rule-badge">RN-USR-09</span> a 11 como sem uso.</td></tr><tr><td>0.5</td><td><b>Acesso à aplicação passa a depender de permissão, não de Loja/Time (<span class="badge rule-badge">RN-USR-16</span>).</b> <span class="badge rule-badge">RN-USR-02</span> perde a cláusula de login ("sem Time: só CRM"), que bloqueava usuários legítimos (marketing, backoffice, nível tenant) e contradizia o Shell Privado, onde o acesso à aplicação já é derivado de permissão. Resolve a pendência registrada na v0.4.</td></tr><tr><td>0.4</td><td><b>Adiciona o vínculo direto do usuário à Loja (<span class="badge rule-badge">RN-USR-15</span>).</b> Antes, a Loja só chegava ao usuário via Time; agora um usuário pode ser membro de uma Loja sem ter Time — caso típico de quem não é vendedor (marketing, backoffice). Consequência: o escopo <code>store</code> passa a resolver pela Loja do usuário, e só <code>team</code> continua exigindo Time. <span class="badge rule-badge">RN-USR-02</span> reescrita. Inclui <span class="badge rule-badge">RN-USR-14</span> no consolidado (omitida desde a v0.2). Motivado pelo módulo CRM · Membros.</td></tr><tr><td>0.3</td><td>Corrige o escopo <code>operation</code> para <b><code>team</code></b> nas referências deste módulo — mesma correção do módulo de Cargos v0.2.</td></tr><tr><td>0.2</td><td>Adiciona o campo <b>"Pode receber lead"</b> (<span class="badge rule-badge">RN-USR-14</span>), na seção de acesso, consumido pelo módulo CRM · Leads (elegibilidade de operador na distribuição interna da Loja).</td></tr><tr><td>0.1</td><td><b>Cisão do módulo Usuários & Permissões (v0.8).</b> Usuário passa a ter módulo próprio, separado de Cargo (ver módulo Cargos v0.1). Herda o histórico completo do módulo combinado até a v0.8; a partir daqui, os dois módulos evoluem de forma independente.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-USR) e regras de negócio (RN-USR) próprios. O formato de permissão (<code>recurso:ação:escopo</code>) e a hierarquia de escopos são definidos no módulo de <b>Cargos</b> — este documento só os referencia, para descrever as permissões adicionais do usuário.</p>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Permitir que cada tenant gerencie seus usuários e o acesso de cada um — combinando o Cargo atribuído (módulo de Cargos) com permissões adicionais avulsas — além do controle das sessões ativas. É o módulo que responde "quem existe no sistema e o que cada um pode fazer".</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Tenant (Owner)</b> — papel de sistema, único por tenant, com permissões plenas. Nunca passa pela checagem do catálogo de permissões (bypass total). Criado automaticamente na implantação; não editável, não excluível. Não é um Cargo.</li>
+<li><b>Gestor de usuários</b> — qualquer usuário cujas permissões efetivas incluam a gestão deste módulo. Tipicamente alguém com um Cargo de escopo <code>all</code>.</li>
+<li><b>Usuário</b> — pessoa com acesso ao tenant, sempre com exatamente um Cargo e, opcionalmente, uma Loja e um Time.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<p><b>Usuário.</b> Pessoa com acesso ao tenant. Campos mínimos: nome, e-mail (identificador de login, único na instância), status (ver §7), <b>Cargo (obrigatório, exatamente um — módulo de Cargos)</b>, <b>Loja (opcional, no máximo uma — módulo de Lojas; ver <span class="badge rule-badge">RN-USR-15</span>)</b>, <b>Time (opcional, no máximo um — módulo de Lojas)</b>, <b>permissões adicionais</b> (zero ou mais) e <b>"Pode receber lead"</b> (booleano, ver <span class="badge rule-badge">RN-USR-14</span>). O papel Tenant/Owner é atribuído fora deste módulo, na implantação, e não é um estado que este módulo edita.</p>
+<p><b><span class="badge rule-badge">RN-USR-14</span> — "Pode receber lead" só tem efeito com Time.</b> Campo exibido na seção de acesso, junto do Time — visível mesmo sem Time definido, mas sem efeito nesse caso: a elegibilidade de um operador para a distribuição de leads (módulo CRM · Leads, <span class="badge rule-badge">RN-LED-04</span>) exige Time Ativo de todo modo. <b>Nota de implementação:</b> o backend trata esse campo como duas listas (<code>canReceiveLeads</code> / <code>cantReceiveLeads</code>), não uma coluna booleana simples — detalhe de representação, sem efeito no comportamento de produto.</p>
+<p><b><span class="badge rule-badge">RN-USR-15</span> — Loja é vínculo direto do usuário, independente do Time.</b> Um usuário pertence a no máximo uma Loja, mesmo sem ter Time — situação típica de quem não é vendedor (marketing, backoffice e outras áreas, que geralmente não participam de Times). O campo é opcional: usuários de alcance tenant-wide não precisam de Loja. Quando o usuário tem Time, a Loja dele é obrigatoriamente a do Time — os dois nunca divergem: escolher um Time define a Loja; mudar a Loja de quem já tem Time de outra Loja desassocia o Time (com confirmação). <i>Motivação: o módulo CRM · Membros exige que o Membro pertença à Loja sem depender de Time (<span class="badge rule-badge">RN-MBR-01</span>); antes, a Loja só chegava ao usuário via Time.</i></p>
+<p><b><span class="badge rule-badge">RN-USR-16</span> — O acesso a cada aplicação depende de ter ao menos uma permissão nela; Loja e Time só definem o alcance.</b> O usuário entra em uma aplicação (CRM, Admin ou Marketing) quando suas permissões efetivas (Cargo + adicionais) incluem ao menos uma cujo recurso pertence àquela aplicação — independentemente de ter Loja ou Time. Sem nenhuma permissão na aplicação, a autenticação nela é bloqueada, com mensagem orientando a contatar o administrador do tenant. Loja e Time <b>não</b> são critério de acesso: definem apenas <b>quais dados</b> as permissões de escopo <code>store</code> e <code>team</code> alcançam (<span class="badge rule-badge">RN-USR-02</span>, <span class="badge rule-badge">RN-USR-15</span>). Se o usuário entra numa aplicação mas nenhuma de suas permissões ali alcança dado algum (ex.: só permissões <code>store</code>/<code>team</code>, sem Loja e sem Time), a aplicação abre com um aviso — não bloqueia — de que os dados aparecem quando ele for associado a uma loja ou time. Tenant/Owner tem bypass (<span class="badge rule-badge">RN-USR-03</span>). <i>Substitui a regra de login que estava em <span class="badge rule-badge">RN-USR-02</span> ("sem Time: só CRM"), que bloqueava quem atua em marketing ou tem permissões de escopo tenant e contradizia o Shell Privado (§5, §10.4), onde o acesso à aplicação já é derivado de permissão. A regra de login vive em Autenticação (RF001), que precisa adotar este critério. <b>Dependência:</b> o catálogo de permissões precisa declarar a que aplicação cada recurso pertence — hoje isso é implícito.</i></p>
+<p><b><span class="badge rule-badge">RN-USR-17</span> — Toda gestão de acesso é auditada.</b> <i>(A RN012 da Especificação v1.2 não veio na cisão de Usuários & Permissões.)</i> Criação, edição, inativação, reativação e exclusão (em cascata) de usuário; mudança de Cargo, Loja, Time e da flag "Pode receber lead"; concessão e remoção de permissões adicionais; redefinição da senha provisória; e revogação de sessões registram trilha de auditoria imutável: autor, data/hora e conteúdo da mudança (<span class="badge rnf-badge">RNF005</span>).</p>
+<p><b>Permissão adicional.</b> Permissão concedida diretamente a um usuário específico, fora do seu Cargo — mesmo formato <code>recurso:ação:escopo</code> definido no módulo de Cargos. <b>Somam-se</b> às permissões herdadas do Cargo — não substituem nem removem nenhuma delas. Servem para o caso pontual em que uma pessoa precisa de algo a mais sem que isso justifique um Cargo novo.</p>
+<p><b>Sessão.</b> Sessão ativa de um usuário autenticado. Tem dispositivo/origem aproximada, início e última atividade.</p>
+<p><b>Loja e Time.</b> Referenciados aqui, detalhados no módulo de Lojas. São os vínculos que dão concretude aos escopos <code>store</code> e <code>team</code>: a <b>Loja</b> (vínculo direto, <span class="badge rule-badge">RN-USR-15</span>) sustenta o <code>store</code>; o <b>Time</b> sustenta o <code>team</code>. Sem Loja e sem Time, uma permissão nesses escopos não alcança nenhum dado.</p>
+<hr class="divider">
+<h1 id="4-modelo-de-acesso-efetivo">4. Modelo de acesso efetivo</h1>
+<p>As permissões efetivas de um usuário são a <b>união</b> de duas fontes:</p>
+<ol>
+<li><b>Cargo (obrigatório).</b> Todo usuário tem exatamente um Cargo, e herda todas as permissões dele.</li>
+<li><b>Permissões adicionais (opcional).</b> Permissões avulsas concedidas àquele usuário específico, somadas às do Cargo.</li>
+</ol>
+<p>Não há subtração: uma permissão adicional só acrescenta. Para retirar acesso de alguém, muda-se o Cargo ou remove-se a permissão adicional — nunca se "nega" pontualmente uma permissão que o Cargo concede.</p>
+<p><b>O alcance de cada permissão depende do escopo dela e da Loja e do Time do usuário:</b></p>
+<ul>
+<li>Escopo <code>all</code> alcança todo o tenant, independentemente de Time.</li>
+<li>Escopo <code>team</code> alcança só o Time do usuário — sem Time, não alcança nada. Escopo <code>store</code> alcança a Loja do usuário (vínculo direto, <span class="badge rule-badge">RN-USR-15</span>), com todos os Times dela — sem Loja, não alcança nada. Quem tem Loja mas não tem Time (ex.: marketing, backoffice) mantém o alcance <code>store</code>.</li>
+<li>Escopo <code>self</code> alcança apenas os registros do próprio usuário.</li>
+</ul>
+<p><b>Tenant/Owner</b> não passa por esse cálculo: tem bypass total (<span class="badge rule-badge">RN-USR-03</span>).</p>
+<p>Regras próprias deste módulo:</p>
+<p><b><span class="badge rule-badge">RN-USR-01</span> — Cargo é obrigatório e único.</b> Todo usuário tem exatamente um Cargo. Não existe usuário sem Cargo, e não existe usuário com mais de um.</p>
+<p><b><span class="badge rule-badge">RN-USR-02</span> — Time é opcional e único.</b> Um usuário pertence a no máximo um Time. Usuário sem Time é estado válido — comum entre quem não é vendedor. Sem Time, as permissões de escopo <code>team</code> não alcançam nenhum dado; as de escopo <code>store</code> continuam valendo se o usuário tem Loja (<span class="badge rule-badge">RN-USR-15</span>). Sem Loja e sem Time, as de <code>store</code> e <code>team</code> não alcançam nenhum dado até que o usuário seja alocado. Isso afeta só o <b>alcance</b> dos dados — não o acesso à aplicação (<span class="badge rule-badge">RN-USR-16</span>).</p>
+<p><b><span class="badge rule-badge">RN-USR-03</span> — Tenant/Owner é protegido.</b> Único por tenant, criado na implantação, com bypass total do catálogo de permissões. Não editável, não excluível, não atribuível por usuários comuns. Não é um Cargo e não aparece na lista de Cargos.</p>
+<p><b><span class="badge rule-badge">RN-USR-13</span> — Permissões adicionais somam, nunca subtraem.</b> Uma permissão concedida diretamente ao usuário acrescenta-se às do Cargo. Não existe negação pontual de permissão herdada.</p>
+<hr class="divider">
+<h1 id="5-requisitos-funcionais">5. Requisitos funcionais</h1>
+<h2 id="rf-usr-01-gest-o-de-usu-rios-crud"><span class="badge rf-badge">RF-USR-01</span> — Gestão de usuários (CRUD)</h2>
+<p><b>Como</b> gestor de usuários, <b>eu quero</b> criar, consultar, editar e inativar usuários <b>para</b> manter a equipe do tenant refletida no sistema.</p>
+<p><b>Comportamento esperado:</b> o gestor cadastra nome, e-mail, a senha inicial (<span class="badge rf-badge">RF-USR-03</span>) e, na seção de acesso, o <b>Cargo</b> (obrigatório, entre os Cargos ativos — Cargos, §6), a <b>Loja</b> (opcional), o <b>Time</b> (opcional — restrito aos Times da Loja escolhida) e eventuais <b>permissões adicionais</b>. A listagem permite busca e filtros por Cargo, loja/time e status, e exibe uma coluna com as permissões associadas ao usuário. A edição cobre dados cadastrais e a seção de acesso. A inativação é o caminho padrão de desligamento. O papel Tenant/Owner não é criado nem editado aqui — é exclusivo da implantação.</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-USR-04</span> — Unicidade de e-mail.</b> O e-mail é o identificador de login e é único na instância, entre usuários <b>não excluídos</b>: o e-mail de um usuário excluído (soft-delete) fica liberado (<span class="badge rule-badge">RN-USR-05</span>).</p>
+<p><b><span class="badge rule-badge">RN-USR-05</span> — Inativação preserva histórico, derruba sessões e exige redistribuir as leads em andamento.</b> Inativar um usuário revoga imediatamente suas sessões e impede novo login, preservando todo o histórico. Se o usuário tiver <b>leads em andamento</b>, a própria tela de inativação, no Admin, exibe a quantidade (ex.: "12 leads") — sem detalhar as leads individualmente — e exige a redistribuição antes de concluir. O gestor escolhe entre:</p>
+<ul>
+<li><b>Distribuição automática</b> — o sistema redistribui as leads entre os demais membros do mesmo Time, por rodízio;</li>
+<li><b>Seleção manual</b> — o gestor escolhe um ou mais destinatários para o bloco de leads, e o sistema distribui entre os escolhidos por rodízio — a escolha é do(s) destinatário(s) do bloco, não lead a lead.</li>
+</ul>
+<p><b>Só leads são redistribuídas.</b> <i>(Decisão do usuário, na revisão; resolve o item 3 aberto em CRM · Membros.)</i> A <b>Proposta</b> vinculada acompanha a Lead: o Operador dela é o responsável pela Lead (<span class="badge rule-badge">RN-PRP-09</span>), então muda junto. Os <b>Atores</b> já atribuídos (Consultor, Averbador, Emissor de Boleto, Digitador) <b>permanecem</b>: travam ao serem atribuídos (<span class="badge rule-badge">RN-PRP-09</span>) e registram quem exerceu o papel; quem opera a Proposta é definido por permissão, não por ser Ator. "Atendimento" não é categoria: a Conversa acompanha a Lead (<span class="badge rule-badge">RN-CHT-02</span>). O dialog mostra, como informação, quantas propostas acompanham as leads.</p>
+<p><b>Exclusão de usuário só existe em cascata da exclusão da Loja</b> (<span class="badge rule-badge">RN-LOJ-08</span>, <span class="badge rule-badge">RN-LOJ-15</span>). É <b>soft-delete</b>: o usuário some das listagens e das seleções, o registro e o histórico permanecem, e não há ação de restaurar nesta versão. Não existe ação de excluir um usuário isoladamente (a Matriz de Permissões não tem <code>delete</code>). O <b>e-mail do usuário excluído fica liberado</b> para novo cadastro (<span class="badge rule-badge">RN-USR-04</span>). <i>(Decisão do usuário, na revisão. O soft-delete preserva dados pessoais, então não substitui o atendimento a um titular de dados, que segue reativo — <span class="badge rnf-badge">RNF003</span>.)</i> Os usuários <b>mantidos</b> quando a Loja é excluída ficam <b>sem Loja e sem Time</b> (<span class="badge rule-badge">RN-LOJ-09</span>) até serem realocados.</p>
+<p><b>Dependência de arquitetura:</b> esta tela do Admin lê e grava dados do domínio de Leads, que hoje são modelados como território do CRM — foge do padrão já existente (RN021/RF028, onde o Admin apenas sinaliza e a resolução ocorre no CRM). Registrado como item para a revisão da arquitetura do monorepo (<code>corban-anotacoes-operacoes-loja.md</code>, §6).</p>
+<p><b><span class="badge rule-badge">RN-USR-12</span> — Reativação restaura o estado anterior, sem recuperar as leads redistribuídas.</b> Ao reativar um usuário, ele volta exatamente com o Cargo, Time e permissões adicionais que tinha no momento da inativação. Leads redistribuídas por conta da inativação (<span class="badge rule-badge">RN-USR-05</span>) não retornam a ele automaticamente — permanecem com quem as assumiu. <b>Se o Time ou a Loja anteriores foram excluídos ou estão inativos</b>, o usuário volta <b>sem eles</b> (<span class="badge rule-badge">RN-LOJ-09</span>, <span class="badge rule-badge">RN-LOJ-15</span>) e o gestor o realoca; sem Loja e sem Time, as permissões <code>store</code> e <code>team</code> não alcançam dados até lá (<span class="badge rule-badge">RN-USR-16</span>).</p>
+<h2 id="rf-usr-02-gest-o-de-sess-es"><span class="badge rf-badge">RF-USR-02</span> — Gestão de sessões</h2>
+<p><b>Como</b> gestor de usuários, <b>eu quero</b> visualizar e revogar sessões ativas <b>para</b> responder rapidamente a desligamentos e incidentes.</p>
+<p><b>Comportamento esperado:</b> para cada usuário, o gestor vê as sessões ativas (dispositivo/origem aproximada, início, última atividade) e pode revogar uma sessão específica ou todas. A revogação tem efeito imediato. O próprio usuário gerencia as suas sessões pelo menu da conta, em todas as aplicações e sem permissão (Shell Privado, §9); este requisito trata da gestão das sessões <b>de outros</b> usuários.</p>
+<h2 id="rf-usr-03-senha-inicial-definida-pelo-gestor"><span class="badge rf-badge">RF-USR-03</span> — Senha inicial definida pelo gestor</h2>
+<p><b>Como</b> gestor, <b>eu quero</b> definir a senha do usuário ao criá-lo <b>para</b> que ele acesse o sistema sem depender de e-mail ou convite.</p>
+<p><b>Comportamento esperado:</b> ao criar o usuário (<span class="badge rf-badge">RF-USR-01</span>), o gestor define a senha e a comunica pelo canal de sua escolha. O usuário entra com ela e acessa de imediato, conforme as permissões do Cargo e as adicionais. <b>Não há troca obrigatória no primeiro login.</b> O próprio usuário pode trocar a senha quando quiser, pelo menu da conta (Shell Privado). Não há convite por e-mail nem recuperação de senha nesta versão (Especificação Geral, §3.2 e §11). As credenciais vivem no Keycloak (Especificação Geral, §4.2).</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-USR-08</span> — Senha inicial sem troca obrigatória.</b> A senha definida pelo gestor é uma senha comum, sem restrição de uso: o usuário não é obrigado a trocá-la. O gestor pode redefinir a senha de um usuário a qualquer momento, que é o caminho para quem esqueceu a senha enquanto não houver recuperação.</p>
+<hr class="divider">
+<h1 id="6-regras-de-neg-cio-consolidado">6. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-USR-01</span></b> — Cargo é obrigatório e único por usuário.</li>
+<li><b><span class="badge rule-badge">RN-USR-02</span></b> — Time é opcional e único; sem Time, <code>team</code> não alcança nada (o acesso à aplicação não depende de Time — <span class="badge rule-badge">RN-USR-16</span>).</li>
+<li><b><span class="badge rule-badge">RN-USR-03</span></b> — Tenant/Owner é protegido (bypass total, único, criado na implantação).</li>
+<li><b><span class="badge rule-badge">RN-USR-04</span></b> — Unicidade de e-mail.</li>
+<li><b><span class="badge rule-badge">RN-USR-05</span></b> — Inativação preserva histórico, derruba sessões e exige redistribuir as leads em andamento (a Proposta acompanha; os Atores permanecem). Exclusão de usuário só em cascata da exclusão da Loja (soft-delete); o e-mail fica liberado.</li>
+<li><b><span class="badge rule-badge">RN-USR-08</span></b> — Senha inicial sem troca obrigatória.</li>
+<li><b><span class="badge rule-badge">RN-USR-12</span></b> — Reativação restaura o estado anterior, sem recuperar as leads redistribuídas; sem Time ou Loja que não existem mais, volta sem eles.</li>
+<li><b><span class="badge rule-badge">RN-USR-13</span></b> — Permissões adicionais somam, nunca subtraem.</li>
+<li><b><span class="badge rule-badge">RN-USR-14</span></b> — "Pode receber lead" só tem efeito com Time.</li>
+<li><b><span class="badge rule-badge">RN-USR-15</span></b> — Loja é vínculo direto do usuário (no máximo uma), independente do Time; se há Time, a Loja é a dele.</li>
+<li><b><span class="badge rule-badge">RN-USR-16</span></b> — O acesso a cada aplicação depende de ter ao menos uma permissão nela; Loja e Time só definem o alcance.</li>
+<li><b><span class="badge rule-badge">RN-USR-17</span></b> — Toda gestão de acesso é auditada.</li>
+</ul>
+<p><b>Migradas para o módulo de Cargos:</b> <span class="badge rule-badge">RN-USR-06</span> → <span class="badge rule-badge">RN-CRG-01</span>; <span class="badge rule-badge">RN-USR-07</span> → <span class="badge rule-badge">RN-CRG-02</span>.</p>
+<p><i><span class="badge rule-badge">RN-USR-09</span>, 10 e 11: numeração sem uso, de modelos anteriores (a <span class="badge rule-badge">RN-USR-10</span> associava Grupo a Time, o que não existe mais).</i></p>
+<hr class="divider">
+<h1 id="7-estados-e-transi-es">7. Estados e transições</h1>
+<p><b>Usuário:</b></p>
+<ul>
+<li><b>Ativo</b> — estado inicial, desde a criação; acessa conforme as permissões do seu Cargo mais as adicionais (<span class="badge rule-badge">RN-USR-08</span>).</li>
+<li><b>Inativo</b> — desligado; não autentica, sessões revogadas, histórico preservado (<span class="badge rule-badge">RN-USR-05</span>).</li>
+<li><b>Excluído</b> — soft-delete, alcançado só pela exclusão da Loja (<span class="badge rule-badge">RN-LOJ-08</span>, <span class="badge rule-badge">RN-USR-05</span>): some das listagens e das seleções; o registro e o histórico permanecem; o e-mail fica liberado; sem restauração nesta versão.</li>
+</ul>
+<p>Transições: ativo → inativo (inativação pelo gestor, via switch — com redistribuição das leads em andamento quando houver, <span class="badge rule-badge">RN-USR-05</span>); inativo → ativo (reativação pelo gestor, via switch — restaura Cargo, Time e permissões adicionais anteriores, sem recuperar as leads redistribuídas, <span class="badge rule-badge">RN-USR-12</span>); ativo ou inativo → excluído (só em cascata da exclusão da Loja, sem ação própria).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Cargos</b> — o Cargo atribuído ao usuário, e o formato de permissão reaproveitado nas adicionais.</li>
+<li><b>Autenticação</b> (transversal, Keycloak) — guarda a credencial definida aqui (<span class="badge rf-badge">RF-USR-03</span>), realiza o login e adota o critério de acesso por aplicação (<span class="badge rule-badge">RN-USR-16</span>).</li>
+<li><b>Lojas</b> — a entidade Loja e a entidade Time, às quais o usuário pode ser vinculado.</li>
+<li><b>Implantação</b> — cria o papel Tenant/Owner; este módulo não o edita (Especificação Geral §4.3, §10).</li>
+</ul>
+<p><b>Expõe para as outras apps (CRM, Marketing) e para Lojas:</b></p>
+<ul>
+<li>Permissões efetivas de cada usuário (Cargo + adicionais) — base de toda a visibilidade e ação nas outras aplicações.</li>
+<li>Status do usuário (ativo/inativo) — gate de autenticação e de atribuição de trabalho.</li>
+<li><b>CRM · Membros</b> — os usuários da Loja, com o vínculo direto (<span class="badge rule-badge">RN-USR-15</span>) e o Cargo (<span class="badge rule-badge">RN-MBR-01</span>).</li>
+<li><b>CRM · Leads</b> — a flag "Pode receber lead" e o Time, para a elegibilidade na distribuição interna (<span class="badge rule-badge">RN-USR-14</span>, <span class="badge rule-badge">RN-LED-04</span>).</li>
+</ul>
+<hr class="divider">
+<p><i>Fim do documento. Usuários v0.6 — módulo da aplicação Admin, seção Acesso. Matriz de permissões em documento companheiro.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-usu-rios-matriz-de-permiss-es">Corban Admin · Usuários — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Acesso</p>
+<p><b>Documento pai:</b> Corban Admin · Usuários (módulo v0.4)</p>
+<p><b>Versão:</b> 0.2</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.2</td><td>Acompanha Usuários v0.4: vínculo direto do usuário à Loja (<span class="badge rule-badge">RN-USR-15</span>) e flag "Pode receber lead" (<span class="badge rule-badge">RN-USR-14</span>), que nunca tinham chegado a este artefato. Cargo, Loja, Time e a flag passam a ser cobertos por <code>users:manage_access</code>; <code>users:view:store</code> passa a resolver pela Loja do usuário.</td></tr><tr><td>0.1</td><td><b>Cisão da Matriz de Permissões de Usuários & Permissões (v0.3).</b> Cobre os recursos <code>users</code> e <code>sessions</code>. Sem mudança de conteúdo em relação à v0.3 anterior.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre os recursos <code>users</code> e <code>sessions</code>. Formato da chave, definido no módulo de Cargos (§3.1): <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>users</code></td><td><code>view</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>users</code></td><td><code>create</code></td><td><code>all</code></td></tr><tr><td><code>users</code></td><td><code>edit</code></td><td><code>all</code></td></tr><tr><td><code>users</code></td><td><code>manage_access</code></td><td><code>all</code></td></tr><tr><td><code>users</code></td><td><code>manage_permissions</code></td><td><code>all</code></td></tr><tr><td><code>users</code></td><td><code>inactivate</code></td><td><code>all</code></td></tr><tr><td><code>users</code></td><td><code>reactivate</code></td><td><code>all</code></td></tr><tr><td><code>sessions</code></td><td><code>view</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>sessions</code></td><td><code>manage</code></td><td><code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-notas-sobre-as-a-es">2. Notas sobre as ações</h2>
+<p><b><code>users:edit</code> vs. <code>users:manage_access</code> vs. <code>users:manage_permissions</code>.</b> Três sensibilidades diferentes, três ações: editar dados cadastrais (nome, e-mail); definir Cargo, Loja, Time e a flag "Pode receber lead" do usuário; e conceder permissões adicionais avulsas a ele. A última é a mais sensível — permite dar a alguém acesso que o Cargo dele não prevê.</p>
+<p><b><code>users:inactivate</code> / <code>users:reactivate</code> são ações distintas, sem <code>delete</code>.</b> Usuário não tem exclusão definitiva na v1 (<span class="badge rule-badge">RN-USR-05</span>, módulo) — <i>mas ver a pendência registrada naquele módulo sobre a exceção introduzida em Lojas</i>. O par inactivate/reactivate cobre o ciclo completo do estado do usuário.</p>
+<p><b><code>sessions:manage</code> cobre a revogação (<span class="badge rf-badge">RF-USR-02</span>).</b> Não há ação para o usuário comum sobre as próprias sessões — a revogação das próprias acontece indiretamente (troca de senha, logout), fora do catálogo deste módulo.</p>
+<hr class="divider">
+<h2 id="3-escopo-store-em-users-view-e-sessions-view">3. Escopo <code>store</code> em <code>users:view</code> e <code>sessions:view</code></h2>
+<p>Estas são as duas únicas ações do módulo oferecidas em escopo mais restrito que <code>all</code>. <code>users:view:store</code> permite a um usuário consultar os demais usuários da sua Loja — típico de um Cargo de gestão intermediária, que precisa enxergar a própria equipe sem poder alterá-la. Todas as ações de escrita são oferecidas apenas em <code>all</code>.</p>
+<hr class="divider">
+<h2 id="4-owner-tenant">4. Owner / Tenant</h2>
+<p>Não aparece nesta matriz. Owner/Tenant tem bypass total do catálogo de permissões (módulo, <span class="badge rule-badge">RN-USR-03</span>) — nunca é resolvido por escopo ou linha da matriz.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Usuários v0.2.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

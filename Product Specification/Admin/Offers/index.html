@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ofertas · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Ofertas</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../LayoutLead/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Layout de Lead (Card e Sheet)</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" selected>Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../Products/index.html" class="pager-btn">Produtos <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Oferta comercial
+    </div>
+    <h1>Ofertas <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Oferta comercial</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.16 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-ofertas">Corban Admin · Ofertas</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Oferta comercial</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.16</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Fecha o item aberto 1: define o <b>valor base de comissão por Operação</b> (<span class="badge rule-badge">RN-OFR-07</span>).</td></tr><tr><td>0.3</td><td>Confirma <span class="badge rule-badge">RN-OFR-01</span>: sem unicidade, sem aviso — duplicatas são permitidas livremente.</td></tr><tr><td>0.4</td><td>Reabre §9 com um item encontrado ao detalhar a Matriz de Estados: o que acontece quando uma Regra em uso por Oferta <b>já Ativa</b> é invalidada por edição de template (<span class="badge rule-badge">RN-OFR-04</span>) — a Oferta continua Ativa mesmo com uma associação incompleta?</td></tr><tr><td>0.5</td><td>Fecha o item aberto: editar o template de um requisito de Regra usada por Oferta <b>Ativa</b> passa a ser <b>bloqueado</b> no módulo de Regras (<span class="badge rule-badge">RN-RGR-13</span>, v0.7) — não mais uma decisão deste módulo, mas a garantia elimina o cenário de Oferta Ativa com condição inválida.</td></tr><tr><td>0.6 a 0.8</td><td><i>(Sem registro: o histórico original não documentou estas três versões.)</i></td></tr><tr><td>0.9</td><td><b>Oferta reganha campo próprio de Operação</b> (módulo de Produtos v0.3: Produto suporta várias Operações, não uma só). A Oferta escolhe qual das Operações suportadas pelo Produto selecionado está usando — <code>Select</code> restrito, não livre. <span class="badge rule-badge">RN-OFR-01</span> volta a incluir Operação na combinação (ainda sem restrição de unicidade, <span class="badge rule-badge">RN-OFR-01</span> confirmada).</td></tr><tr><td>0.10</td><td><span class="badge rule-badge">RN-OFR-07</span> ganha a ressalva de não retroatividade: editar a comissão de uma Oferta só vale para Propostas que chegarem a Pago depois, porque a comissão passou a ser gravada no Pago (<span class="badge rule-badge">RN-PRP-05</span>, Propostas v0.10).</td></tr><tr><td>0.11</td><td><b>Acompanha a decisão em Produtos v0.4: a Operação deixa de ser restrita pelo Produto.</b> O campo Operação da Oferta é um <code>Select</code> entre as 4 do catálogo fixo, sem depender do Produto escolhido. Ajusta as menções à restrição e o título da <span class="badge rule-badge">RN-OFR-07</span> ("da Operação do Produto" → "da Operação da Oferta"). Os artefatos de tela já descreviam a Operação como catálogo fixo e não mudam. Alteração de consistência: a revisão completa do módulo segue na fila.</td></tr><tr><td>0.12</td><td><b>Revisão completa do módulo.</b> O <b>Segmento</b> passa a constar onde faltava: <span class="badge rf-badge">RF-OFR-01</span> (cadastro e filtros) e §8 (depende de Segmentos). Segmento Inativo não pode ser escolhido em Ofertas novas, e a exclusão de um Segmento é bloqueada enquanto houver Oferta (Segmentos v0.5, <span class="badge rule-badge">RN-SEG-08</span>). <b>Vigência removida de propósito</b> (decisão do usuário: o tenant inativa a Oferta quando precisar), o que a v1.2 previa e nenhum histórico registrava. O §8 passa a listar Propostas e Tabelas Multiplicadoras como consumidoras, e o módulo as citava como "Tabela de Multiplicadores". O §3.2 inclui Promotoras entre os cadastros com código. O §3.3 registra que os valores preenchidos são os mostrados ao operador como "Exigido pela oferta" (<span class="badge rule-badge">RN-SIM-11</span>). Reordena esta tabela e marca as v0.6 a 0.8 como sem registro.</td></tr><tr><td>0.13</td><td><b>A Lista ganha o filtro "Regras incompletas"</b> (<span class="badge rf-badge">RF-OFR-01</span>), alvo do alerta "Ofertas com regras incompletas" do Dashboard do Admin: o alerta prometia abrir a Lista já filtrada, e o filtro não existia (achado na revisão do Dashboard).</td></tr><tr><td>0.14</td><td><b>O módulo passa a ser o dono do catálogo de Operação</b> (os 4 valores), que estava definido em Produtos e copiado em Segmentos (levantamento do Admin, segunda passada). A Lista passa a poder abrir já filtrada por Produto ou Promotora, o destino do atalho "Ver ofertas" dos bloqueios de Produtos e Promotoras. A premissa da <span class="badge rule-badge">RN-OFR-05</span> (simulações e propostas preservam snapshot) <b>é decisão do usuário</b>; quem a contradiz hoje é o módulo de Propostas (<span class="badge rule-badge">RN-PRP-05</span>: snapshot só no Pago), a corrigir na revisão do CRM.</td></tr><tr><td>0.16</td><td><b>Portabilidade passa a usar o Valor financiado</b> como valor base (<span class="badge rule-badge">RN-OFR-07</span>), e o catálogo registra que <b>Saque complementar é Novo</b> (não é Operação própria). Decisão do usuário, no modelo de dados de Propostas.</td></tr><tr><td>0.15</td><td>A <span class="badge rule-badge">RN-OFR-05</span> passa a apontar para a regra de Propostas que cumpre a sua premissa (a Proposta grava o snapshot da Oferta ao associá-la, <span class="badge rule-badge">RN-PRP-05</span>). Sem mudança de comportamento.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-OFR) e regras de negócio (RN-OFR) próprios.</p>
+<blockquote><p><b>Este módulo é o ponto de convergência de toda a Oferta comercial.</b> A "Tabela de Convênio" que aparecia solta em conversas anteriores <b>não existe como entidade própria</b> — foi fundida diretamente na Oferta: Promotora, Produto, Banco e <b>Operação</b> são campos dela, não de um cadastro intermediário. Operação é escolhida livremente na Oferta, entre as 4 do catálogo fixo — o Produto não restringe Operações (módulo de Produtos v0.4). É também aqui que Regras deixam de ser templates abstratos e viram condições avaliáveis de verdade, com valores concretos.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Compor e manter as Ofertas — a unidade comercial que o motor de simulações avalia. Uma Oferta combina Promotora, Produto, a Operação escolhida e Banco com a parametrização financeira (taxa, prazo, comissão) e as Regras de elegibilidade que se aplicam a ela.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor comercial</b> — usuário cujas permissões efetivas incluem a gestão deste módulo.</li>
+<li><b>Operador</b> — consome Ofertas indiretamente, através do motor de simulações.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-oferta">3.1. Oferta</h2>
+<p>Cadastro <b>livre do tenant</b>. Campos:</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Identificação da Oferta na listagem e nas simulações.</td></tr><tr><td><b>Segmento</b></td><td>Sim</td><td>Referência ao cadastro de Segmentos — determina para qual público esta Oferta é elegível na simulação (<span class="badge rule-badge">RN-OFR-08</span>). Só Segmentos ativos podem ser escolhidos em Ofertas novas (<span class="badge rule-badge">RN-SEG-08</span>).</td></tr><tr><td>Promotora</td><td>Sim</td><td>Referência ao cadastro de Promotoras.</td></tr><tr><td>Produto</td><td>Sim</td><td>Referência ao cadastro de Produtos.</td></tr><tr><td><b>Operação</b></td><td>Sim</td><td><code>Select</code> entre as 4 Operações do catálogo fixo do sistema — <b>Novo, Refinanciamento, Portabilidade e Portabilidade com Refinanciamento</b>; esta é a <b>definição do catálogo</b> (os outros módulos apontam para cá). Compra de Dívida não é uma Operação à parte: é tratada como Portabilidade; Saque complementar também não: é tratado como Novo. Independe do Produto escolhido — qualquer Produto pode ter Ofertas em qualquer Operação. Determina o valor base da comissão (<span class="badge rule-badge">RN-OFR-07</span>).</td></tr><tr><td>Banco</td><td>Sim</td><td><b>Buscado via API do Banco Central</b> — sem cadastro interno, mesmo padrão já usado em Regras (<span class="badge rule-badge">RN-RGR-03</span>).</td></tr><tr><td>Taxa</td><td>Sim</td><td>Uma taxa por Oferta — não há faixas por prazo nesta versão.</td></tr><tr><td>Prazo</td><td>Sim</td><td>Intervalo — mínimo e máximo.</td></tr><tr><td>Comissão</td><td>Sim</td><td>Percentual pago à Loja, calculado sobre um "valor base" que depende da Operação escolhida — ver <span class="badge rule-badge">RN-OFR-07</span>.</td></tr><tr><td>Regras associadas</td><td>Não</td><td>Zero ou mais. Cada associação define, para aquela Oferta: os valores dos requisitos da Regra (<span class="badge rule-badge">RN-RGR-12</span>) e, opcionalmente, uma sobrescrita do comportamento padrão (<span class="badge rule-badge">RN-RGR-05</span>). Ver §3.3.</td></tr><tr><td>Status</td><td>Sim</td><td>Ativo / Inativo (ver §6).</td></tr></tbody></table></div>
+<p><b>Sem vigência.</b> A Especificação v1.2 previa vigência (início e fim) na Oferta, com a regra "só oferta ativa e vigente simula" (RN027). Foi <b>removida de propósito</b>: o tenant não a usa, e quando precisa tirar uma Oferta de circulação basta inativá-la. A Oferta simula quando está <b>Ativa</b> (§6). <i>(Decisão do usuário, na revisão.)</i></p>
+<p><b><span class="badge rule-badge">RN-OFR-01</span> — Promotora + Produto + Operação + Banco não têm restrição de unicidade, e não há aviso.</b> <i>(Operação faz parte da combinação, já que o mesmo Produto pode ter Ofertas em Operações diferentes.)</i> Nada impede duas Ofertas com a mesma combinação (ex.: duas Ofertas do mesmo Produto+Operação, mesma Promotora e Banco, taxas diferentes) — confirmado como comportamento pretendido, não lacuna de modelagem. Cada Oferta é independente, sem checagem de duplicidade nem mensagem de alerta.</p>
+<p><b><span class="badge rule-badge">RN-OFR-07</span> — O valor base da comissão depende da Operação da Oferta.</b> <i>(Tabela reduzida de 5 para 4 linhas — Compra de Dívida deixou de ser Operação própria, módulo de Produtos v0.2.)</i></p>
+<div class="tablewrap"><table><thead><tr><th>Operação</th><th>Valor base</th></tr></thead><tbody><tr><td>Novo</td><td>Valor liberado ao cliente</td></tr><tr><td>Refinanciamento</td><td>Valor financiado</td></tr><tr><td>Portabilidade</td><td>Valor financiado — inclui o antigo tratamento de Compra de Dívida</td></tr><tr><td>Portabilidade com Refinanciamento</td><td>Valor financiado</td></tr></tbody></table></div>
+<p>A comissão paga à Loja é <code>Taxa de comissão × valor base</code>, com o valor base determinado automaticamente pela Operação escolhida na Oferta — o gestor não o informa manualmente, só o percentual de comissão. Editar a comissão de uma Oferta vale só para Propostas que chegarem a Pago depois: as já Pagas guardam a comissão do momento do Pago (<span class="badge rule-badge">RN-PRP-05</span>, módulo de Propostas).</p>
+<p><b>Este valor base é compartilhado com outro cálculo, fora deste módulo.</b> O CRM (módulo Tabelas Multiplicadoras) usa o mesmo valor base para calcular o valor que conta para metas de Time/usuário: <code>valor base × multiplicador configurado pela Loja</code>, com o multiplicador — diferente da comissão — definido por Loja, não pela Oferta. Os dois cálculos partem do mesmo valor base, mas são independentes: mudar a Taxa de comissão não afeta o Multiplicador de Meta, e vice-versa.</p>
+<p><b><span class="badge rule-badge">RN-OFR-08</span> — Segmento determina elegibilidade na simulação.</b> O motor de simulações (módulo CRM · Simulações) só oferece, para uma Lead ou Cliente de um Segmento, as Ofertas daquele mesmo Segmento — é o primeiro filtro aplicado, antes de Região (<span class="badge rule-badge">RN-OFR-02</span>) e de Regras. Diferente de Região, Segmento <b>não</b> é herdado de outra entidade (Promotora não carrega Segmento, módulo de Promotoras) — é campo direto da Oferta, porque o gestor pode querer a mesma Promotora/Produto/Banco atendendo Segmentos diferentes em Ofertas distintas.</p>
+<p><b><span class="badge rule-badge">RN-OFR-02</span> — Região não é campo da Oferta.</b> A Oferta herda o recorte geográfico da sua Promotora (módulo de Promotoras, <span class="badge rule-badge">RN-PRM-02</span>): se a Promotora não tem Região, a Oferta é global; se tem, a visibilidade segue <span class="badge rule-badge">RN-REG-04</span> (módulo de Regiões) — a Loja só a enxerga se tiver ao menos uma Região em comum, ou se a Loja não tiver Região nenhuma (que também vê tudo).</p>
+<h2 id="3-2-sem-c-digo">3.2. Sem código</h2>
+<p>Diferente de Segmentos, Produtos, Promotoras e Regiões, Oferta não tem campo de código — é identificada só pelo Nome, já que não há integração externa que a referencie por identificador curto.</p>
+<h2 id="3-3-associa-o-com-regras-a-regra-vira-condi-o-de-verdade">3.3. Associação com Regras — a Regra vira condição de verdade</h2>
+<p>Uma Regra, isolada, é só um template (Campo + Operador, módulo de Regras v0.6, <span class="badge rule-badge">RN-RGR-12</span>). Ao associá-la a uma Oferta, o gestor:</p>
+<ol>
+<li><b>Preenche o(s) valor(es) de cada requisito</b> da Regra, na forma que o operador determina (um campo, dois para Intervalo, seleção múltipla para lista) — <span class="badge rule-badge">RN-RGR-04</span>, <span class="badge rule-badge">RN-RGR-12</span>.</li>
+<li><b>Opcionalmente sobrescreve o comportamento</b> (Bloqueia/Avisa) — se não sobrescrever, vale o padrão da Regra (<span class="badge rule-badge">RN-RGR-05</span>).</li>
+</ol>
+<p>Os valores preenchidos aqui são os que o operador vê na simulação, junto da mensagem da Regra, no bloco "Exigido pela oferta" (<span class="badge rule-badge">RN-SIM-11</span>, módulo de Simulações).</p>
+<p><b><span class="badge rule-badge">RN-OFR-03</span> — A associação só fica completa com todos os valores preenchidos.</b> Uma Regra associada sem os valores de todos os seus requisitos não é avaliável — a Oferta não pode ser ativada nessa condição (ver §6).</p>
+<p><b><span class="badge rule-badge">RN-OFR-04</span> — Editar o template de uma Regra em uso invalida os valores desta Oferta, quando permitido.</b> Consequência de <span class="badge rule-badge">RN-RGR-13</span> (módulo de Regras, v0.7): se o gestor de Regras altera o Campo ou o Operador de um requisito, os valores que esta Oferta já tinha preenchido para ele deixam de existir — a associação volta ao estado "incompleta" (<span class="badge rule-badge">RN-OFR-03</span>), e a Oferta é sinalizada até que o gestor comercial os preencha de novo.</p>
+<p><b>Isso só pode acontecer com esta Oferta Inativa.</b> <span class="badge rule-badge">RN-RGR-13</span> bloqueia a edição do template no módulo de Regras enquanto houver alguma Oferta <b>Ativa</b> associada — então uma Oferta Ativa nunca é pega de surpresa com uma condição invalidada. Para editar o template de uma Regra usada por esta Oferta, o gestor de Regras primeiro precisaria vê-la Inativa.</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-ofr-01-gest-o-de-ofertas-crud"><span class="badge rf-badge">RF-OFR-01</span> — Gestão de ofertas (CRUD)</h2>
+<p><b>Como</b> gestor comercial, <b>eu quero</b> criar, consultar, editar, inativar e excluir Ofertas <b>para</b> controlar o que o tenant comercializa.</p>
+<p><b>Comportamento esperado:</b> o gestor cadastra Nome, Segmento, Promotora, Produto, Operação (catálogo fixo), Banco (busca via API do BC), Taxa, Prazo e Comissão. Associa Regras conforme necessário, preenchendo valores e ajustando comportamento. A listagem permite busca por nome e filtros por Segmento, Promotora, Produto, Operação, status e situação das Regras ("Regras incompletas": Ofertas com ao menos uma associação de Regra incompleta, <span class="badge rule-badge">RN-OFR-03</span> — alvo do alerta do Dashboard do Admin). A Lista também abre já filtrada por Produto ou por Promotora, a partir do atalho "Ver ofertas" dos bloqueios de Produtos e Promotoras.</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-OFR-05</span> — Exclusão é permitida, sem bloqueio — mas é ação crítica.</b> Diferente de Segmentos, Produtos e Promotoras, <b>nenhum vínculo bloqueia a exclusão de uma Oferta</b> — pode ser excluída mesmo com simulações ou propostas que já a referenciaram (que preservam snapshot imutável — a Simulação grava o seu, e a Proposta grava o da Oferta ao associá-la (Propostas, <span class="badge rule-badge">RN-PRP-05</span>) —, então não perdem histórico). Por ser irreversível e afetar o que o tenant comercializa, usa confirmação reforçada por digitação, mesmo sem bloqueio.</p>
+<p><b><span class="badge rule-badge">RN-OFR-06</span> — Inativar não exige nada além do padrão.</b> Sem regra especial — segue o padrão simples de switch com confirmação descritiva já usado nos demais cadastros.</p>
+<h2 id="rf-ofr-02-associa-o-de-regras"><span class="badge rf-badge">RF-OFR-02</span> — Associação de Regras</h2>
+<p><b>Como</b> gestor comercial, <b>eu quero</b> associar Regras a uma Oferta, definindo valores e comportamento <b>para</b> compor as condições de elegibilidade daquela Oferta.</p>
+<p>Coberto em detalhe em §3.3.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-OFR-01</span></b> — Sem restrição de unicidade entre Promotora+Produto+Operação+Banco.</li>
+<li><b><span class="badge rule-badge">RN-OFR-02</span></b> — Região não é campo da Oferta; herda da Promotora.</li>
+<li><b><span class="badge rule-badge">RN-OFR-08</span></b> — Segmento é campo direto da Oferta; determina elegibilidade na simulação, filtro anterior a Região e Regras; só Segmento ativo em Ofertas novas (<span class="badge rule-badge">RN-SEG-08</span>).</li>
+<li><b><span class="badge rule-badge">RN-OFR-03</span></b> — Associação de Regra só fica completa com todos os valores preenchidos.</li>
+<li><b><span class="badge rule-badge">RN-OFR-04</span></b> — Editar template de Regra em uso invalida valores desta Oferta.</li>
+<li><b><span class="badge rule-badge">RN-OFR-05</span></b> — Exclusão sem bloqueio, mas com confirmação reforçada (ação crítica).</li>
+<li><b><span class="badge rule-badge">RN-OFR-06</span></b> — Inativação segue o padrão simples.</li>
+<li><b><span class="badge rule-badge">RN-OFR-07</span></b> — Valor base da comissão determinado pela Operação da Oferta (tabela fixa, 4 valores).</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Oferta:</b></p>
+<ul>
+<li><b>Ativa</b> — disponível para simulação. Só alcançável se todas as Regras associadas estiverem com valores completos (<span class="badge rule-badge">RN-OFR-03</span>).</li>
+<li><b>Inativa</b> — não disponível para simulação; pode ter Regras com associação incompleta (é o estado natural de uma Oferta em construção).</li>
+<li><b>Excluída</b> — hard delete, sem bloqueio (<span class="badge rule-badge">RN-OFR-05</span>).</li>
+</ul>
+<p>Transições: inativa → ativa (bloqueada se houver Regra associada com valores incompletos — <span class="badge rule-badge">RN-OFR-03</span>); ativa → inativa (livre); qualquer estado → excluída (livre, com confirmação reforçada).</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: o cadastro de Promotoras, Produtos, Regras e Regiões (módulos próprios — este só consome), nem o motor de simulações em si (módulo de Simulações).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Segmentos, Promotoras, Produtos, Regras</b> — cadastros consumidos na composição da Oferta.</li>
+<li><b>API do Banco Central</b> — busca de Banco.</li>
+<li><b>Operação</b> — campo próprio da Oferta, catálogo fixo do sistema (Novo, Refinanciamento, Portabilidade, Portabilidade com Refinanciamento); não é restringida pelo Produto.</li>
+<li><b>Regiões</b> (indiretamente, via Promotora) — para a visibilidade por Loja.</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Simulações</b> — a Oferta completa: parametrização financeira + Regras com valores, prontas para avaliação.</li>
+<li><b>Propostas</b> (CRM) — a Operação, o valor base e a comissão (<span class="badge rule-badge">RN-OFR-07</span>), lidos quando a Proposta chega a Pago.</li>
+<li><b>Tabelas Multiplicadoras</b> (CRM) — a lista de Ofertas e o valor base (<span class="badge rule-badge">RN-OFR-07</span>), sobre os quais cada Loja define o multiplicador.</li>
+<li><b>Relatórios</b> — dados de comissão e produção por Oferta.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Ofertas v0.16 — módulo da aplicação Admin, seção Oferta comercial.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-ofertas-matriz-de-permiss-es">Corban Admin · Ofertas — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Oferta comercial</p>
+<p><b>Documento pai:</b> Corban Admin · Ofertas (módulo v0.12)</p>
+<p><b>Versão:</b> 0.2</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.2</td><td>O texto sobre o que <code>offers:edit:all</code> cobre passa a incluir o Segmento. A matriz de permissões em si não muda.</td></tr><tr><td>0.1</td><td>Versão inicial.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre o recurso <code>offers</code>. Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>view</code></td><td><code>all</code></td></tr><tr><td><code>create</code></td><td><code>all</code></td></tr><tr><td><code>edit</code></td><td><code>all</code></td></tr><tr><td><code>manage_rules</code></td><td><code>all</code></td></tr><tr><td><code>manage_pricing</code></td><td><code>all</code></td></tr><tr><td><code>inactivate</code></td><td><code>all</code></td></tr><tr><td><code>reactivate</code></td><td><code>all</code></td></tr><tr><td><code>delete</code></td><td><code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-por-que-tudo-em-all">2. Por que tudo em <code>all</code></h2>
+<p>Oferta é cadastro tenant-wide — não pertence a Loja nem a Time. A visibilidade por Loja (via Região da Promotora) é regra de negócio aplicada no consumo (Simulações), não escopo de permissão administrativa (mesmo raciocínio já registrado em Regiões, <span class="badge rule-badge">RN-REG-04</span>, e reforçado em Promotoras).</p>
+<h2 id="3-por-que-manage-rules-e-manage-pricing-s-o-a-es-pr-prias-separadas-de-edit">3. Por que <code>manage_rules</code> e <code>manage_pricing</code> são ações próprias, separadas de <code>edit</code></h2>
+<p>Mesmo padrão já usado em Cargos (<code>manage_permissions</code>) e Funis (<code>manage_pricing</code>):</p>
+<ul>
+<li><b><code>manage_rules</code></b> — associar Regras, preencher valores de requisitos e sobrescrever comportamento (<span class="badge rule-badge">RN-OFR-03</span>, <span class="badge rule-badge">RN-RGR-05</span>) é decisão de elegibilidade, sensível o bastante para não estar embutida em "editar dados da oferta".</li>
+<li><b><code>manage_pricing</code></b> — taxa, prazo e comissão são dados financeiros, mesmo tratamento já dado a indicadores financeiros em outros módulos.</li>
+</ul>
+<p>Um Cargo pode ter <code>offers:edit:all</code> (mexe em Segmento/Promotora/Produto/Banco/Operação) sem ter <code>manage_pricing:all</code> nem <code>manage_rules:all</code> — um gestor de catálogo comercial que não define preço nem elegibilidade, por exemplo.</p>
+<h2 id="4-por-que-delete-existe-sem-par-de-bloqueio">4. Por que <code>delete</code> existe sem par de "bloqueio"</h2>
+<p>Diferente de quase todo o resto do produto, <code>offers:delete:all</code> não tem regra de bloqueio (<span class="badge rule-badge">RN-OFR-05</span>) — mas segue restrita a <code>all</code> e a confirmação reforçada, por ser ação crítica mesmo sem vínculo bloqueante.</p>
+<hr class="divider">
+<h2 id="5-owner-tenant">5. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Ofertas v0.2.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

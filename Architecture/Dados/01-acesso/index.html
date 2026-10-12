@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Acesso & Permissões · Schema `acesso` — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: isDark ? 'dark' : 'neutral',
+      securityLevel: 'loose',
+      fontFamily: '"IBM Plex Sans", sans-serif'
+    });
+    updateThemeLabel();
+  });
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  function toggleMermaidCode(id) {
+    const diagram = document.getElementById('diagram-' + id);
+    const code = document.getElementById('code-' + id);
+    const btn = document.getElementById('toggle-btn-' + id);
+    if (code.style.display === 'block') {
+      code.style.display = 'none';
+      diagram.style.display = 'block';
+      btn.textContent = 'Ver Código Mermaid';
+    } else {
+      code.style.display = 'block';
+      diagram.style.display = 'none';
+      btn.textContent = 'Ver Diagrama Renderizado';
+    }
+  }
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 340px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .schema-badge {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--brand);
+  background: var(--chip);
+  border: 1px solid var(--chip-border);
+  padding: 3px 10px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 28px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+/* Diagram box */
+.diagram-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: auto;
+}
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 10px;
+}
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.diagram-toggle-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.diagram-toggle-btn:hover { color: var(--ink); border-color: var(--edge); }
+
+.mermaid-code-view {
+  display: none;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+.badge-key {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+  margin-right: 3px;
+  vertical-align: baseline;
+}
+
+/* Schema table specific column sizing */
+table.schema-table th:nth-child(1),
+table.schema-table td:nth-child(1) {
+  white-space: nowrap;
+  font-weight: 500;
+  width: 220px;
+  min-width: 170px;
+}
+table.schema-table th:nth-child(2),
+table.schema-table td:nth-child(2) {
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  width: 140px;
+  min-width: 110px;
+}
+table.schema-table th:nth-child(3),
+table.schema-table td:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+  width: 70px;
+}
+table.schema-table th:nth-child(4),
+table.schema-table td:nth-child(4) {
+  min-width: 320px;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Persistência</a>
+      <span class="sep">/</span>
+      <span class="current">Acesso & Permissões</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Todos os Schemas
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../12-apoio/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Apoio & Infraestrutura</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../01-estrutura/index.html" >01-estrutura — Estrutura Organizacional</option><option value="../02-funis/index.html" >02-funis — Funis & Etapas</option><option value="../03-catalogo/index.html" >03-catalogo — Catálogo Comercial</option><option value="../04-clientes/index.html" >04-clientes — Clientes & Contatos</option><option value="../05-leads/index.html" >05-leads — Leads & Distribuição</option><option value="../06-creditos/index.html" >06-creditos — Créditos & Financeiro</option><option value="../07-simulacao/index.html" >07-simulacao — Motor de Simulação</option><option value="../08-propostas/index.html" >08-propostas — Propostas Comerciais</option><option value="../09-atendimento/index.html" >09-atendimento — Atendimento & Chat</option><option value="../10-marketing/index.html" >10-marketing — Marketing & Prospecção</option><option value="../11-desempenho/index.html" >11-desempenho — Desempenho & Metas</option><option value="../12-apoio/index.html" >12-apoio — Apoio & Infraestrutura</option><option value="../01-acesso/index.html" selected>01-acesso — Acesso & Permissões</option></select>
+    <span class="pager-btn disabled">Próximo →</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Modelo de Dados Lógico</b> · Identidade & Apoio
+    </div>
+    <h1>Acesso & Permissões <span class="schema-badge">schema: acesso</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge superseded">Suspenso — Acesso fica fora do modelo de dados (Keycloak), Modelo de dados v0.2. Mantido só como registro.</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Schema PostgreSQL</span>
+      <span class="meta-value"><code>acesso</code></span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.1 · 10/10/2026</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documentos de Referência</span>
+      <span class="meta-value">Admin · Cargos v0.4, Admin · Usuários v0.7, CRM · Membros v0.5, spec §5 e RNF005, <a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>, <a href="../../ADR/0002-login-pela-api/index.html" class="inline-link"><b>ADR-0002</b></a></span>
+    </div>
+  </div>
+
+  <!-- Body Content -->
+  <article>
+    <h2>Histórico de revisões</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Versão</th>
+<th>Mudanças</th>
+</tr></thead><tbody>
+<tr>
+<td>0.1</td>
+<td>Primeira versão.</td>
+</tr>
+</tbody></table></div>
+<h2>1. O que o módulo guarda</h2>
+<p>Usuários, Cargos e permissões. <b>Credenciais e sessões ficam no Keycloak</b> (<a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>, <a href="../../ADR/0002-login-pela-api/index.html" class="inline-link"><b>ADR-0002</b></a>): o SmartCorbans não guarda senha nem sessão. Listar e revogar sessões (RF-USR-02) e definir a senha inicial (RF-USR-03) são chamadas ao Keycloak pelo adaptador. Membro do CRM é o mesmo Usuário (CRM · Membros).</p>
+<p>O <b>catálogo de permissões</b> (recursos, ações e escopos oferecíveis) <b>vive no código</b>, no projeto <code>Acesso.Contracts</code>, e não em tabela: é contrato entre API e front (<code>@corban/permissions</code>) e só muda com nova versão do produto. As tabelas guardam as linhas concedidas, validadas contra esse catálogo na escrita.</p>
+<h2>2. Diagrama</h2>
+
+                <div class="diagram-container">
+                  <div class="diagram-header">
+                    <span class="diagram-title">Diagrama Entidade-Relacionamento (ER)</span>
+                    <button id="toggle-btn-01-acesso-1" class="diagram-toggle-btn" onclick="toggleMermaidCode('01-acesso-1')">Ver Código Mermaid</button>
+                  </div>
+                  <div id="diagram-01-acesso-1" class="mermaid">
+erDiagram
+  cargo ||--o{ cargo_permissao : "tem"
+  cargo |o--o{ usuario : "atribuído a"
+  usuario ||--o{ usuario_permissao_adicional : "recebe"
+
+  cargo {
+    uuid id PK
+    text nome
+    text nome_normalizado UK
+    text descricao
+    text status "ativo | inativo"
+    timestamptz criado_em
+    timestamptz atualizado_em
+  }
+  cargo_permissao {
+    uuid cargo_id PK,FK
+    text recurso PK
+    text acao PK
+    text escopo "self | team | store | all"
+  }
+  usuario {
+    uuid id PK
+    uuid keycloak_id UK
+    text nome
+    text email
+    text email_normalizado "UK parcial: status <> excluido"
+    text status "ativo | inativo | excluido"
+    boolean owner
+    uuid cargo_id FK "nulo só no Owner"
+    uuid loja_id "ref. lógica estrutura.loja"
+    uuid time_id "ref. lógica estrutura.time"
+    boolean pode_receber_lead
+    timestamptz inativado_em
+    timestamptz excluido_em
+    timestamptz criado_em
+    timestamptz atualizado_em
+  }
+  usuario_permissao_adicional {
+    uuid usuario_id PK,FK
+    text recurso PK
+    text acao PK
+    text escopo
+    uuid concedido_por
+    timestamptz concedido_em
+  }
+                  </div>
+                  <pre id="code-01-acesso-1" class="mermaid-code-view"><code>erDiagram
+  cargo ||--o{ cargo_permissao : "tem"
+  cargo |o--o{ usuario : "atribuído a"
+  usuario ||--o{ usuario_permissao_adicional : "recebe"
+
+  cargo {
+    uuid id PK
+    text nome
+    text nome_normalizado UK
+    text descricao
+    text status "ativo | inativo"
+    timestamptz criado_em
+    timestamptz atualizado_em
+  }
+  cargo_permissao {
+    uuid cargo_id PK,FK
+    text recurso PK
+    text acao PK
+    text escopo "self | team | store | all"
+  }
+  usuario {
+    uuid id PK
+    uuid keycloak_id UK
+    text nome
+    text email
+    text email_normalizado "UK parcial: status <> excluido"
+    text status "ativo | inativo | excluido"
+    boolean owner
+    uuid cargo_id FK "nulo só no Owner"
+    uuid loja_id "ref. lógica estrutura.loja"
+    uuid time_id "ref. lógica estrutura.time"
+    boolean pode_receber_lead
+    timestamptz inativado_em
+    timestamptz excluido_em
+    timestamptz criado_em
+    timestamptz atualizado_em
+  }
+  usuario_permissao_adicional {
+    uuid usuario_id PK,FK
+    text recurso PK
+    text acao PK
+    text escopo
+    uuid concedido_por
+    timestamptz concedido_em
+  }</code></pre>
+                </div>
+                
+<h2>3. Tabelas</h2>
+<h3>3.1. <code>cargo</code></h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>, UUID v7.</td>
+</tr>
+<tr>
+<td><code>nome</code></td>
+<td>text</td>
+<td>não</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>nome_normalizado</code></td>
+<td>text gerada</td>
+<td>não</td>
+<td><code>lower(trim(nome))</code>, <b>único</b> (RN-CRG-05).</td>
+</tr>
+<tr>
+<td><code>descricao</code></td>
+<td>text</td>
+<td>sim</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>ativo</code> | <code>inativo</code>, padrão <code>ativo</code>. Inativo não recebe novas atribuições (RN-CRG-01).</td>
+</tr>
+<tr>
+<td><code>criado_em</code>, <code>atualizado_em</code></td>
+<td>timestamptz</td>
+<td>não</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+<p>"Em uso" não é coluna: é a contagem de <code>usuario</code> com o <code>cargo_id</code> (Cargos §6). Exclusão de Cargo é <b>física</b>, permitida só sem usuário vinculado (RN-CRG-01); a trilha fica na Auditoria (RN-CRG-03).</p>
+<h3>3.2. <code>cargo_permissao</code></h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>cargo_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>, <span class="badge-key">FK</span> → <code>cargo</code> (cascade ao excluir o Cargo).</td>
+</tr>
+<tr>
+<td><code>recurso</code></td>
+<td>text</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>. Do catálogo, plural (<code>leads</code>, <code>roles</code>…).</td>
+</tr>
+<tr>
+<td><code>acao</code></td>
+<td>text</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>. Do catálogo (<code>view</code>, <code>manage_permissions</code>…).</td>
+</tr>
+<tr>
+<td><code>escopo</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>self</code> | <code>team</code> | <code>store</code> | <code>all</code>, só os que o catálogo oferece para o par.</td>
+</tr>
+</tbody></table></div>
+<p>Um par <code>recurso:ação</code> aparece <b>uma vez</b> por Cargo: os escopos são cumulativos (<code>all ⊇ store ⊇ team ⊇ self</code>), então guardar dois escopos do mesmo par não acrescenta nada.</p>
+<h3>3.3. <code>usuario</code></h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>, UUID v7.</td>
+</tr>
+<tr>
+<td><code>keycloak_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><b>Único.</b> Id do usuário no realm (<a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>).</td>
+</tr>
+<tr>
+<td><code>nome</code></td>
+<td>text</td>
+<td>não</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>text</td>
+<td>não</td>
+<td>Identificador de login.</td>
+</tr>
+<tr>
+<td><code>email_normalizado</code></td>
+<td>text gerada</td>
+<td>não</td>
+<td><code>lower(trim(email))</code>. <b>Único entre não excluídos</b> (índice parcial <code>WHERE status <> 'excluido'</code>): o e-mail do excluído fica liberado (RN-USR-04, RN-USR-05).</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>ativo</code> | <code>inativo</code> | <code>excluido</code> (Usuários §7).</td>
+</tr>
+<tr>
+<td><code>owner</code></td>
+<td>boolean</td>
+<td>não</td>
+<td>Padrão <code>false</code>. <b>Um só</b> <code>true</code> (índice único parcial <code>WHERE owner</code>). Owner tem bypass total, não tem Cargo e não é editável nem excluível (RN-USR-03).</td>
+</tr>
+<tr>
+<td><code>cargo_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td><span class="badge-key">FK</span> → <code>cargo</code>. <code>CHECK (owner OR cargo_id IS NOT NULL)</code>: obrigatório para todos menos o Owner (RN-USR-01).</td>
+</tr>
+<tr>
+<td><code>loja_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica → <code>estrutura.loja</code> (RN-USR-15).</td>
+</tr>
+<tr>
+<td><code>time_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica → <code>estrutura.time</code> (RN-USR-02). <code>CHECK (time_id IS NULL OR loja_id IS NOT NULL)</code>; que o Time é da mesma Loja, a aplicação valida pelo contrato de Estrutura.</td>
+</tr>
+<tr>
+<td><code>pode_receber_lead</code></td>
+<td>boolean</td>
+<td>não</td>
+<td>Padrão <code>false</code>. Só tem efeito com Time (RN-USR-14).</td>
+</tr>
+<tr>
+<td><code>inativado_em</code></td>
+<td>timestamptz</td>
+<td>sim</td>
+<td>Preenchido ao inativar, limpo ao reativar.</td>
+</tr>
+<tr>
+<td><code>excluido_em</code></td>
+<td>timestamptz</td>
+<td>sim</td>
+<td>Preenchido na exclusão em cascata da Loja (RN-LOJ-08).</td>
+</tr>
+<tr>
+<td><code>criado_em</code>, <code>atualizado_em</code></td>
+<td>timestamptz</td>
+<td>não</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+<p>Índices: <code>loja_id</code>, <code>time_id</code>, <code>cargo_id</code>. A reativação restaura Cargo, Time e permissões adicionais porque nada disso é apagado na inativação (RN-USR-12); se a Loja ou o Time não existem mais, a aplicação limpa <code>loja_id</code>/<code>time_id</code> ao reativar.</p>
+<h3>3.4. <code>usuario_permissao_adicional</code></h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>usuario_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>, <span class="badge-key">FK</span> → <code>usuario</code>.</td>
+</tr>
+<tr>
+<td><code>recurso</code>, <code>acao</code></td>
+<td>text</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>. Mesmo catálogo do Cargo.</td>
+</tr>
+<tr>
+<td><code>escopo</code></td>
+<td>text</td>
+<td>não</td>
+<td>Idem.</td>
+</tr>
+<tr>
+<td><code>concedido_por</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">FK</span> → <code>usuario</code>.</td>
+</tr>
+<tr>
+<td><code>concedido_em</code></td>
+<td>timestamptz</td>
+<td>não</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+<p>Só soma (RN-USR-13). A permissão efetiva de um par é o <b>maior escopo</b> entre o Cargo e a adicional.</p>
+<h2>4. Permissões efetivas</h2>
+<p>Não são gravadas: são calculadas por requisição (Cargo ∪ adicionais) e guardadas em cache de memória na API, invalidado quando o Cargo, as linhas dele ou as adicionais do usuário mudam (RN-CRG-02, efeito imediato). Com réplica única (<a href="../../ADR/0009-api-replica-unica/index.html" class="inline-link"><b>ADR-0009</b></a>), o cache em memória basta.</p>
+<h2>5. Fora deste schema</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>O quê</th>
+<th>Onde</th>
+<th>Por quê</th>
+</tr></thead><tbody>
+<tr>
+<td>Senha, sessões, login</td>
+<td>Keycloak</td>
+<td><a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>, <a href="../../ADR/0002-login-pela-api/index.html" class="inline-link"><b>ADR-0002</b></a>.</td>
+</tr>
+<tr>
+<td>Participação na Organização da Loja</td>
+<td>Keycloak</td>
+<td>Mantida pelo módulo Acesso via adaptador sempre que <code>loja_id</code> muda (<a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>).</td>
+</tr>
+<tr>
+<td>Trilha de auditoria do grupo Acesso</td>
+<td><code>auditoria</code></td>
+<td>RNF005, RN-USR-17, RN-CRG-03.</td>
+</tr>
+<tr>
+<td>Loja e Time</td>
+<td><code>estrutura</code></td>
+<td>Módulo Estrutura.</td>
+</tr>
+</tbody></table></div>
+<h2>6. Migração (MongoDB)</h2>
+<p>Os usuários já existem no Keycloak (<a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>): a carga cria <code>usuario</code> com o <code>keycloak_id</code> de cada um, depois de consolidados os realms. O detalhe fica no plano de migração.</p>
+<h2>7. Decisões deste modelo</h2>
+<p>1. Sessões e senha <b>não</b> ficam no banco: a fonte é o Keycloak.</p>
+<p>2. Catálogo de permissões no <b>código</b>, não em tabela.</p>
+<p>3. Owner é uma <b>flag</b> no usuário, sem Cargo, com unicidade garantida no banco.</p>
+<p>4. "Pode receber lead" é <b>coluna booleana</b>. A nota de Usuários (RN-USR-14) sobre o backend atual guardar duas listas descreve o sistema de hoje; a migração converte.</p>
+<p>5. Uma linha por <code>recurso:ação</code> em cada Cargo e em cada usuário.</p>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../C4/index.html">Hub C4 Model</a>
+      <a href="../../ADR/index.html">Decisões de Arquitetura (ADRs)</a>
+      <a href="../index.html">Catálogo de Persistência</a>
+      <a href="README.md" target="_blank">Ver Fonte Markdown (.md)</a>
+    </div>
+    <div>SmartCorbans · Banco de Dados Relacional · Schemas PostgreSQL isolados</div>
+  </footer>
+</div>
+
+</body>
+</html>

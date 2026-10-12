@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dashboard · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Dashboard</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <span class="pager-btn disabled">← Anterior</span>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" selected>Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../LayoutLead/index.html" class="pager-btn">Layout de Lead (Card e Sheet) <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Visão geral
+    </div>
+    <h1>Dashboard <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Visão geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.5 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-dashboard">Corban Admin · Dashboard</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Visão geral</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.5</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Fecha o item aberto 1: define o <b>estado de Dashboard vazio</b>, para quando nenhum dos três blocos tem permissão de <code>view</code> (<span class="badge rule-badge">RN-DSH-04</span>).</td></tr><tr><td>0.3</td><td>O bloco de gráfico passa a exigir também <code>funnels:manage_pricing</code>, não só <code>funnels:view</code> — é dado financeiro, mesmo critério do módulo de Funis de Vendas.</td></tr><tr><td>0.4</td><td>As abas do gráfico de preço passam de Externo/Interno para as quatro Origens da lead com preço: Campanha (padrão), Orgânica, Prospecção e Carteira Ativa (Funis v0.12).</td></tr><tr><td>0.5</td><td><b>O gráfico carrega o último valor</b> (<span class="badge rule-badge">RN-DSH-02</span> reescrita): só fica vazio quando nunca houve registro, e preço estável mostra linha constante. <b>Os blocos de Lojas e de Usuários respeitam o escopo</b> (nova <span class="badge rule-badge">RN-DSH-05</span>): a versão anterior dizia que a contagem era sempre do tenant inteiro, o que mostraria a um gestor de Loja os usuários e as Lojas das demais. Os alertas passam a levar a filtros que existem nas Listas (Ofertas e Lojas ganham o seu). Corrige o §9 (uma Oferta ativa nunca está incompleta, então o alerta conta as inativas em construção), o alerta de Lojas (sem Time <b>ativo</b>), a coluna da tabela ("Loja · Time"), a regra do Owner (que só existia na Matriz de Estados), a permissão do gráfico (as duas, explícitas), a <span class="badge rule-badge">RN-DSH-04</span> e o padrão do seletor de Segmento. Reordena esta tabela.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: blocos, campos, estados e requisitos funcionais (RF-DSH) próprios. É a tela inicial da aplicação Admin.</p>
+<blockquote><p><b>Diferente do Dashboard do CRM.</b> O UX v0.1 já especifica o Dashboard do CRM (visão financeira, gerencial, do operador — voltadas a desempenho comercial), mas deixa o do Admin como decisão em aberto. Este documento resolve essa pendência. O eixo aqui não é desempenho de vendas — é <b>saúde de configuração do tenant</b>: quem entra no Admin está estruturando o sistema, não vendendo.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Dar ao gestor, na tela inicial do Admin, uma visão imediata do que precisa de atenção na configuração do tenant, mais um acompanhamento simples da precificação de leads e de quem entrou recentemente no sistema.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Todos os usuários autenticados no Admin</b> — cada um vê os blocos que suas permissões habilitam, mesmo princípio já usado no Dashboard do CRM (RN057 da Especificação v1.2).</li>
+</ul>
+<hr class="divider">
+<h1 id="3-composi-o-tr-s-blocos-em-linha">3. Composição — três blocos, em linha</h1>
+<h2 id="3-1-linha-1-alertas-de-configura-o">3.1. Linha 1 — Alertas de configuração</h2>
+<p>Três indicadores, cada um contando itens que precisam de ação:</p>
+<div class="tablewrap"><table><thead><tr><th>Alerta</th><th>O que conta</th><th>Permissão para ver</th></tr></thead><tbody><tr><td><b>Funis aguardando configuração</b></td><td>Funis em status "Aguardando configuração" (módulo de Funis de Vendas)</td><td><code>funnels:view</code></td></tr><tr><td><b>Ofertas com regras incompletas</b></td><td>Ofertas com ao menos uma associação de Regra incompleta (<span class="badge rule-badge">RN-OFR-03</span>, módulo de Ofertas). Por definição são Ofertas <b>inativas em construção</b>: uma Oferta ativa nunca está incompleta (<span class="badge rule-badge">RN-OFR-03</span>, <span class="badge rule-badge">RN-RGR-13</span>)</td><td><code>offers:view</code></td></tr><tr><td><b>Lojas sem time</b></td><td>Lojas ativas sem nenhum Time <b>ativo</b> (módulo de Lojas), dentro do escopo do usuário (<span class="badge rule-badge">RN-DSH-05</span>)</td><td><code>stores:view</code></td></tr></tbody></table></div>
+<p>Cada alerta é clicável, levando à listagem já filtrada (ex.: clicar em "3 ofertas com regras incompletas" abre a Lista de Ofertas filtrada por esse critério). Os filtros existem nas Listas: Funis, por status; Ofertas, por situação das Regras ("Regras incompletas"); Lojas, por situação dos Times ("Sem Time ativo").</p>
+<p><b><span class="badge rule-badge">RN-DSH-01</span> — Alerta com contagem zero não é ocultado, só neutro.</b> Diferente de outros vazios do produto, aqui "zero" é a informação (tudo configurado) — o bloco continua visível, com indicador neutro/positivo em vez de sumir, para o gestor confirmar que está tudo certo, não só supor.</p>
+<h2 id="3-2-linha-2-gr-fico-de-pre-o-de-lead">3.2. Linha 2 — Gráfico de Preço de Lead</h2>
+<p>Gráfico de área com duas séries sobrepostas — <b>Custo</b> e <b>Preço</b> — ao longo do tempo, consumindo o Histórico de Preço de Lead (<span class="badge rule-badge">RN-FNL-16</span>, módulo de Funis de Vendas). Referência visual: gráfico de área duplo com gradiente, no estilo de dashboards analíticos comuns (séries translúcidas sobrepostas, não empilhadas).</p>
+<p><b>Exige <code>funnels:view</code> e <code>funnels:manage_pricing</code>.</b> Custo e preço são dado financeiro — mesmo critério já aplicado à aba Preço das leads no módulo de Funis de Vendas. Um Cargo com <code>funnels:view</code> mas sem <code>manage_pricing</code> vê o alerta de Funis aguardando configuração, mas não este gráfico.</p>
+<p><b>Controles do bloco:</b></p>
+<div class="tablewrap"><table><thead><tr><th>Controle</th><th>Comportamento</th></tr></thead><tbody><tr><td><b>Seletor de Segmento</b></td><td>Escolhe de qual Funil (via Segmento) exibir o histórico. Um Segmento por vez. Ao abrir, vem selecionado o primeiro Segmento (por nome) cujo Funil tem histórico de preço; se nenhum tiver, o primeiro por nome, com o estado vazio (<span class="badge rule-badge">RN-DSH-02</span>). <i>(Escolha desta revisão.)</i></td></tr><tr><td><b>Tabs de Origem da lead</b></td><td><b>Campanha</b> (ativa por padrão) / Orgânica / Prospecção / Carteira Ativa — escolhe qual das quatro linhas de preço (<span class="badge rule-badge">RN-FNL-07</span>) exibir.</td></tr><tr><td><b>Tabs de período</b></td><td>Últimos 7 dias / Últimos 30 dias / Últimos 3 meses — recorta o histórico exibido.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-DSH-02</span> — O gráfico carrega o último valor; só fica vazio quando nunca houve registro.</b> O histórico só tem registros nas <b>mudanças</b> (<span class="badge rule-badge">RN-FNL-16</span>): o valor de Custo e de Preço em cada data é o do <b>último registro até ela</b> (a série é em degraus, e não pontos soltos). Assim, um preço fixado há 40 dias aparece como linha constante numa janela de 7 dias. O estado vazio só aparece quando <b>não há nenhum registro até o fim do período</b>, isto é, quando o preço daquela linha nunca foi definido (as linhas nascem em 0 e o valor inicial não gera registro, <span class="badge rule-badge">RN-FNL-16</span>). Mostrar "sem dado" para um valor que existe esconderia justamente o que o gráfico serve para mostrar. <i>(Decisão do usuário, na revisão; substitui a versão anterior da regra, que mostrava vazio sempre que o preço não mudava no período.)</i></p>
+<h2 id="3-3-linha-3-ltimos-usu-rios-cadastrados">3.3. Linha 3 — Últimos usuários cadastrados</h2>
+<p>Tabela simples com os <b>10 usuários mais recentes</b> (por data de criação) <b>no escopo da permissão do usuário</b> (<span class="badge rule-badge">RN-DSH-05</span>), sem o Owner (que não é um usuário comum, <span class="badge rule-badge">RN-USR-03</span>) e sem usuários excluídos, colunas: identificação (Avatar + nome), Cargo, <b>Loja · Time</b> (um usuário pode ter Loja sem Time, <span class="badge rule-badge">RN-USR-15</span>), Status, data de cadastro.</p>
+<p><b><span class="badge rule-badge">RN-DSH-03</span> — Sem paginação, sem ação.</b> É um resumo, não uma listagem funcional — não tem filtro, busca, nem ações inline (isso já existe na Lista de Usuários). Cada linha, no máximo, linka para o Detalhe daquele usuário.</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-dsh-01-vis-o-inicial-do-admin"><span class="badge rf-badge">RF-DSH-01</span> — Visão inicial do Admin</h2>
+<p><b>Como</b> qualquer usuário autenticado no Admin, <b>eu quero</b> ver, ao entrar, o que precisa de atenção na configuração do tenant <b>para</b> agir sem precisar navegar por cada módulo procurando pendências.</p>
+<p><b>Comportamento esperado:</b> os três blocos carregam de forma independente (um pode estar pronto enquanto outro ainda carrega ou falha, sem travar a tela). Cada bloco só aparece se o usuário tiver a permissão de <code>view</code> do recurso correspondente.</p>
+<p><b><span class="badge rule-badge">RN-DSH-04</span> — Dashboard vazio quando nenhum bloco tem permissão.</b> Se o Cargo do usuário não conceder <code>funnels:view</code>, <code>offers:view</code>, <code>stores:view</code> nem <code>users:view</code> (o gráfico exige <code>funnels:view</code> além de <code>funnels:manage_pricing</code>, então não amplia esta lista), os três blocos somem e a tela mostra um <b>Estado de tela vazio</b> dedicado — não uma página em branco. Mensagem orientativa, sem CTA de ação (o usuário não tem permissão para agir em nada listado aqui): algo como "Nada para mostrar aqui ainda. Fale com o administrador do seu tenant se precisar de acesso a mais informações." <i>(Texto final na Microcopy Library.)</i></p>
+<p><b><span class="badge rule-badge">RN-DSH-05</span> — Os blocos de Lojas e de Usuários respeitam o escopo da permissão.</b> <code>stores:view</code> e <code>users:view</code> existem em <code>all</code> e em <code>store</code>. Com <code>store</code>, o alerta "Lojas sem time" considera só a Loja do próprio usuário (a contagem fica em 0 ou 1) e a tabela de últimos usuários mostra só usuários da Loja dele; com <code>all</code>, o tenant inteiro. Os demais blocos (Funis, Ofertas e o gráfico) usam permissões que só existem em <code>all</code> e não variam. <i>(Decisão do usuário, na revisão; substitui a versão anterior, que dizia que o escopo só decidia se o bloco aparecia e que a contagem era sempre do tenant inteiro, o que mostraria a um gestor de Loja os usuários e as Lojas das demais.)</i></p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-DSH-01</span></b> — Alerta com contagem zero permanece visível, com indicador neutro.</li>
+<li><b><span class="badge rule-badge">RN-DSH-02</span></b> — O gráfico carrega o último valor (série em degraus); só fica vazio quando nunca houve registro até o fim do período.</li>
+<li><b><span class="badge rule-badge">RN-DSH-03</span></b> — Tabela de usuários recentes é resumo — sem paginação, filtro ou ação.</li>
+<li><b><span class="badge rule-badge">RN-DSH-04</span></b> — Dashboard mostra estado vazio dedicado quando nenhum bloco tem permissão de <code>view</code>.</li>
+<li><b><span class="badge rule-badge">RN-DSH-05</span></b> — Os blocos de Lojas e de Usuários respeitam o escopo da permissão (<code>all</code> ou <code>store</code>).</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Não há entidade própria neste módulo — os três blocos consomem estado de outros módulos (Funis, Ofertas, Lojas, Histórico de Preço, Usuários). Estados de tela (carregando, vazio, erro) por bloco ficam para a Matriz de Estados.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a lógica de cálculo de cada alerta (vive no módulo de origem — ex.: "Oferta com regra incompleta" é <span class="badge rule-badge">RN-OFR-03</span>), a listagem completa de qualquer entidade (cada uma tem seu próprio módulo), nem o Dashboard do CRM (módulo separado, já especificado na UX v0.1).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Funis de Vendas</b> — status "Aguardando configuração" (alerta) e Histórico de Preço de Lead (gráfico).</li>
+<li><b>Ofertas</b> — contagem de Ofertas com Regras incompletas.</li>
+<li><b>Lojas</b> — contagem de Lojas sem Time.</li>
+<li><b>Segmentos</b> — lista de Segmentos, para o seletor do gráfico.</li>
+<li><b>Usuários</b> — os 10 mais recentes.</li>
+</ul>
+<p><b>Expõe para:</b> nada — é tela terminal, só consome.</p>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<ol>
+<li><b>Contagem de "Ofertas com regras incompletas" pode ser cara de calcular.</b> Depende de checar, para cada Oferta <b>inativa</b> (uma Oferta ativa nunca está incompleta, <span class="badge rule-badge">RN-OFR-03</span> e <span class="badge rule-badge">RN-RGR-13</span>), se todas as associações de Regra têm valores completos — potencialmente uma verificação por Oferta, não uma consulta direta. Vale avaliar se esse número é pré-calculado (atualizado a cada mudança) ou calculado sob demanda a cada carregamento do Dashboard. <i>(Confirmar com o time de backend — sem decisão de produto pendente aqui.)</i></li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Dashboard v0.5 — módulo da aplicação Admin, seção Visão geral.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-dashboard-matriz-de-permiss-es">Corban Admin · Dashboard — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Visão geral</p>
+<p><b>Documento pai:</b> Corban Admin · Dashboard (módulo v0.5)</p>
+<p><b>Versão:</b> 0.2</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>As permissões de Lojas e de Usuários passam a indicar que o escopo (<code>all</code> ou <code>store</code>) define o recorte mostrado (<span class="badge rule-badge">RN-DSH-05</span>). O artefato apontava para o módulo v0.2.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p><b>Este módulo não introduz nenhum recurso novo no catálogo de permissões.</b> O Dashboard é uma tela agregadora — cada bloco condiciona sua exibição a uma permissão de <code>view</code> já existente, de outro módulo:</p>
+<div class="tablewrap"><table><thead><tr><th>Bloco</th><th>Permissão consultada</th></tr></thead><tbody><tr><td>Alerta "Funis aguardando configuração"</td><td><code>funnels:view</code> (<code>all</code>, o único escopo oferecido)</td></tr><tr><td>Alerta "Ofertas com regras incompletas"</td><td><code>offers:view</code> (<code>all</code>, o único escopo oferecido)</td></tr><tr><td>Alerta "Lojas sem time"</td><td><code>stores:view</code> (<code>all</code> ou <code>store</code>; o escopo define o recorte — <span class="badge rule-badge">RN-DSH-05</span>)</td></tr><tr><td>Gráfico de Preço de Lead</td><td><code>funnels:view</code> <b>e</b> <code>funnels:manage_pricing</code> (dado financeiro — mesmo critério do módulo de Funis de Vendas)</td></tr><tr><td>Tabela de últimos usuários</td><td><code>users:view</code> (<code>all</code> ou <code>store</code>; o escopo define o recorte — <span class="badge rule-badge">RN-DSH-05</span>)</td></tr></tbody></table></div>
+<p>A própria rota <code>dashboard</code> <b>não exige nenhuma permissão para abrir</b> — é a tela inicial do Admin, sempre acessível a qualquer usuário autenticado. O que varia é quantos blocos aparecem dentro dela (<span class="badge rule-badge">RN-DSH-04</span>, módulo).</p>
+<hr class="divider">
+<h2 id="1-nota-sobre-o-gr-fico-de-pre-o-de-lead">1. Nota sobre o Gráfico de Preço de Lead</h2>
+<p>Diferente dos três alertas (que só exigem <code>view</code>), o gráfico exige também <code>funnels:manage_pricing</code> — porque exibe <b>valores de custo e preço</b>, dado financeiro sensível. Um Cargo com <code>funnels:view</code> mas sem <code>manage_pricing</code> vê os alertas de Funil, mas não o gráfico.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Dashboard v0.2.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

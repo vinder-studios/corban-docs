@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Leads & Distribuição · Schema `leads` — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: isDark ? 'dark' : 'neutral',
+      securityLevel: 'loose',
+      fontFamily: '"IBM Plex Sans", sans-serif'
+    });
+    updateThemeLabel();
+  });
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  function toggleMermaidCode(id) {
+    const diagram = document.getElementById('diagram-' + id);
+    const code = document.getElementById('code-' + id);
+    const btn = document.getElementById('toggle-btn-' + id);
+    if (code.style.display === 'block') {
+      code.style.display = 'none';
+      diagram.style.display = 'block';
+      btn.textContent = 'Ver Código Mermaid';
+    } else {
+      code.style.display = 'block';
+      diagram.style.display = 'none';
+      btn.textContent = 'Ver Diagrama Renderizado';
+    }
+  }
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 340px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .schema-badge {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--brand);
+  background: var(--chip);
+  border: 1px solid var(--chip-border);
+  padding: 3px 10px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 28px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+/* Diagram box */
+.diagram-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: auto;
+}
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 10px;
+}
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.diagram-toggle-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.diagram-toggle-btn:hover { color: var(--ink); border-color: var(--edge); }
+
+.mermaid-code-view {
+  display: none;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+.badge-key {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+  margin-right: 3px;
+  vertical-align: baseline;
+}
+
+/* Schema table specific column sizing */
+table.schema-table th:nth-child(1),
+table.schema-table td:nth-child(1) {
+  white-space: nowrap;
+  font-weight: 500;
+  width: 220px;
+  min-width: 170px;
+}
+table.schema-table th:nth-child(2),
+table.schema-table td:nth-child(2) {
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  width: 140px;
+  min-width: 110px;
+}
+table.schema-table th:nth-child(3),
+table.schema-table td:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+  width: 70px;
+}
+table.schema-table th:nth-child(4),
+table.schema-table td:nth-child(4) {
+  min-width: 320px;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Persistência</a>
+      <span class="sep">/</span>
+      <span class="current">Leads & Distribuição</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Todos os Schemas
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../04-clientes/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Clientes & Contatos</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../01-estrutura/index.html" >01-estrutura — Estrutura Organizacional</option><option value="../02-funis/index.html" >02-funis — Funis & Etapas</option><option value="../03-catalogo/index.html" >03-catalogo — Catálogo Comercial</option><option value="../04-clientes/index.html" >04-clientes — Clientes & Contatos</option><option value="../05-leads/index.html" selected>05-leads — Leads & Distribuição</option><option value="../06-creditos/index.html" >06-creditos — Créditos & Financeiro</option><option value="../07-simulacao/index.html" >07-simulacao — Motor de Simulação</option><option value="../08-propostas/index.html" >08-propostas — Propostas Comerciais</option><option value="../09-atendimento/index.html" >09-atendimento — Atendimento & Chat</option><option value="../10-marketing/index.html" >10-marketing — Marketing & Prospecção</option><option value="../11-desempenho/index.html" >11-desempenho — Desempenho & Metas</option><option value="../12-apoio/index.html" >12-apoio — Apoio & Infraestrutura</option><option value="../01-acesso/index.html" >01-acesso — Acesso & Permissões</option></select>
+    <a href="../06-creditos/index.html" class="pager-btn">Créditos & Financeiro <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Modelo de Dados Lógico</b> · Operação & Vendas
+    </div>
+    <h1>Leads & Distribuição <span class="schema-badge">schema: leads</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge accepted">Validado</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Schema PostgreSQL</span>
+      <span class="meta-value"><code>leads</code></span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.2 · 11/10/2026</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documentos de Referência</span>
+      <span class="meta-value">CRM · Leads v0.12; Admin · Funis de Vendas v0.17, Layout de Lead v0.7, Lojas v0.15; Marketing (RN-MKT-01, 08); Relacionamentos do CRM v0.2; <a href="../../ADR/0012-ef-core-dbcontext-por-modulo/index.html" class="inline-link"><b>ADR-0012</b></a>, <a href="../../ADR/0023-sem-fk-entre-modulos/index.html" class="inline-link"><b>ADR-0023</b></a></span>
+    </div>
+  </div>
+
+  <!-- Body Content -->
+  <article>
+    <h2>Histórico de revisões</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Versão</th>
+<th>Mudanças</th>
+</tr></thead><tbody>
+<tr>
+<td>0.2</td>
+<td>Lacunas resolvidas: perfil e Notas ficam no Cliente (<code>clients.client_profile</code>, <code>clients.client_note</code>; Clientes v0.13).</td>
+</tr>
+<tr>
+<td>0.1</td>
+<td>Primeira versão.</td>
+</tr>
+</tbody></table></div>
+<h2>1. O que o módulo guarda</h2>
+<p>A Lead, o resumo das Ofertas que a Lead do Marketing traz, as Tags dela, o histórico de eventos (Ações, distribuição, atribuição) e o estado dos dois rodízios (Lojas e operadores). O débito fica em <code>credits</code>, a Proposta em <code>proposals</code>, a conversa em <code>messaging</code>.</p>
+<h2>2. Diagrama</h2>
+
+                <div class="diagram-container">
+                  <div class="diagram-header">
+                    <span class="diagram-title">Diagrama Entidade-Relacionamento (ER)</span>
+                    <button id="toggle-btn-05-leads-1" class="diagram-toggle-btn" onclick="toggleMermaidCode('05-leads-1')">Ver Código Mermaid</button>
+                  </div>
+                  <div id="diagram-05-leads-1" class="mermaid">
+erDiagram
+  lead ||--o{ lead_offer_summary : "carries (Marketing)"
+  lead ||--o{ lead_tag : "tagged"
+  lead ||--o{ lead_event : "history"
+
+  lead {
+    uuid id PK
+    uuid funnel_id "ref. lógica funnels.funnel"
+    uuid segment_id "ref. lógica structure.segment"
+    uuid stage_id "ref. lógica funnels.stage"
+    text stage_type
+    timestamptz stage_entered_at
+    uuid store_id "ref. lógica structure.store"
+    text operator_user_id
+    uuid client_id "ref. lógica clients.client"
+    text name
+    text phone
+    text cpf
+    uuid promoter_id "ref. lógica catalog.promoter"
+    text notes
+    numeric potential_value
+    text lead_origin
+    text origin_detail
+    uuid sales_origin_id "ref. lógica funnels.sales_origin"
+    uuid prospecting_list_id "ref. lógica marketing"
+    uuid sweep_id "ref. lógica marketing"
+    timestamptz distributed_at
+  }
+  lead_offer_summary {
+    uuid lead_id PK,FK
+    uuid offer_id PK "ref. lógica catalog.offer"
+    text offer_name
+    numeric pre_approved_amount
+    jsonb unevaluated_requirements
+  }
+  lead_tag {
+    uuid lead_id PK,FK
+    uuid tag_id PK "ref. lógica funnels.tag"
+  }
+  lead_event {
+    uuid id PK
+    uuid lead_id FK
+    text type
+    uuid action_id
+    text action_name
+    uuid from_stage_id
+    uuid to_stage_id
+    uuid store_id
+    text operator_user_id
+    text performed_by_user_id
+    timestamptz occurred_at
+  }
+  store_rotation {
+    uuid segment_id PK
+    uuid store_id PK
+    timestamptz last_assigned_at
+  }
+  operator_rotation {
+    uuid store_id PK
+    text operator_user_id PK
+    timestamptz last_assigned_at
+  }
+                  </div>
+                  <pre id="code-05-leads-1" class="mermaid-code-view"><code>erDiagram
+  lead ||--o{ lead_offer_summary : "carries (Marketing)"
+  lead ||--o{ lead_tag : "tagged"
+  lead ||--o{ lead_event : "history"
+
+  lead {
+    uuid id PK
+    uuid funnel_id "ref. lógica funnels.funnel"
+    uuid segment_id "ref. lógica structure.segment"
+    uuid stage_id "ref. lógica funnels.stage"
+    text stage_type
+    timestamptz stage_entered_at
+    uuid store_id "ref. lógica structure.store"
+    text operator_user_id
+    uuid client_id "ref. lógica clients.client"
+    text name
+    text phone
+    text cpf
+    uuid promoter_id "ref. lógica catalog.promoter"
+    text notes
+    numeric potential_value
+    text lead_origin
+    text origin_detail
+    uuid sales_origin_id "ref. lógica funnels.sales_origin"
+    uuid prospecting_list_id "ref. lógica marketing"
+    uuid sweep_id "ref. lógica marketing"
+    timestamptz distributed_at
+  }
+  lead_offer_summary {
+    uuid lead_id PK,FK
+    uuid offer_id PK "ref. lógica catalog.offer"
+    text offer_name
+    numeric pre_approved_amount
+    jsonb unevaluated_requirements
+  }
+  lead_tag {
+    uuid lead_id PK,FK
+    uuid tag_id PK "ref. lógica funnels.tag"
+  }
+  lead_event {
+    uuid id PK
+    uuid lead_id FK
+    text type
+    uuid action_id
+    text action_name
+    uuid from_stage_id
+    uuid to_stage_id
+    uuid store_id
+    text operator_user_id
+    text performed_by_user_id
+    timestamptz occurred_at
+  }
+  store_rotation {
+    uuid segment_id PK
+    uuid store_id PK
+    timestamptz last_assigned_at
+  }
+  operator_rotation {
+    uuid store_id PK
+    text operator_user_id PK
+    timestamptz last_assigned_at
+  }</code></pre>
+                </div>
+                
+<p><code>lead</code> tem também <code>created_at</code> e <code>updated_at</code>.</p>
+<h2>3. Tabelas</h2>
+<h3>3.1. <code>lead</code></h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>.</td>
+</tr>
+<tr>
+<td><code>funnel_id</code>, <code>segment_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td>Refs. lógicas. O Segmento é guardado junto do Funil porque é o que a distribuição usa (RN-LED-02).</td>
+</tr>
+<tr>
+<td><code>stage_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td>Ref. lógica → <code>funnels.stage</code>. Só muda por Ação ou pela Proposta (RN-LED-11, RN-FNL-18).</td>
+</tr>
+<tr>
+<td><code>stage_type</code></td>
+<td>text</td>
+<td>não</td>
+<td><b>Cópia</b> do tipo do Stage atual (<code>new</code> … <code>cancelled</code>). Leads decide muita coisa pelo tipo (em curso, Formalização, terminal, Recontato) e não pode ler <code>funnels</code>; Funis avisa por evento se o tipo de um Stage mudar.</td>
+</tr>
+<tr>
+<td><code>stage_entered_at</code></td>
+<td>timestamptz</td>
+<td>não</td>
+<td>Quando entrou no Stage atual. Lead <b>parada</b> = mais de 3 dias (RN-LED-15).</td>
+</tr>
+<tr>
+<td><code>store_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica. Vazio só em trânsito no rodízio (RN-LED-01). <b>Coluna do filtro de escopo</b> (<a href="../../ADR/0012-ef-core-dbcontext-por-modulo/index.html" class="inline-link"><b>ADR-0012</b></a>).</td>
+</tr>
+<tr>
+<td><code>operator_user_id</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Id do Keycloak. Vazio = pool da Loja (RN-LED-05).</td>
+</tr>
+<tr>
+<td><code>client_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica. Preenchido quando a Lead reúne Nome + CPF + Telefone (RN-CLI-01).</td>
+</tr>
+<tr>
+<td><code>name</code>, <code>phone</code></td>
+<td>text</td>
+<td>não</td>
+<td>Dados mínimos.</td>
+</tr>
+<tr>
+<td><code>cpf</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Só dígitos.</td>
+</tr>
+<tr>
+<td><code>promoter_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica. Pré-preenche a Simulação (RN-SIM-06).</td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Observações do cadastro.</td>
+</tr>
+<tr>
+<td><code>potential_value</code></td>
+<td>numeric(14,2)</td>
+<td>sim</td>
+<td>Digitado na Manual; gravado pelo sistema e somente leitura nas do Marketing (RN-LED-16).</td>
+</tr>
+<tr>
+<td><code>lead_origin</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>campaign</code> | <code>organic</code> | <code>recontact</code> | <code>prospecting</code> | <code>active_portfolio</code> | <code>manual</code>. <b>Imutável</b> (RN-LED-12).</td>
+</tr>
+<tr>
+<td><code>origin_detail</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Complemento da Origem: canal da Huggy, landing page ou autor (RN-LED-12).</td>
+</tr>
+<tr>
+<td><code>sales_origin_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica. Editável (RN-ORI-06).</td>
+</tr>
+<tr>
+<td><code>prospecting_list_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica. <b>Imutável.</b> <code>CHECK (lead_origin = 'prospecting') = (prospecting_list_id IS NOT NULL)</code>.</td>
+</tr>
+<tr>
+<td><code>sweep_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica. Imutável. Mesmo <code>CHECK</code> para <code>active_portfolio</code>.</td>
+</tr>
+<tr>
+<td><code>distributed_at</code></td>
+<td>timestamptz</td>
+<td>sim</td>
+<td>Quando caiu na Loja. É também a data de injeção que o Dashboard do Marketing usa (RN-DMB-02).</td>
+</tr>
+</tbody></table></div>
+<p>Índices: <code>(store_id, funnel_id, stage_id)</code> para o board; <code>(operator_user_id)</code>; <code>(client_id)</code>; <code>(cpf)</code> e <code>(phone)</code> para identificar Recontato; <code>(prospecting_list_id)</code> e <code>(sweep_id)</code> para o Dashboard do Marketing; parcial <code>(client_id, segment_id) WHERE stage_type IN ('new','negotiation','formalization')</code> para a duplicidade do Marketing (RN-MKT-04).</p>
+<p>A Lead <b>não é excluída</b>; o fim dela é um Stage terminal.</p>
+<h3>3.2. <code>lead_offer_summary</code></h3>
+<p>Uma linha por Oferta elegível na pré-análise, gravada na injeção, <b>somente leitura</b> (RN-LED-16): nome da Oferta copiado, valor pré-aprovado e a lista de requisitos não avaliados (<code>jsonb</code>, só exibição). O <code>potential_value</code> da Lead é o maior <code>pre_approved_amount</code> (RN-MKT-08).</p>
+<h3>3.3. <code>lead_tag</code></h3>
+<p>Tags da Huggy na Lead (Card, slot 4). Chave <code>(lead_id, tag_id)</code>.</p>
+<h3>3.4. <code>lead_event</code> (histórico)</h3>
+<p><b>Append-only.</b> Alimenta o bloco Histórico do Sheet (Ação executada, data, quem, Layout §3.3) e o cálculo de Lead parada.</p>
+<div class="tablewrap"><table>
+<thead><tr>
+<th><code>type</code></th>
+<th>Quando</th>
+</tr></thead><tbody>
+<tr>
+<td><code>created</code></td>
+<td>Nasce a Lead.</td>
+</tr>
+<tr>
+<td><code>distributed</code></td>
+<td>Cai numa Loja (rodízio, Recontato ou Manual).</td>
+</tr>
+<tr>
+<td><code>assigned</code></td>
+<td>Ganha ou troca de operador (rodízio, manual, auto-assunção, redistribuição por inativação).</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>Uma Ação foi executada; guarda <code>action_id</code> e o <b>nome</b> da Ação como texto.</td>
+</tr>
+<tr>
+<td><code>moved_by_proposal</code></td>
+<td>A Proposta chegou a Pago ou Cancelado e moveu a Lead (RN-FNL-18).</td>
+</tr>
+</tbody></table></div>
+<h3>3.5. Rodízios</h3>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Tabela</th>
+<th>Chave</th>
+<th>Uso</th>
+</tr></thead><tbody>
+<tr>
+<td><code>store_rotation</code></td>
+<td><code>(segment_id, store_id)</code></td>
+<td>Entre as Lojas elegíveis, recebe a de <code>last_assigned_at</code> mais antigo (nulo primeiro); atualizado a cada atribuição bem-sucedida (RN-LED-03, RN-LED-08).</td>
+</tr>
+<tr>
+<td><code>operator_rotation</code></td>
+<td><code>(store_id, operator_user_id)</code></td>
+<td>Mesmo critério entre os operadores elegíveis da Loja (RN-LED-04).</td>
+</tr>
+</tbody></table></div>
+<p>Recontato e Manual não mexem nos rodízios (RN-LED-08). A atribuição e o débito acontecem na <b>mesma transação</b> (<a href="../../ADR/0012-ef-core-dbcontext-por-modulo/index.html" class="inline-link"><b>ADR-0012</b></a>), com bloqueio da linha do rodízio para duas Leads simultâneas não irem para a mesma Loja por engano.</p>
+<h2>4. Fora deste schema</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>O quê</th>
+<th>Onde</th>
+</tr></thead><tbody>
+<tr>
+<td>Débito da Lead</td>
+<td><code>credits</code> (com <code>lead_id</code>)</td>
+</tr>
+<tr>
+<td>Proposta da Lead (0..1)</td>
+<td><code>proposals</code> (com <code>lead_id</code> único)</td>
+</tr>
+<tr>
+<td>Conversa da Lead (1:1)</td>
+<td><code>messaging</code></td>
+</tr>
+<tr>
+<td>Simulações da Lead</td>
+<td><code>simulation</code></td>
+</tr>
+<tr>
+<td>Elegibilidade do operador (Time, "Pode receber lead")</td>
+<td>Keycloak, até o debate de Acesso</td>
+</tr>
+</tbody></table></div>
+<h2>5. Decisões deste modelo</h2>
+<p>1. <b>Tipo do Stage copiado na Lead</b>, mantido por evento de Funis, para Leads não ler outro schema.</p>
+<p>2. <b>Rodízio entre Lojas por Segmento.</b> A spec não diz se a fila é única ou por Segmento; por Segmento evita que uma Loja que opera vários Segmentos "perca a vez" num por ter recebido em outro.</p>
+<p>3. <b>Histórico de eventos próprio</b>, append-only, com o nome da Ação como texto.</p>
+<p>4. <b>Lead sem exclusão.</b></p>
+<h2>6. Lacunas encontradas na spec</h2>
+<p>Resolvidas na v0.2: os dados de perfil e as Notas são do Cliente (Clientes v0.13, RN-CLI-14 e RN-CLI-15; modelo de Clientes v0.3).</p>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../C4/index.html">Hub C4 Model</a>
+      <a href="../../ADR/index.html">Decisões de Arquitetura (ADRs)</a>
+      <a href="../index.html">Catálogo de Persistência</a>
+      <a href="README.md" target="_blank">Ver Fonte Markdown (.md)</a>
+    </div>
+    <div>SmartCorbans · Banco de Dados Relacional · Schemas PostgreSQL isolados</div>
+  </footer>
+</div>
+
+</body>
+</html>

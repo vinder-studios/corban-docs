@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Promotoras · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Promotoras</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Products/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Produtos</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" selected>Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../ProposalStatus/index.html" class="pager-btn">Status de Proposta <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Cadastros
+    </div>
+    <h1>Promotoras <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Cadastros</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.4 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-promotoras">Corban Admin · Promotoras</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Cadastros</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.4</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Fecha os dois itens abertos: bloqueio por Tabela de Convênio confirmado; remoção da última Região passa a exigir confirmação explícita, avisando que as ofertas da Promotora se tornarão globais (<span class="badge rule-badge">RN-PRM-05</span>).</td></tr><tr><td>0.3</td><td><b>Troca "Tabela de Convênio" por Oferta</b> em todo o módulo (a Tabela foi fundida em Ofertas): a <span class="badge rule-badge">RN-PRM-03</span> passa a ser "Oferta bloqueia inativação e exclusão", como em Produtos. <b><span class="badge rule-badge">RN-PRM-05</span>:</b> o caminho "inativar uma Região desassocia a Promotora" volta a valer com a cascata de Regiões v0.5, e agora inclui excluir, com a confirmação de dois passos daquele módulo. <b>Nova <span class="badge rule-badge">RN-PRM-06</span>:</b> associar a primeira Região a uma Promotora existente exige confirmação leve (a <span class="badge rule-badge">RN-PRM-02</span> prometia um aviso que nenhum artefato tinha; Lojas já tinha o equivalente). <b>§8:</b> Simulações e Relatórios entram como consumidores diretos. <b><span class="badge rf-badge">RF-PRM-01</span>:</b> a exclusão passa a ser descrita como a regra (nenhuma Oferta a usa), e não "nunca usadas". Reordena as regras no corpo.</td></tr><tr><td>0.4</td><td><b>O bloqueio por Oferta ganha o atalho "Ver ofertas"</b> (<span class="badge rule-badge">RN-PRM-03</span>). <b>§7 corrigido</b>: a regra de visibilidade por Região é aplicada também em Simulações e Tabelas Multiplicadoras, e não só em Ofertas. <b>§9 ganha o item "código editável e integrações"</b>, que valia para os quatro cadastros mas constava só em Segmentos e Produtos (a Promotora, com códigos como SIAPE, é a mais exposta). (Levantamento do Admin, segunda passada.)</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-PRM) e regras de negócio (RN-PRM) próprios.</p>
+<p><b>Nota de vocabulário.</b> Promotora é a <b>entidade pagadora específica</b> — SIAPE, GOV-SP, GOV-RJ. É o que a Especificação v1.2 chamava de <i>Convênio</i>. Não confundir com <b>Segmento</b> (o público pagador agregado: INSS, Servidor Público, CLT), que é cadastro separado e <b>não</b> se vincula a Promotora.</p>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Manter o cadastro das entidades pagadoras com que o tenant opera. A Promotora é um dos componentes da Oferta, ao lado de Produto, Operação e Banco, e é ela que carrega o recorte geográfico que determina quais Lojas enxergam quais ofertas.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de cadastros</b> — usuário cujas permissões efetivas incluem a gestão deste módulo. Tipicamente um Cargo de escopo <code>all</code>.</li>
+<li><b>Demais usuários</b> — consomem Promotoras através das Ofertas e do módulo de Simulações, sem gerenciá-las aqui.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<p><b>Promotora.</b> Entidade pagadora à qual o crédito consignado se vincula. Cadastro <b>livre do tenant</b>. Campos:</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Como aparece em toda a interface (ex.: "GOV-SP", "SIAPE").</td></tr><tr><td>Código</td><td>Sim</td><td>Identificador curto. <b>Único no tenant</b>, formato livre, editável após a criação.</td></tr><tr><td>Regiões</td><td>Não</td><td>Zero ou mais Regiões (cadastro próprio). Determina o alcance geográfico — ver <span class="badge rule-badge">RN-PRM-02</span>.</td></tr><tr><td>Status</td><td>Sim</td><td>Ativo / Inativo (ver §6).</td></tr></tbody></table></div>
+<p><b>Sem campo de descrição</b> — nome e código bastam, como em Regiões.</p>
+<p><b>O que Promotora NÃO governa.</b></p>
+<ul>
+<li><b>Não é vinculada a Segmento.</b> Apesar de, na prática, uma promotora atender tipicamente um público (SIAPE → Servidor Público Federal), o produto não modela esse vínculo.</li>
+<li><b>Não carrega parametrização financeira</b> — taxas, prazos, coeficientes e comissão pertencem à Oferta.</li>
+</ul>
+<p><b>O que Promotora governa.</b></p>
+<ul>
+<li><b>Compõe a Oferta</b>, junto com Produto, Operação e Banco.</li>
+<li><b>Carrega o recorte geográfico das Ofertas.</b> A Oferta não se associa a Região diretamente: a região dela é derivada da Promotora que a compõe (<span class="badge rule-badge">RN-PRM-02</span>).</li>
+</ul>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-prm-01-gest-o-de-promotoras-crud"><span class="badge rf-badge">RF-PRM-01</span> — Gestão de promotoras (CRUD)</h2>
+<p><b>Como</b> gestor de cadastros, <b>eu quero</b> criar, consultar, editar e inativar Promotoras <b>para</b> refletir as entidades pagadoras com que a empresa opera.</p>
+<p><b>Comportamento esperado:</b> o gestor cadastra nome, código e, opcionalmente, uma ou mais Regiões. A listagem permite busca por nome/código e filtro por status e por Região. A edição cobre todos os campos, incluindo o código e as Regiões. A inativação é o caminho padrão de descontinuação; a exclusão definitiva existe para Promotoras que não estão em nenhuma Oferta (<span class="badge rule-badge">RN-PRM-04</span>).</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-PRM-01</span> — Cadastro livre do tenant.</b> Promotoras não são catálogo fixo do sistema.</p>
+<p><b><span class="badge rule-badge">RN-PRM-02</span> — Região da Promotora define a visibilidade das Ofertas.</b> As Regiões associadas a uma Promotora determinam quais Lojas enxergam as Ofertas construídas sobre ela (<span class="badge rule-badge">RN-REG-04</span>, módulo de Regiões):</p>
+<ul>
+<li><b>Promotora sem Região</b> → suas ofertas são <b>globais</b>: visíveis a qualquer Loja.</li>
+<li><b>Promotora com Região(ões)</b> → suas ofertas são visíveis apenas às Lojas que tenham ao menos uma Região em comum, além das Lojas sem Região nenhuma (que veem tudo).</li>
+</ul>
+<p><b>Consequência a observar:</b> associar a <b>primeira</b> Região a uma Promotora <b>reduz</b> o alcance das ofertas dela — antes eram globais. É contraintuitivo, já que "adicionar" normalmente amplia; a interface pede confirmação (<span class="badge rule-badge">RN-PRM-06</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRM-03</span> — Oferta bloqueia inativação e exclusão.</b> Uma Promotora referenciada por ao menos uma Oferta <b>não pode ser inativada nem excluída</b>. O gestor precisa primeiro remover ou reatribuir as Ofertas que a utilizam, no módulo de Ofertas. A mensagem de bloqueio traz o atalho <b>"Ver ofertas"</b>, que abre a Lista de Ofertas já filtrada por esta Promotora (<span class="badge rf-badge">RF-OFR-01</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRM-04</span> — Exclusão definitiva existe, sujeita ao mesmo bloqueio.</b></p>
+<p><b><span class="badge rule-badge">RN-PRM-05</span> — Remover a última Região exige confirmação explícita.</b> Remover Regiões de uma Promotora é ação livre, <b>exceto</b> quando se trata da última: nesse caso a Promotora volta a não ter Região nenhuma, e todas as suas Ofertas passam de restritas a <b>globais</b> — disponíveis a todas as Lojas. A interface exige confirmação, deixando essa consequência explícita antes de aplicar (ver Microcopy).</p>
+<p>Vale para as duas formas de chegar lá: removendo a Região no cadastro da Promotora, ou inativando ou excluindo a Região no módulo de Regiões, que a remove da Promotora. Neste segundo caso a confirmação é o diálogo de dois passos de Regiões (<span class="badge rule-badge">RN-REG-02</span>), cujo passo de impacto já explicita essa consequência.</p>
+<p><b><span class="badge rule-badge">RN-PRM-06</span> — Associar a primeira Região exige confirmação leve.</b> Quando uma Promotora <b>existente</b> não tem Região e o gestor associa a primeira, as ofertas dela <b>deixam de ser globais</b>: passam a aparecer só para as Lojas com ao menos uma Região em comum e para as Lojas sem Região (<span class="badge rule-badge">RN-PRM-02</span>). Como "adicionar" costuma ampliar e aqui restringe, a interface pede uma confirmação leve antes de aplicar, explicitando isso (ver Microcopy). Mesmo padrão da Loja, que confirma ao escolher a primeira Região específica (módulo de Lojas). As Regiões seguintes não pedem confirmação. No <b>cadastro</b> de uma Promotora nova a confirmação não aparece: ela ainda não tem ofertas, e o texto auxiliar do campo já explica a regra <i>(decisão desta revisão)</i>.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-PRM-01</span></b> — Cadastro livre do tenant.</li>
+<li><b><span class="badge rule-badge">RN-PRM-02</span></b> — Região da Promotora define a visibilidade das Ofertas; sem Região, ofertas são globais.</li>
+<li><b><span class="badge rule-badge">RN-PRM-03</span></b> — Oferta bloqueia inativação e exclusão.</li>
+<li><b><span class="badge rule-badge">RN-PRM-04</span></b> — Exclusão definitiva existe, sujeita ao mesmo bloqueio.</li>
+<li><b><span class="badge rule-badge">RN-PRM-05</span></b> — Remover a última Região exige confirmação: as ofertas da Promotora se tornam globais.</li>
+<li><b><span class="badge rule-badge">RN-PRM-06</span></b> — Associar a primeira Região a uma Promotora existente exige confirmação leve: as ofertas deixam de ser globais.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Promotora:</b></p>
+<ul>
+<li><b>Ativa</b> — disponível para compor Ofertas.</li>
+<li><b>Inativa</b> — não pode compor novas Ofertas. Só alcançável a partir de Ativa quando não está em nenhuma (<span class="badge rule-badge">RN-PRM-03</span>).</li>
+</ul>
+<p>Transições: ativa → inativa (bloqueada por vínculo); inativa → ativa (livre); ativa/inativa → excluída (mesmo bloqueio).</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p>Trata apenas do cadastro da Promotora. <b>Não</b> inclui: o cadastro de Regiões (módulo próprio), a composição da Oferta (módulo de Ofertas), nem a aplicação da regra de visibilidade — que é enunciada aqui e em Regiões, mas aplicada nos domínios de Ofertas e de Simulações (o motor filtra as Ofertas por Região, <span class="badge rule-badge">RN-SIM-01</span>) e nas Tabelas Multiplicadoras (<span class="badge rule-badge">RN-MUT-01</span>).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Regiões</b> — a lista de Regiões ativas, para associação; e a Região é removida da Promotora quando inativada ou excluída lá (<span class="badge rule-badge">RN-REG-02</span>).</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Ofertas</b> — a lista de Promotoras ativas, para composição; é da Promotora que a Oferta herda o recorte geográfico (<span class="badge rule-badge">RN-OFR-02</span>).</li>
+<li><b>Simulações</b> (CRM) — a lista de Promotoras ativas, escolhida direto no formulário (<span class="badge rule-badge">RN-SIM-06</span>).</li>
+<li><b>Relatórios</b> (Admin e CRM) — o cadastro, como dimensão de filtro e de agrupamento.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<ol>
+<li><b>Código editável e integrações.</b> Mesmo item registrado em Segmentos e Produtos: o código é editável após a criação; se alguma integração externa vier a referenciar a Promotora por código (por exemplo, SIAPE), editá-lo passa a ser ação de risco. Reavaliar quando as integrações forem definidas.</li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Promotoras v0.4 — módulo da aplicação Admin, seção Cadastros.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-promotoras-matriz-de-permiss-es">Corban Admin · Promotoras — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Cadastros</p>
+<p><b>Documento pai:</b> Corban Admin · Promotoras (módulo v0.2)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre apenas o recurso deste módulo (<code>promoters</code>). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>promoters</code></td><td><code>view</code></td><td><code>all</code></td></tr><tr><td><code>promoters</code></td><td><code>create</code></td><td><code>all</code></td></tr><tr><td><code>promoters</code></td><td><code>edit</code></td><td><code>all</code></td></tr><tr><td><code>promoters</code></td><td><code>inactivate</code></td><td><code>all</code></td></tr><tr><td><code>promoters</code></td><td><code>reactivate</code></td><td><code>all</code></td></tr><tr><td><code>promoters</code></td><td><code>delete</code></td><td><code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-por-que-tudo-em-escopo-all">2. Por que tudo em escopo <code>all</code></h2>
+<p>Promotora é cadastro <b>tenant-wide</b> — não pertence a Loja nem a Time. Mesma estrutura das Matrizes de Segmentos, Produtos e Regiões.</p>
+<p><b>Nota importante:</b> a Região associada a uma Promotora <b>não</b> é um escopo de permissão. Ela restringe quais Lojas enxergam as ofertas derivadas dela (<span class="badge rule-badge">RN-PRM-02</span>) — isso é regra de negócio, não controle de acesso. Um Cargo com <code>promoters:view:all</code> vê todas as Promotoras, de todas as Regiões, independentemente da Loja em que o usuário atue.</p>
+<hr class="divider">
+<h2 id="3-notas-sobre-as-a-es">3. Notas sobre as ações</h2>
+<p><b>Sem ação própria para associar Regiões.</b> Associar ou remover Regiões de uma Promotora é parte de <code>promoters:edit:all</code> — não tem chave separada. Vale notar que essa ação tem consequência sobre a visibilidade de ofertas (<span class="badge rule-badge">RN-PRM-05</span>), o que é mais impacto do que um "editar" comum sugere.</p>
+<hr class="divider">
+<h2 id="4-owner-tenant">4. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p>_Fim do documento. Matriz de Permissões — Promotoras v0.1._</p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

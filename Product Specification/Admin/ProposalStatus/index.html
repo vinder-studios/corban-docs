@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Status de Proposta · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Status de Proposta</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Promoters/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Promotoras</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" selected>Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../Regions/index.html" class="pager-btn">Regiões <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Cadastros
+    </div>
+    <h1>Status de Proposta <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Cadastros</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.7 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-status-de-proposta">Corban Admin · Status de Proposta</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Cadastros</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.7</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Fecha os itens abertos: migração restrita ao mesmo tipo (<span class="badge rule-badge">RN-STP-05</span>); cor do texto do badge é derivada automaticamente da cor de fundo escolhida, garantindo contraste (<span class="badge rule-badge">RN-STP-06</span>).</td></tr><tr><td>0.3</td><td>O enum de tipo ganha o valor <b>Novo</b>, passando a quatro valores. A inclusão vem do módulo de Funis de Vendas, onde o mesmo enum classifica os stages do board (<span class="badge rule-badge">RN-FNL-13</span>) — as duas entidades continuam separadas, compartilhando só o vocabulário de classificação.</td></tr><tr><td>0.4 e 0.5</td><td><i>(Registro reconstruído na revisão da v0.6: o histórico original não registrou estas duas versões, e a divisão entre elas não é conhecida.)</i> O StatusType deixa de ser compartilhado com o Tipo de Stage do Funil (StageType, 5 valores): são dois enums independentes, ligados por eventos (<span class="badge rule-badge">RN-FNL-17</span> e <span class="badge rule-badge">RN-FNL-18</span>), e não por enum — o que revoga o compartilhamento descrito na v0.3. A Proposta passa a nascer automaticamente, criada pela Ação Formalizar do Funil (<span class="badge rule-badge">RN-FNL-17</span>), e não só por ação manual.</td></tr><tr><td>0.6</td><td><b>Remove a opção "Sem status"</b> da migração: Propostas exige Status em toda proposta, e uma proposta Paga que ficasse sem status deixaria de contar como produção. Em troca, <b>o último status ativo de um tipo não pode ser inativado, excluído nem mudar de tipo</b> (nova <span class="badge rule-badge">RN-STP-07</span>), de modo que a migração sempre tem destino. Pode haver vários status Novo; a Proposta nasce no ativo mais antigo (<span class="badge rule-badge">RN-STP-08</span>). Nome único no tenant (<span class="badge rule-badge">RN-STP-09</span>). Corrige o cabeçalho, que dizia que Segmentos e Regiões bloqueiam por vínculo (hoje cascateiam), e a lacuna do tenant sem status de algum tipo vira item aberto. Reordena esta tabela e as regras no corpo.</td></tr><tr><td>0.7</td><td><b>O tenant nasce com um status padrão de cada tipo</b> (nova <span class="badge rule-badge">RN-STP-10</span>): Novo, Em negociação, Pago e Cancelado, comuns e editáveis, protegidos apenas pela <span class="badge rule-badge">RN-STP-07</span>. Fecha o item aberto "tenant sem status de algum tipo" (aberto em Funis v0.13) e torna a <span class="badge rule-badge">RN-STP-07</span> incondicional. A Lista deixa de ter o estado vazio "nenhum status" (resta o vazio de filtro). O Console da Plataforma entra em "Depende de". Decisão do usuário, na revisão de Funis.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidade, campos, estados, requisitos funcionais (RF-STP) e regras de negócio (RN-STP) próprios.</p>
+<blockquote><p><b>Este módulo não segue o padrão de bloqueio de Produtos e Promotoras</b>, onde uma Oferta que usa o cadastro <b>impede</b> inativar/excluir. Aqui, propostas vinculadas disparam um <b>fluxo de migração</b> — o gestor escolhe para onde elas vão e a ação prossegue. A única exceção é o último status ativo de um tipo (<span class="badge rule-badge">RN-STP-07</span>), que não tem para onde migrar e por isso é protegido. (Regiões e Segmentos têm um terceiro caminho: a cascata, com confirmação.) É a mesma família do dialog de Redistribuição de Itens, no módulo de Usuários & Permissões.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Manter os status pelos quais uma proposta passa, do envio ao desfecho. Cada tenant define os seus, classificando-os em quatro tipos que o sistema reconhece: novo, em negociação, pago e cancelado.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de cadastros</b> — usuário cujas permissões efetivas incluem a gestão deste módulo. Tipicamente um Cargo de escopo <code>all</code>.</li>
+<li><b>Demais usuários</b> — consomem Status de Proposta ao trabalhar propostas, sem gerenciá-los aqui.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<p><b>Status de Proposta.</b> Etapa ou desfecho de uma proposta. Cadastro <b>livre do tenant</b>. Campos:</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Como aparece em toda a interface (ex.: "Em análise", "Averbado", "Recusado pelo banco"). Único no tenant, ignorando maiúsculas e espaços nas pontas (<span class="badge rule-badge">RN-STP-09</span>).</td></tr><tr><td>Tipo</td><td>Sim</td><td>Enum fixo do sistema, <b>StatusType</b> — próprio deste módulo: <b>Novo</b>, <b>Negociação</b>, <b>Pago</b>, <b>Cancelado</b>. Ver abaixo.</td></tr><tr><td>Cor</td><td>Sim</td><td>Escolha livre (color picker), não uma paleta fechada. É a cor de <b>fundo</b> do badge; a cor do texto é derivada automaticamente (<span class="badge rule-badge">RN-STP-06</span>).</td></tr><tr><td>Status</td><td>Sim</td><td>Ativo / Inativo (ver §6).</td></tr></tbody></table></div>
+<p><b>Sem código e sem descrição</b> — o nome é suficiente para identificar e o status não é referenciado por integração.</p>
+<p><b>Tipo — enum fixo, com significado de negócio.</b> O tenant cria quantos status quiser, mas cada um precisa se declarar como um dos quatro tipos que o sistema entende (<b>StatusType</b>):</p>
+<div class="tablewrap"><table><thead><tr><th>Tipo</th><th>Significado</th><th>Natureza</th></tr></thead><tbody><tr><td><b>Novo</b></td><td>A proposta acaba de entrar, ainda não foi trabalhada</td><td>Não terminal</td></tr><tr><td><b>Negociação</b></td><td>A proposta está em curso — enviada, em análise, pendente de documento</td><td>Não terminal</td></tr><tr><td><b>Pago</b></td><td>A proposta se converteu — crédito liberado</td><td>Terminal, positivo</td></tr><tr><td><b>Cancelado</b></td><td>A proposta não se converteu — recusada, desistência, erro</td><td>Terminal, negativo</td></tr></tbody></table></div>
+<p><b>StatusType não é compartilhado com o Tipo de Stage do Funil</b> (StageType, módulo de Funis de Vendas — 5 valores, inclui "Formalização"). <i>(Revoga a versão anterior desta regra.)</i> São dois enums independentes, parecidos em espírito: cada um diz ao respectivo sistema o que uma etapa significa, sem depender do nome que o tenant deu. A ligação entre os dois módulos acontece por eventos — Lead entrando em Formalização cria a Proposta (<span class="badge rule-badge">RN-FNL-17</span>); Proposta atingindo Pago/Cancelado move a Lead (<span class="badge rule-badge">RN-FNL-18</span>) — não por compartilhar enum.</p>
+<p><b>A Proposta agora nasce automaticamente</b>, criada pelo Funil ao entrar em Stage tipo Formalização (<span class="badge rule-badge">RN-FNL-17</span>) — não mais só por ação manual. Detalhe completo no módulo de Propostas.</p>
+<p>O tipo não é rótulo decorativo: é o que permite ao sistema saber se uma proposta ainda está viva, se virou produção ou se morreu — sem precisar interpretar o nome que o tenant deu. Um tenant pode ter "Averbado" e "Liberado" ambos como tipo Pago, e o sistema trata os dois como conversão.</p>
+<p><b>Quantidade por tipo.</b> Não há limite máximo, e o tenant pode ter vários status do mesmo tipo, inclusive vários Novo (a Proposta nasce no ativo mais antigo, <span class="badge rule-badge">RN-STP-08</span>). O tenant <b>já nasce com um status ativo de cada tipo</b> (<span class="badge rule-badge">RN-STP-10</span>), e o <b>último</b> de cada tipo não pode ser removido (<span class="badge rule-badge">RN-STP-07</span>): nunca falta um tipo.</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-stp-01-gest-o-de-status-de-proposta-crud"><span class="badge rf-badge">RF-STP-01</span> — Gestão de status de proposta (CRUD)</h2>
+<p><b>Como</b> gestor de cadastros, <b>eu quero</b> criar, consultar, editar e inativar Status de Proposta <b>para</b> refletir as etapas pelas quais as propostas da empresa passam.</p>
+<p><b>Comportamento esperado:</b> o gestor cadastra nome, tipo e cor. A listagem permite busca por nome e filtros por tipo e por status. A edição cobre todos os campos, inclusive o tipo. A inativação e a exclusão disparam o fluxo de migração quando há propostas vinculadas (<span class="badge rule-badge">RN-STP-02</span>), exceto no último status ativo do tipo, que é bloqueado (<span class="badge rule-badge">RN-STP-07</span>).</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-STP-01</span> — Cadastro livre do tenant, tipo fixo do sistema.</b> Os status são criados pelo tenant; os quatro tipos (Novo, Negociação, Pago, Cancelado — StatusType) são do sistema e não podem ser criados, editados nem excluídos.</p>
+<p><b><span class="badge rule-badge">RN-STP-02</span> — Propostas vinculadas disparam migração, não bloqueio.</b> Ao inativar ou excluir um Status que tem propostas vinculadas, o sistema <b>não impede</b> a ação (salvo no último status ativo do tipo, <span class="badge rule-badge">RN-STP-07</span>): abre um fluxo em que o gestor escolhe, entre os outros status disponíveis (<span class="badge rule-badge">RN-STP-05</span>), o destino dessas propostas. Toda proposta continua tendo um status — não existe "sem status", porque o módulo de Propostas exige o Status. Concluída a escolha, as propostas são migradas e a inativação/exclusão se completa.</p>
+<p><b><span class="badge rule-badge">RN-STP-03</span> — Exclusão definitiva existe.</b> Diferente da inativação, é irreversível. Sujeita ao mesmo fluxo de migração.</p>
+<p><b><span class="badge rule-badge">RN-STP-04</span> — Alterar o tipo de um status em uso muda a leitura do histórico.</b> O tipo governa como o sistema interpreta a proposta (viva, convertida, morta). Alterar o tipo de um status que já tem propostas vinculadas <b>reclassifica retroativamente</b> todas elas — propostas antes contadas como conversão podem deixar de ser, e vice-versa. A ação é permitida, mas exige aviso explícito (ver Microcopy) — exceto no último status ativo do tipo, onde é bloqueada (<span class="badge rule-badge">RN-STP-07</span>).</p>
+<p><b><span class="badge rule-badge">RN-STP-05</span> — A migração só oferece status do mesmo tipo.</b> No fluxo de migração (<span class="badge rule-badge">RN-STP-02</span>), a lista de destino apresenta <b>apenas os status ativos do mesmo tipo</b> do status sendo inativado/excluído. Um status do tipo Pago só migra para outro Pago; um de Negociação, para outro de Negociação.</p>
+<p><b>Por quê:</b> mover propostas entre tipos não é realocação, é reclassificação — propostas contadas como conversão deixariam de sê-lo, ou o inverso, sem que ninguém tivesse decidido isso conscientemente. A restrição garante que a migração preserve o significado de negócio das propostas envolvidas.</p>
+<p><b>Consequência:</b> a lista de destino nunca fica vazia, porque o último status ativo de um tipo não pode ser inativado nem excluído (<span class="badge rule-badge">RN-STP-07</span>).</p>
+<p><b><span class="badge rule-badge">RN-STP-06</span> — Contraste do badge é garantido pelo sistema.</b> O gestor escolhe apenas a cor de fundo do status. A cor do texto sobre esse fundo é <b>calculada automaticamente</b> pelo sistema, garantindo contraste legível em qualquer escolha. Não há validação nem bloqueio de cores no picker — nenhuma escolha do gestor pode produzir um badge ilegível.</p>
+<p><b><span class="badge rule-badge">RN-STP-07</span> — O último status ativo de um tipo não pode ser inativado, excluído nem mudar de tipo.</b> Se o status é o único ativo do seu tipo, essas três ações são <b>bloqueadas</b>, com a mensagem de que é o único do tipo e de que é preciso criar ou reativar outro antes. É a única situação em que este módulo bloqueia: sem outro status do tipo, a migração (<span class="badge rule-badge">RN-STP-02</span>) não teria destino, e uma proposta Paga que perdesse o status deixaria de contar como produção. Vale sempre, porque o tenant já nasce com um status ativo de cada tipo (<span class="badge rule-badge">RN-STP-10</span>).</p>
+<p><b><span class="badge rule-badge">RN-STP-08</span> — A Proposta nasce no status ativo mais antigo do tipo Novo.</b> Pode haver vários status do tipo Novo; a Proposta criada pela Ação Formalizar (<span class="badge rule-badge">RN-FNL-17</span>) nasce no <b>ativo cadastrado há mais tempo</b>. O tenant não escolhe qual; para mudar o status de entrada, inativa o mais antigo (permitido se houver outro Novo ativo, <span class="badge rule-badge">RN-STP-07</span>). No tenant recém-criado, é o status padrão Novo (<span class="badge rule-badge">RN-STP-10</span>). <i>(Decisão desta revisão: o desempate não estava definido; "o mais antigo" é o mais simples e não exige campo novo.)</i></p>
+<p><b><span class="badge rule-badge">RN-STP-09</span> — Nome único no tenant.</b> Não existem dois status com o mesmo nome, ignorando maiúsculas/minúsculas e espaços nas pontas. <i>(Decisão desta revisão.)</i></p>
+<p><b><span class="badge rule-badge">RN-STP-10</span> — O tenant nasce com um status padrão de cada tipo.</b> Ao ser implantado, o tenant recebe quatro status prontos, um por tipo — <b>Novo</b> (tipo Novo), <b>Em negociação</b> (tipo Negociação), <b>Pago</b> (tipo Pago) e <b>Cancelado</b> (tipo Cancelado) —, cada um com a cor correspondente à semântica do tipo [paleta a definir no Design System]. Assim a Ação Formalizar sempre tem um status Novo onde criar a Proposta (<span class="badge rule-badge">RN-FNL-17</span>, <span class="badge rule-badge">RN-STP-08</span>), e Pago e Cancelado existem desde o primeiro dia. São status <b>comuns</b> do tenant, sem marca de sistema: podem ser renomeados, recoloridos, ter o tipo alterado, inativados ou excluídos como quaisquer outros, sempre respeitando a <span class="badge rule-badge">RN-STP-07</span> (o último ativo de cada tipo permanece). Tenants já existentes que não tenham algum dos tipos recebem o status padrão daquele tipo. <i>(Decisão do usuário, na revisão de Funis, no mesmo espírito do Funil que nasce com stages sugeridos; os nomes e a regra para tenants existentes são escolha desta revisão.)</i></p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-STP-01</span></b> — Cadastro livre do tenant; tipo é enum fixo do sistema.</li>
+<li><b><span class="badge rule-badge">RN-STP-02</span></b> — Propostas vinculadas disparam migração, não bloqueio (salvo o último ativo do tipo).</li>
+<li><b><span class="badge rule-badge">RN-STP-03</span></b> — Exclusão definitiva existe, sujeita ao mesmo fluxo.</li>
+<li><b><span class="badge rule-badge">RN-STP-04</span></b> — Alterar o tipo reclassifica retroativamente as propostas vinculadas.</li>
+<li><b><span class="badge rule-badge">RN-STP-05</span></b> — A migração só oferece status ativos do mesmo tipo; não existe "Sem status".</li>
+<li><b><span class="badge rule-badge">RN-STP-06</span></b> — A cor do texto do badge é derivada da cor de fundo; contraste garantido pelo sistema.</li>
+<li><b><span class="badge rule-badge">RN-STP-07</span></b> — O último status ativo de um tipo não pode ser inativado, excluído nem mudar de tipo.</li>
+<li><b><span class="badge rule-badge">RN-STP-08</span></b> — A Proposta nasce no status ativo mais antigo do tipo Novo (pode haver vários).</li>
+<li><b><span class="badge rule-badge">RN-STP-09</span></b> — Nome único no tenant, ignorando maiúsculas e espaços nas pontas.</li>
+<li><b><span class="badge rule-badge">RN-STP-10</span></b> — O tenant nasce com um status padrão de cada tipo (Novo, Em negociação, Pago, Cancelado), comuns e editáveis.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Status de Proposta:</b></p>
+<ul>
+<li><b>Ativo</b> — disponível para ser atribuído a propostas.</li>
+<li><b>Inativo</b> — não pode ser atribuído a novas propostas.</li>
+</ul>
+<p>Transições: ativo → inativo (com migração se houver propostas vinculadas, <span class="badge rule-badge">RN-STP-02</span>); inativo → ativo (livre); ativo/inativo → excluído (mesmo fluxo, <span class="badge rule-badge">RN-STP-03</span>).</p>
+<p><b>Nota:</b> diferente de Produtos e Promotoras, as transições aqui não são bloqueadas por propostas vinculadas — são possíveis, algumas mediante migração. A única exceção é o último status ativo de um tipo (<span class="badge rule-badge">RN-STP-07</span>), que não pode ser inativado, excluído nem mudar de tipo.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p>Trata apenas do cadastro do Status. <b>Não</b> inclui: o fluxo da proposta em si, as regras de quais transições de status são permitidas, nem o que cada tipo dispara no negócio (módulo de Propostas).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b> o fluxo de <b>Implantação</b>, que dispara a criação dos status padrão (<span class="badge rule-badge">RN-STP-10</span>). Fora isso, é cadastro-base.</p>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Propostas</b> — a lista de Status ativos, com nome, cor e tipo, e o status em que a Proposta nasce (<span class="badge rule-badge">RN-STP-08</span>).</li>
+<li><b>Relatórios</b> — o tipo de cada status, para separar produção de perda sem depender do nome dado pelo tenant.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhum item aberto. Um ponto de atenção, decorrente de <span class="badge rule-badge">RN-STP-04</span> e <span class="badge rule-badge">RN-STP-05</span> juntas:</p>
+<ul>
+<li><b>Alterar o tipo é a saída para o que a migração não permite.</b> <span class="badge rule-badge">RN-STP-05</span> impede migrar propostas entre tipos, mas <span class="badge rule-badge">RN-STP-04</span> permite alterar o tipo de um status em uso — reclassificando tudo de uma vez (salvo o último ativo do tipo, <span class="badge rule-badge">RN-STP-07</span>). Ou seja: a reclassificação que a migração barra continua alcançável por outro caminho. Não é contradição (são ações diferentes, com avisos diferentes), mas vale saber que a proteção de <span class="badge rule-badge">RN-STP-05</span> não é absoluta.</li>
+</ul>
+<hr class="divider">
+<p><i>Fim do documento. Status de Proposta v0.7 — módulo da aplicação Admin, seção Cadastros.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-status-de-proposta-matriz-de-permiss-es">Corban Admin · Status de Proposta — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Cadastros</p>
+<p><b>Documento pai:</b> Corban Admin · Status de Proposta (módulo v0.2)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre apenas o recurso deste módulo (<code>proposal_statuses</code>). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>proposal_statuses</code></td><td><code>view</code></td><td><code>all</code></td></tr><tr><td><code>proposal_statuses</code></td><td><code>create</code></td><td><code>all</code></td></tr><tr><td><code>proposal_statuses</code></td><td><code>edit</code></td><td><code>all</code></td></tr><tr><td><code>proposal_statuses</code></td><td><code>inactivate</code></td><td><code>all</code></td></tr><tr><td><code>proposal_statuses</code></td><td><code>reactivate</code></td><td><code>all</code></td></tr><tr><td><code>proposal_statuses</code></td><td><code>delete</code></td><td><code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-por-que-tudo-em-escopo-all">2. Por que tudo em escopo <code>all</code></h2>
+<p>Status de Proposta é cadastro <b>tenant-wide</b> — não pertence a Loja nem a Time. Mesma estrutura de Segmentos, Produtos, Regiões e Promotoras.</p>
+<p>Vale notar o contraste com <b>Origem de Venda</b>, o outro cadastro consumido no meio de um fluxo de trabalho: lá <code>create</code> é oferecido em <code>store</code>, porque a criação acontece durante o atendimento. Aqui não — Status de Proposta é estrutura do processo comercial, definida uma vez pelo tenant, não algo que se cria no meio de uma proposta.</p>
+<hr class="divider">
+<h2 id="3-notas-sobre-as-a-es">3. Notas sobre as ações</h2>
+<p><b><code>edit</code> carrega mais peso do que aparenta.</b> Inclui alterar o <b>tipo</b> de um status, que reclassifica retroativamente todas as propostas vinculadas (<span class="badge rule-badge">RN-STP-04</span>) — uma proposta contada como conversão pode deixar de sê-lo. É a única permissão de "editar cadastro" do produto com efeito sobre números de produção já apurados.</p>
+<p><b><code>inactivate</code> e <code>delete</code> disparam migração, não bloqueio.</b> Diferente dos demais cadastros, quem tem essas permissões pode mover propostas de um status para outro no processo (<span class="badge rule-badge">RN-STP-02</span>). Na prática, são permissões de manipulação de dados de proposta, não só de cadastro.</p>
+<hr class="divider">
+<h2 id="4-owner-tenant">4. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p>_Fim do documento. Matriz de Permissões — Status de Proposta v0.1._</p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

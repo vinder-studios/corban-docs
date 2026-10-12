@@ -1,0 +1,226 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>
+  (function() {
+    var saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  })();
+</script>
+</head><body>
+<title>SmartCorbans C4 Admin UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: documento técnico de arquitetura — cabeçalho curto, diagrama largo como peça central, tabelas de rastreabilidade abaixo */
+:root{
+  --bg:#f4f4f5; --surface:#ffffff; --ink:#1b1b1d; --muted:#5b5b62; --line:#d4d4d8; --edge:#6e6e76;
+  --brand:#900a10; --brand-ink:#ffffff; --person:#212121; --person-ink:#ffffff;
+  --ext:#e6e6e9; --ext-ink:#1b1b1d; --ext-stroke:#8b8b93; --evo:#f9f9fa; --chip:#efe3e3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:flex;flex-direction:column;gap:40px}
+header{display:flex;flex-direction:column;gap:10px;max-width:72ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--brand);font-weight:500}
+h1{font-size:clamp(26px,4vw,36px);line-height:1.15;margin:0;text-wrap:balance;font-weight:600}
+h1 .smart{color:var(--brand)}
+h2{font-size:20px;margin:0 0 12px;font-weight:600;text-wrap:balance}
+p{margin:0}
+.lede{color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+figure{margin:0;display:flex;flex-direction:column;gap:14px}
+.canvas{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.canvas svg{display:block;min-width:920px;width:100%;height:auto}
+figcaption{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:13px;color:var(--muted)}
+.key{display:inline-flex;align-items:center;gap:8px}
+.sw{width:22px;height:14px;border-radius:2px;display:inline-block}
+.sw.person{background:var(--person)} .sw.sys{background:var(--brand)}
+.sw.ext{background:var(--ext);border:1px solid var(--ext-stroke)}
+.sw.tbd{background:var(--ext);border:1px dashed var(--ext-stroke)}
+.sw.evo{background:var(--evo);border:1px dotted var(--ext-stroke)}
+
+/* SVG */
+.p-box{fill:var(--person)} .p-name{fill:var(--person-ink);font:600 14px var(--sans)} .p-type{fill:var(--person-ink);opacity:.7;font:400 11px var(--mono)} .p-desc{fill:var(--person-ink);opacity:.88;font:400 11.5px var(--sans)}
+.s-box{fill:var(--brand)} .s-name{fill:var(--brand-ink);font:700 21px var(--sans)} .s-type{fill:var(--brand-ink);opacity:.75;font:400 11px var(--mono)} .c-name{fill:var(--brand-ink);font:700 15px var(--sans)} .b-line{fill:none;stroke:var(--ext-stroke);stroke-width:1.4;stroke-dasharray:8 5} .b-title{fill:var(--muted);font:500 12px var(--mono);letter-spacing:.06em} .db-top{fill:var(--brand);stroke:var(--brand-ink);stroke-opacity:.35} .sw.db{background:var(--brand);border-radius:7px/4px} .sw.bound{border:1.5px dashed var(--ext-stroke)} .s-desc{fill:var(--brand-ink);font:400 12.5px var(--sans)} .s-apps{fill:var(--brand-ink);font:500 12px var(--mono)}
+.e-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1.2} .e-box.tbd{stroke-dasharray:6 4}
+.e-name{fill:var(--ext-ink);font:600 14px var(--sans)} .e-type{fill:var(--muted);font:400 11px var(--mono)} .e-desc{fill:var(--ext-ink);opacity:.85;font:400 11.5px var(--sans)}
+.v-bound{fill:var(--evo);stroke:var(--ext-stroke);stroke-width:1.2;stroke-dasharray:2 4}
+.v-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1;stroke-dasharray:2 3;opacity:.85}
+.v-title{fill:var(--muted);font:500 12px var(--mono);letter-spacing:.06em}
+.rel{stroke:var(--edge);stroke-width:1.4;fill:none} .rel.tbd{stroke-dasharray:6 4} .rel.evo{stroke-dasharray:2 4}
+.arrowhead{fill:var(--edge)}
+.l-bg{fill:var(--surface)} .l-txt{fill:var(--ink);font:400 11.5px var(--sans)} .l-tech{fill:var(--muted);font:400 10.5px var(--mono)}
+
+section{display:flex;flex-direction:column;gap:6px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+td.ref{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.pill{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.on{background:var(--chip);color:var(--brand)} .pill.tbd{border:1px dashed var(--ext-stroke);color:var(--muted)} .pill.evo{border:1px dotted var(--ext-stroke);color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px}
+ol,ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+li{max-width:70ch}
+.note{font-size:13px;color:var(--muted);max-width:72ch}
+code{font-family:var(--mono);font-size:.9em}
+
+:root{--comp:#b8343a;--comp-ink:#ffffff;--supp:#5a2528;--cont-line:#900a10}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}}
+:root[data-theme="dark"]{--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}
+.k-box{fill:var(--comp)} .k-supp{fill:var(--supp)} .k-name{fill:var(--comp-ink);font:600 13.5px var(--sans)} .k-type{fill:var(--comp-ink);opacity:.72;font:400 10.5px var(--mono)} .k-desc{fill:var(--comp-ink);opacity:.92;font:400 11px var(--sans)}
+.o-box{fill:var(--surface);stroke:var(--cont-line);stroke-width:1.6} .o-name{fill:var(--ink);font:600 13.5px var(--sans)} .o-type{fill:var(--muted);font:400 10.5px var(--mono)}
+.tag{fill:var(--muted);font:400 10.5px var(--mono)} .sw.comp{background:var(--comp)} .sw.supp{background:var(--supp)} .sw.cont{background:var(--surface);border:1.6px solid var(--cont-line)}
+.sec{fill:var(--muted);font:500 10.5px var(--mono);letter-spacing:.06em} .k-code{fill:var(--comp-ink);opacity:.75;font:400 10.5px var(--mono)}
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><b>C4 Model</b> · Nível 3 de 4 · Componentes do Admin (UI) · <a href="../../Containers/index.html">Voltar ao Container</a> · <a href="../../index.html">Hub C4</a> · <a href="../../../../index.html">Início da doc</a></div>
+    <h1><span class="smart">Smart</span>Corbans — Componentes do Admin</h1>
+    <p class="lede">O container Admin aberto: a casca da aplicação, uma feature por módulo de produto agrupada pelas seis seções da navegação, e os pacotes do monorepo que o CRM e o Marketing também usam. Toda chamada sai pelo HTTP client para a API.</p>
+    <div class="meta"><span>v0.2 · Draft</span><span>Base: Containers v0.2 · Admin, Documento de Produto</span><span>Feature-Based · monorepo pnpm + Turborepo</span></div>
+  </header>
+  <figure>
+    <div class="canvas">
+      <svg viewBox="0 0 1260 910" role="img" aria-labelledby="dtitle" style="min-width:980px">
+        <title id="dtitle">Diagrama de componentes C4 do Admin</title>
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<rect class="v-bound" style="fill:none" x="20" y="150" width="1000" height="755" rx="10"/>
+<text class="b-title" x="40" y="174">ADMIN · [CONTAINER: SPA REACT 19 + VITE · NETLIFY]</text>
+<rect class="v-bound" style="fill:none;stroke-dasharray:4 4" x="34" y="300" width="972" height="290" rx="8"/>
+<text class="b-title" x="50" y="320">FEATURES · UMA POR MÓDULO DE PRODUTO</text>
+<rect class="v-bound" style="fill:none;stroke-dasharray:4 4" x="34" y="640" width="972" height="250" rx="8"/>
+<text class="b-title" x="50" y="660">PACOTES DO MONOREPO · COMPILADOS NO APP</text>
+<line class="rel" x1="515" y1="110" x2="515" y2="188" marker-end="url(#ah)"/>
+<line class="rel" x1="378" y1="230" x2="324" y2="230" marker-end="url(#ah)"/>
+<line class="rel" x1="185" y1="270" x2="185" y2="298" marker-end="url(#ah)"/>
+<line class="rel" x1="520" y1="590" x2="520" y2="638" marker-end="url(#ah)"/>
+<line class="rel" x1="1002" y1="730" x2="1058" y2="730" marker-end="url(#ah)"/>
+<line class="rel" x1="820" y1="270" x2="820" y2="298" marker-end="url(#ah)"/>
+<g><rect class="l-bg" x="462.7" y="139" width="84.6" height="17" rx="3"/><text class="tag" text-anchor="middle" x="505" y="152">Usa · HTTPS</text></g>
+<g><rect class="l-bg" x="325.0" y="203" width="52" height="17" rx="3"/><text class="tag" text-anchor="middle" x="351" y="216">navega</text></g>
+<g><rect class="l-bg" x="66.80000000000001" y="274" width="236.39999999999998" height="17" rx="3"/><text class="tag" text-anchor="middle" x="185" y="287">renderiza a rota · checa permissão</text></g>
+<g><rect class="l-bg" x="372.1" y="603" width="295.8" height="17" rx="3"/><text class="tag" text-anchor="middle" x="520" y="616">usam: Auth, Permissões, Design system, HTTP</text></g>
+<g><rect class="l-bg" x="1007" y="703" width="46" height="17" rx="3"/><text class="tag" text-anchor="middle" x="1030" y="716">HTTPS</text></g>
+<g><rect class="l-bg" x="724.9" y="274" width="190.2" height="17" rx="3"/><text class="tag" text-anchor="middle" x="820" y="287">QueryClient · MutationCache</text></g>
+<g><circle class="p-box" cx="505" cy="28" r="20"/><rect class="p-box" x="405" y="45" width="200" height="65" rx="12"/><text text-anchor="middle"><tspan class="p-name" x="505" y="72">Owner e gestores</tspan><tspan class="p-type" x="505" y="90">[Pessoa]</tspan></text></g>
+<g><rect class="k-box" x="40" y="190" width="282" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="181.0" y="212">Rotas e guarda de permissão</tspan><tspan class="k-code" x="181.0" y="228">apps/admin · app</tspan><tspan class="k-desc" x="181.0" y="246">Rota sem permissão mostra “sem acesso”.</tspan></text></g>
+<g><rect class="k-box" x="380" y="190" width="270" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="515.0" y="212">Shell Privado</tspan><tspan class="k-code" x="515.0" y="228">pacote do monorepo</tspan><tspan class="k-desc" x="515.0" y="246">Sidebar, header, app switcher, conta.</tspan></text></g>
+<g><rect class="k-box" x="680" y="190" width="320" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="840.0" y="212">Bootstrap e providers</tspan><tspan class="k-code" x="840.0" y="228">apps/admin · app</tspan><tspan class="k-desc" x="840.0" y="246">QueryClient, tema, HTTP client configurado.</tspan></text></g>
+<text class="sec" x="48" y="348">ACESSO</text>
+<g><rect class="k-box" x="48" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="123.0" y="382">Cargos</tspan><tspan class="k-code" x="123.0" y="398">roles</tspan></text></g>
+<g><rect class="k-box" x="48" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="123.0" y="454">Usuários</tspan><tspan class="k-code" x="123.0" y="470">users</tspan></text></g>
+<text class="sec" x="208" y="348">VISÃO GERAL · ANÁLISE</text>
+<g><rect class="k-box" x="208" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="283.0" y="382">Dashboard</tspan><tspan class="k-code" x="283.0" y="398">dashboard</tspan></text></g>
+<g><rect class="k-box" x="208" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="283.0" y="454">Relatórios</tspan><tspan class="k-code" x="283.0" y="470">reports</tspan></text></g>
+<text class="sec" x="368" y="348">VENDAS</text>
+<g><rect class="k-box" x="368" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="443.0" y="382">Lojas e Times</tspan><tspan class="k-code" x="443.0" y="398">stores</tspan></text></g>
+<g><rect class="k-box" x="368" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="443.0" y="454">Funis + Layout</tspan><tspan class="k-code" x="443.0" y="470">funnels</tspan></text></g>
+<text class="sec" x="528" y="348">CADASTROS</text>
+<g><rect class="k-box" x="528" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="603.0" y="382">Segmentos</tspan><tspan class="k-code" x="603.0" y="398">segments</tspan></text></g>
+<g><rect class="k-box" x="528" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="603.0" y="454">Produtos</tspan><tspan class="k-code" x="603.0" y="470">products</tspan></text></g>
+<g><rect class="k-box" x="528" y="504" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="603.0" y="526">Promotoras</tspan><tspan class="k-code" x="603.0" y="542">promoters</tspan></text></g>
+<g><rect class="k-box" x="688" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="763.0" y="382">Regiões</tspan><tspan class="k-code" x="763.0" y="398">regions</tspan></text></g>
+<g><rect class="k-box" x="688" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="763.0" y="454">Status de Proposta</tspan><tspan class="k-code" x="763.0" y="470">proposal-statuses</tspan></text></g>
+<g><rect class="k-box" x="688" y="504" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="763.0" y="526">Origem de Venda</tspan><tspan class="k-code" x="763.0" y="542">sale-origins</tspan></text></g>
+<text class="sec" x="848" y="348">OFERTA COMERCIAL</text>
+<g><rect class="k-box" x="848" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="923.0" y="382">Ofertas</tspan><tspan class="k-code" x="923.0" y="398">offers</tspan></text></g>
+<g><rect class="k-box" x="848" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="923.0" y="454">Regras</tspan><tspan class="k-code" x="923.0" y="470">rules</tspan></text></g>
+<g><rect class="k-supp" x="48" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="140.0" y="707">Auth</tspan><tspan class="k-code" x="140.0" y="723">core/features/auth</tspan><tspan class="k-desc" x="140.0" y="741">Login pela API (D-09).</tspan></text></g>
+<g><rect class="k-supp" x="240" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="332.0" y="707">Permissões</tspan><tspan class="k-code" x="332.0" y="723">core/features/permissions</tspan><tspan class="k-desc" x="332.0" y="741">Rotas, menu, botões.</tspan></text></g>
+<g><rect class="k-supp" x="432" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="524.0" y="707">Design system</tspan><tspan class="k-code" x="524.0" y="723">packages/ui + tokens</tspan><tspan class="k-desc" x="524.0" y="741">shadcn/ui, React Aria.</tspan></text></g>
+<g><rect class="k-supp" x="624" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="716.0" y="707">Modelos e utils</tspan><tspan class="k-code" x="716.0" y="723">packages/core/shared</tspan><tspan class="k-desc" x="716.0" y="741">Sem domínio.</tspan></text></g>
+<g><rect class="k-supp" x="816" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="908.0" y="707">HTTP client</tspan><tspan class="k-code" x="908.0" y="723">packages/infra</tspan><tspan class="k-desc" x="908.0" y="741">Única saída p/ a API.</tspan></text></g>
+<g><rect class="k-supp" x="816" y="785" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="908.0" y="807">Tempo real</tspan><tspan class="k-code" x="908.0" y="823">cliente SignalR</tspan><tspan class="k-desc" x="908.0" y="841">Notificações do sino.</tspan></text></g>
+<path class="rel" style="fill:none" d="M1002,830 H1150 V778" marker-end="url(#ah)"/>
+<g><rect class="l-bg" x="1040" y="821" width="70" height="17" rx="3"/><text class="tag" text-anchor="middle" x="1075" y="834">WebSocket</text></g>
+<g><rect class="o-box" x="1060" y="685" width="180" height="90" rx="5"/><text text-anchor="middle"><tspan class="o-name" x="1150" y="724">API SmartCorbans</tspan><tspan class="o-type" x="1150" y="741">[ASP.NET Core · Azure]</tspan></text></g>
+      </svg>
+    </div>
+    <figcaption>
+      <span class="key"><span class="sw comp"></span>Componente do app</span>
+      <span class="key"><span class="sw supp"></span>Pacote compartilhado</span>
+      <span class="key"><span class="sw cont"></span>Outro container</span>
+      <span class="key"><span class="sw bound"></span>Fronteira</span>
+      <span class="key">Dependências entre features na tabela abaixo.</span>
+    </figcaption>
+  </figure>
+
+  <section>
+    <h2>Features</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Seção</th><th>Feature</th><th>Pasta</th><th>Recurso de permissão</th><th>Módulo na API</th></tr></thead>
+      <tbody><tr><td class="ref" style="white-space:normal">Acesso</td><td><b>Cargos</b></td><td class="ref">roles</td><td class="ref" style="white-space:normal">roles</td><td>Acesso</td></tr>
+<tr><td class="ref" style="white-space:normal">Acesso</td><td><b>Usuários (com sessões)</b></td><td class="ref">users</td><td class="ref" style="white-space:normal">users, sessions</td><td>Acesso</td></tr>
+<tr><td class="ref" style="white-space:normal">Visão geral</td><td><b>Dashboard</b></td><td class="ref">dashboard</td><td class="ref" style="white-space:normal">view do módulo de cada bloco</td><td>Desempenho</td></tr>
+<tr><td class="ref" style="white-space:normal">Vendas</td><td><b>Lojas e Times (com Créditos da Loja)</b></td><td class="ref">stores</td><td class="ref" style="white-space:normal">stores, teams</td><td>Estrutura, Créditos</td></tr>
+<tr><td class="ref" style="white-space:normal">Vendas</td><td><b>Funis de Vendas, com Layout de Lead como 6ª aba</b></td><td class="ref">funnels</td><td class="ref" style="white-space:normal">funnels</td><td>Funis</td></tr>
+<tr><td class="ref" style="white-space:normal">Cadastros</td><td><b>Segmentos</b></td><td class="ref">segments</td><td class="ref" style="white-space:normal">segments</td><td>Estrutura</td></tr>
+<tr><td class="ref" style="white-space:normal">Cadastros</td><td><b>Produtos</b></td><td class="ref">products</td><td class="ref" style="white-space:normal">products</td><td>Catálogo comercial</td></tr>
+<tr><td class="ref" style="white-space:normal">Cadastros</td><td><b>Promotoras</b></td><td class="ref">promoters</td><td class="ref" style="white-space:normal">promoters</td><td>Catálogo comercial</td></tr>
+<tr><td class="ref" style="white-space:normal">Cadastros</td><td><b>Regiões</b></td><td class="ref">regions</td><td class="ref" style="white-space:normal">regions</td><td>Estrutura</td></tr>
+<tr><td class="ref" style="white-space:normal">Cadastros</td><td><b>Status de Proposta</b></td><td class="ref">proposal-statuses</td><td class="ref" style="white-space:normal">proposal_statuses</td><td>Funis</td></tr>
+<tr><td class="ref" style="white-space:normal">Cadastros</td><td><b>Origem de Venda (sem tela; exporta o combobox)</b></td><td class="ref">sale-origins</td><td class="ref" style="white-space:normal">sale_origins</td><td>Funis</td></tr>
+<tr><td class="ref" style="white-space:normal">Oferta comercial</td><td><b>Ofertas</b></td><td class="ref">offers</td><td class="ref" style="white-space:normal">offers</td><td>Catálogo comercial</td></tr>
+<tr><td class="ref" style="white-space:normal">Oferta comercial</td><td><b>Regras</b></td><td class="ref">rules</td><td class="ref" style="white-space:normal">rules</td><td>Catálogo comercial</td></tr>
+<tr><td class="ref" style="white-space:normal">Análise</td><td><b>Relatórios</b></td><td class="ref">reports</td><td class="ref" style="white-space:normal">reports_*</td><td>Desempenho</td></tr></tbody>
+    </table></div>
+    <p class="note">Layout de Lead fica dentro de <code>funnels</code>, por ser a 6ª aba de Funis e usar as permissões de <code>funnels</code>. O nome da pasta segue o recurso do catálogo de permissões, convenção registrada em <code>naming.md</code> da skill do monorepo.</p>
+  </section>
+
+  <section>
+    <h2>Dependências entre features</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Feature</th><th>Usa (pelo index.ts)</th><th>Para quê</th></tr></thead>
+      <tbody><tr><td><b>Ofertas</b></td><td class="ref" style="white-space:normal">Segmentos, Produtos, Promotoras, Regras</td><td>Compor a Oferta; o Banco vem da API (Banco Central).</td></tr>
+<tr><td><b>Regras</b></td><td class="ref" style="white-space:normal">(API) Bancos</td><td>“Bancos não aceitos” (RN-RGR-03).</td></tr>
+<tr><td><b>Promotoras</b></td><td class="ref" style="white-space:normal">Regiões</td><td>Associar Regiões (RN-REG-02).</td></tr>
+<tr><td><b>Lojas e Times</b></td><td class="ref" style="white-space:normal">Segmentos, Regiões, Funis de Vendas</td><td>Aba Segmentos, Região da Loja, Funil do Time.</td></tr>
+<tr><td><b>Usuários</b></td><td class="ref" style="white-space:normal">Cargos, Lojas e Times</td><td>Cargo, Loja e Time do usuário.</td></tr>
+<tr><td><b>Segmentos</b></td><td class="ref" style="white-space:normal">Funis de Vendas</td><td>Atalho para o Funil criado com o Segmento.</td></tr>
+<tr><td><b>Dashboard</b></td><td class="ref" style="white-space:normal">Funis, Ofertas, Lojas, Segmentos, Usuários</td><td>Alertas, gráfico de preço da lead, últimos usuários.</td></tr>
+<tr><td><b>Relatórios</b></td><td class="ref" style="white-space:normal">Lojas, Promotoras, Produtos, Segmentos, Status</td><td>Filtros e agrupamentos.</td></tr></tbody>
+    </table></div>
+    <p class="note">A criação do Funil junto com o Segmento é regra da API (RN-FNL-02); a UI só reflete o resultado.</p>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>Regras deste container</h2>
+      <ol>
+        <li><b>Features só pelo <code>index.ts</code></b>; import profundo barrado pelo lint <code>feature-deep-import</code>.</li>
+        <li><b>TanStack Query</b> é o único contato com o estado do servidor; Zustand só para UI compartilhada.</li>
+        <li><b>Mutações por serviços de domínio</b>; consultas puras podem chamar <code>data/api</code> direto.</li>
+        <li><b><code>MutationCache</code></b> é o ponto único de toast de erro.</li>
+        <li><b>Código em inglês</b>; português só no texto para o usuário.</li>
+        <li><b>Permissão na UI é conveniência</b>; a API reaplica permissão e escopo.</li>
+      </ol>
+    </section>
+    <section>
+      <h2>Estado do monorepo</h2>
+      <p>Conferido em <code>monorepo.md</code>: as cinco adaptações que eu tinha listado como pendentes já estão resolvidas lá.</p>
+      <ul>
+        <li><code>shared/</code> dividido entre <code>core/shared</code> e <code>ui</code>.</li>
+        <li>Auth como feature compartilhada em <code>core/features/auth</code>.</li>
+        <li>Fábrica do httpClient em <code>infra</code>, com <code>getToken</code> e <code>onUnauthorized</code> injetados.</li>
+        <li>Pacotes com nome próprio (<code>@corban/*</code>) e tabela de fronteiras.</li>
+        <li><code>core/features</code> também tem <code>shells</code>, <code>users</code> e <code>notifications</code>.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+</body></html>

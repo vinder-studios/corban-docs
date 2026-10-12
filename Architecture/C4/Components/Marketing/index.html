@@ -1,0 +1,190 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>
+  (function() {
+    var saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  })();
+</script>
+</head><body>
+<title>SmartCorbans C4 Marketing UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: documento técnico de arquitetura — cabeçalho curto, diagrama largo como peça central, tabelas de rastreabilidade abaixo */
+:root{
+  --bg:#f4f4f5; --surface:#ffffff; --ink:#1b1b1d; --muted:#5b5b62; --line:#d4d4d8; --edge:#6e6e76;
+  --brand:#900a10; --brand-ink:#ffffff; --person:#212121; --person-ink:#ffffff;
+  --ext:#e6e6e9; --ext-ink:#1b1b1d; --ext-stroke:#8b8b93; --evo:#f9f9fa; --chip:#efe3e3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:flex;flex-direction:column;gap:40px}
+header{display:flex;flex-direction:column;gap:10px;max-width:72ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--brand);font-weight:500}
+h1{font-size:clamp(26px,4vw,36px);line-height:1.15;margin:0;text-wrap:balance;font-weight:600}
+h1 .smart{color:var(--brand)}
+h2{font-size:20px;margin:0 0 12px;font-weight:600;text-wrap:balance}
+p{margin:0}
+.lede{color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+figure{margin:0;display:flex;flex-direction:column;gap:14px}
+.canvas{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.canvas svg{display:block;min-width:920px;width:100%;height:auto}
+figcaption{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:13px;color:var(--muted)}
+.key{display:inline-flex;align-items:center;gap:8px}
+.sw{width:22px;height:14px;border-radius:2px;display:inline-block}
+.sw.person{background:var(--person)} .sw.sys{background:var(--brand)}
+.sw.ext{background:var(--ext);border:1px solid var(--ext-stroke)}
+.sw.tbd{background:var(--ext);border:1px dashed var(--ext-stroke)}
+.sw.evo{background:var(--evo);border:1px dotted var(--ext-stroke)}
+
+/* SVG */
+.p-box{fill:var(--person)} .p-name{fill:var(--person-ink);font:600 14px var(--sans)} .p-type{fill:var(--person-ink);opacity:.7;font:400 11px var(--mono)} .p-desc{fill:var(--person-ink);opacity:.88;font:400 11.5px var(--sans)}
+.s-box{fill:var(--brand)} .s-name{fill:var(--brand-ink);font:700 21px var(--sans)} .s-type{fill:var(--brand-ink);opacity:.75;font:400 11px var(--mono)} .c-name{fill:var(--brand-ink);font:700 15px var(--sans)} .b-line{fill:none;stroke:var(--ext-stroke);stroke-width:1.4;stroke-dasharray:8 5} .b-title{fill:var(--muted);font:500 12px var(--mono);letter-spacing:.06em} .db-top{fill:var(--brand);stroke:var(--brand-ink);stroke-opacity:.35} .sw.db{background:var(--brand);border-radius:7px/4px} .sw.bound{border:1.5px dashed var(--ext-stroke)} .s-desc{fill:var(--brand-ink);font:400 12.5px var(--sans)} .s-apps{fill:var(--brand-ink);font:500 12px var(--mono)}
+.e-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1.2} .e-box.tbd{stroke-dasharray:6 4}
+.e-name{fill:var(--ext-ink);font:600 14px var(--sans)} .e-type{fill:var(--muted);font:400 11px var(--mono)} .e-desc{fill:var(--ext-ink);opacity:.85;font:400 11.5px var(--sans)}
+.v-bound{fill:var(--evo);stroke:var(--ext-stroke);stroke-width:1.2;stroke-dasharray:2 4}
+.v-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1;stroke-dasharray:2 3;opacity:.85}
+.v-title{fill:var(--muted);font:500 12px var(--mono);letter-spacing:.06em}
+.rel{stroke:var(--edge);stroke-width:1.4;fill:none} .rel.tbd{stroke-dasharray:6 4} .rel.evo{stroke-dasharray:2 4}
+.arrowhead{fill:var(--edge)}
+.l-bg{fill:var(--surface)} .l-txt{fill:var(--ink);font:400 11.5px var(--sans)} .l-tech{fill:var(--muted);font:400 10.5px var(--mono)}
+
+section{display:flex;flex-direction:column;gap:6px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+td.ref{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.pill{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.on{background:var(--chip);color:var(--brand)} .pill.tbd{border:1px dashed var(--ext-stroke);color:var(--muted)} .pill.evo{border:1px dotted var(--ext-stroke);color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px}
+ol,ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+li{max-width:70ch}
+.note{font-size:13px;color:var(--muted);max-width:72ch}
+code{font-family:var(--mono);font-size:.9em}
+
+:root{--comp:#b8343a;--comp-ink:#ffffff;--supp:#5a2528;--cont-line:#900a10}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}}
+:root[data-theme="dark"]{--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}
+.k-box{fill:var(--comp)} .k-supp{fill:var(--supp)} .k-name{fill:var(--comp-ink);font:600 13.5px var(--sans)} .k-type{fill:var(--comp-ink);opacity:.72;font:400 10.5px var(--mono)} .k-desc{fill:var(--comp-ink);opacity:.92;font:400 11px var(--sans)}
+.o-box{fill:var(--surface);stroke:var(--cont-line);stroke-width:1.6} .o-name{fill:var(--ink);font:600 13.5px var(--sans)} .o-type{fill:var(--muted);font:400 10.5px var(--mono)}
+.tag{fill:var(--muted);font:400 10.5px var(--mono)} .sw.comp{background:var(--comp)} .sw.supp{background:var(--supp)} .sw.cont{background:var(--surface);border:1.6px solid var(--cont-line)}
+.sec{fill:var(--muted);font:500 10.5px var(--mono);letter-spacing:.06em} .k-code{fill:var(--comp-ink);opacity:.75;font:400 10.5px var(--mono)}
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><b>C4 Model</b> · Nível 3 de 4 · Componentes do Marketing (UI) · <a href="../../Containers/index.html">Voltar ao Container</a> · <a href="../../index.html">Hub C4</a> · <a href="../../../../index.html">Início da doc</a></div>
+    <h1><span class="smart">Smart</span>Corbans — Componentes do Marketing</h1>
+    <p class="lede">O container Marketing aberto: a casca da aplicação com o tempo real, as três features e os mesmos pacotes do monorepo do Admin. O processamento pesado fica no Worker; a UI dispara, acompanha e recebe as notificações.</p>
+    <div class="meta"><span>v0.2 · Draft</span><span>Base: Containers v0.3 · Marketing v0.9</span><span>Feature-Based · monorepo pnpm + Turborepo</span></div>
+  </header>
+  <figure>
+    <div class="canvas">
+      <svg viewBox="0 0 1260 700" role="img" aria-labelledby="dtitle" style="min-width:980px">
+        <title id="dtitle">Componentes do Marketing</title>
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<rect class="v-bound" style="fill:none" x="20" y="150" width="1000" height="540" rx="10"/>
+<text class="b-title" x="520" y="174">MARKETING · [CONTAINER: SPA REACT 19 + VITE · NETLIFY]</text>
+<rect class="v-bound" style="fill:none;stroke-dasharray:4 4" x="34" y="300" width="972" height="165" rx="8"/>
+<text class="b-title" x="50" y="320">FEATURES · UMA POR MÓDULO DE PRODUTO</text>
+<line class="rel" x1="330" y1="110" x2="380" y2="188" marker-end="url(#ah)"/>
+<line class="rel" x1="510" y1="110" x2="440" y2="188" marker-end="url(#ah)"/>
+<line class="rel" x1="278" y1="230" x2="262" y2="230" marker-end="url(#ah)"/>
+<line class="rel" x1="150" y1="270" x2="150" y2="298" marker-end="url(#ah)"/>
+<line class="rel" x1="640" y1="270" x2="640" y2="298" marker-end="url(#ah)"/>
+<line class="rel" x1="890" y1="298" x2="890" y2="272" marker-end="url(#ah)"/>
+<line class="rel" x1="520" y1="465" x2="520" y2="513" marker-end="url(#ah)"/>
+<line class="rel" x1="250" y1="385" x2="338" y2="385" marker-end="url(#ah)"/>
+<line class="rel" x1="780" y1="385" x2="702" y2="385" marker-end="url(#ah)"/>
+<line class="rel" x1="1002" y1="240" x2="1150" y2="558" marker-end="url(#ah)"/>
+<g><rect class="l-bg" x="377.7" y="139" width="84.6" height="17" rx="3"/><text class="tag" text-anchor="middle" x="420" y="152">Usa · HTTPS</text></g>
+<g><rect class="l-bg" x="31.80000000000001" y="274" width="236.39999999999998" height="17" rx="3"/><text class="tag" text-anchor="middle" x="150" y="287">renderiza a rota · checa permissão</text></g>
+<g><rect class="l-bg" x="544.9" y="274" width="190.2" height="17" rx="3"/><text class="tag" text-anchor="middle" x="640" y="287">QueryClient · MutationCache</text></g>
+<g><rect class="l-bg" x="831.0" y="274" width="118" height="17" rx="3"/><text class="tag" text-anchor="middle" x="890" y="287">invalida consultas</text></g>
+<g><rect class="l-bg" x="372.1" y="479" width="295.8" height="17" rx="3"/><text class="tag" text-anchor="middle" x="520" y="492">usam: Auth, Permissões, Design system, HTTP</text></g>
+<g><rect class="l-bg" x="1052.0" y="389" width="66" height="17" rx="3"/><text class="tag" text-anchor="middle" x="1085" y="402">WebSocket</text></g>
+<g><circle class="p-box" cx="330" cy="28" r="20"/><rect class="p-box" x="245.0" y="45" width="170" height="65" rx="12"/><text text-anchor="middle"><tspan class="p-name" x="330" y="72">Gestor de Marketing</tspan><tspan class="p-type" x="330" y="90">[Pessoa]</tspan></text></g>
+<g><circle class="p-box" cx="510" cy="28" r="20"/><rect class="p-box" x="435.0" y="45" width="150" height="65" rx="12"/><text text-anchor="middle"><tspan class="p-name" x="510" y="72">Owner / financeiro</tspan><tspan class="p-type" x="510" y="90">[Pessoa]</tspan></text></g>
+<g><rect class="k-box" x="40" y="190" width="222" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="151.0" y="212">Rotas e guarda</tspan><tspan class="k-code" x="151.0" y="228">apps/marketing · app</tspan><tspan class="k-desc" x="151.0" y="246">Sem acesso → estado do Shell.</tspan></text></g>
+<g><rect class="k-box" x="280" y="190" width="220" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="390.0" y="212">Shell Privado</tspan><tspan class="k-code" x="390.0" y="228">pacote do monorepo</tspan><tspan class="k-desc" x="390.0" y="246">Sino com as notificações.</tspan></text></g>
+<g><rect class="k-box" x="520" y="190" width="240" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="640.0" y="212">Bootstrap e providers</tspan><tspan class="k-code" x="640.0" y="228">apps/marketing · app</tspan><tspan class="k-desc" x="640.0" y="246">QueryClient, tema, HTTP client.</tspan></text></g>
+<g><rect class="k-box" x="780" y="190" width="220" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="890.0" y="212">Tempo real</tspan><tspan class="k-code" x="890.0" y="228">[cliente SignalR · pacote]</tspan><tspan class="k-desc" x="890.0" y="246">Notificações e estados.</tspan></text></g>
+<g><rect class="k-box" x="50" y="340" width="200" height="110" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="150.0" y="362">Prospecção</tspan><tspan class="k-code" x="150.0" y="378">prospecting</tspan><tspan class="k-desc" x="150.0" y="396">Listas, importação, pré-análise,</tspan><tspan class="k-desc" x="150.0" y="411">aprovação, Lista de bloqueio.</tspan></text></g>
+<g><rect class="k-box" x="340" y="340" width="360" height="110" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="520.0" y="362">Dashboard</tspan><tspan class="k-code" x="520.0" y="378">dashboard</tspan><tspan class="k-desc" x="520.0" y="396">Volume e conversão por Lista e Varredura;</tspan><tspan class="k-desc" x="520.0" y="411">bloco financeiro com marketing_finance.</tspan></text></g>
+<g><rect class="k-box" x="790" y="340" width="200" height="110" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="890.0" y="362">Carteira Ativa</tspan><tspan class="k-code" x="890.0" y="378">sweeps</tspan><tspan class="k-desc" x="890.0" y="396">Varreduras Única e Recorrente,</tspan><tspan class="k-desc" x="890.0" y="411">aprovação, pausa, retomada.</tspan></text></g>
+<g><rect class="l-bg" x="281.0" y="359" width="26" height="17" rx="3"/><text class="tag" text-anchor="middle" x="294" y="372">lê</text></g>
+<g><rect class="l-bg" x="733.0" y="359" width="26" height="17" rx="3"/><text class="tag" text-anchor="middle" x="746" y="372">lê</text></g>
+<rect class="v-bound" style="fill:none;stroke-dasharray:4 4" x="34" y="515" width="972" height="160" rx="8"/>
+<text class="b-title" x="50" y="535">PACOTES DO MONOREPO · COMPILADOS NO APP</text>
+<g><rect class="k-supp" x="48" y="560" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="140.0" y="582">Auth</tspan><tspan class="k-code" x="140.0" y="598">core/features/auth</tspan><tspan class="k-desc" x="140.0" y="616">Login pela API (D-09).</tspan></text></g>
+<g><rect class="k-supp" x="240" y="560" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="332.0" y="582">Permissões</tspan><tspan class="k-code" x="332.0" y="598">core/features/permissions</tspan><tspan class="k-desc" x="332.0" y="616">Rotas, menu, botões.</tspan></text></g>
+<g><rect class="k-supp" x="432" y="560" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="524.0" y="582">Design system</tspan><tspan class="k-code" x="524.0" y="598">packages/ui + tokens</tspan><tspan class="k-desc" x="524.0" y="616">shadcn/ui, React Aria.</tspan></text></g>
+<g><rect class="k-supp" x="624" y="560" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="716.0" y="582">Modelos e utils</tspan><tspan class="k-code" x="716.0" y="598">packages/core/shared</tspan><tspan class="k-desc" x="716.0" y="616">Sem domínio.</tspan></text></g>
+<g><rect class="k-supp" x="816" y="560" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="908.0" y="582">HTTP client</tspan><tspan class="k-code" x="908.0" y="598">packages/infra</tspan><tspan class="k-desc" x="908.0" y="616">Única saída p/ a API.</tspan></text></g>
+<g><rect class="o-box" x="1060" y="560" width="180" height="90" rx="5"/><text text-anchor="middle"><tspan class="o-name" x="1150" y="599">API SmartCorbans</tspan><tspan class="o-type" x="1150" y="616">[ASP.NET Core · Azure]</tspan></text></g>
+<line class="rel" x1="1002" y1="605" x2="1058" y2="605" marker-end="url(#ah)"/>
+<g><rect class="l-bg" x="1007.0" y="580" width="46" height="17" rx="3"/><text class="tag" text-anchor="middle" x="1030" y="593">HTTPS</text></g>
+      </svg>
+    </div>
+    <figcaption>
+      <span class="key"><span class="sw comp"></span>Componente do app</span>
+      <span class="key"><span class="sw supp"></span>Pacote compartilhado</span>
+      <span class="key"><span class="sw cont"></span>Outro container</span>
+      <span class="key"><span class="sw bound"></span>Fronteira</span>
+      <span class="key">Dependências entre features na tabela abaixo.</span>
+    </figcaption>
+  </figure>
+
+  <section>
+    <h2>Features</h2>
+    <div class="tablewrap"><table><thead><tr><th>Feature</th><th>Pasta</th><th>Recurso de permissão</th><th>O que tem dentro</th><th>Módulo na API</th></tr></thead><tbody><tr><td><b>Dashboard</b></td><td class="ref" style="white-space:normal">dashboard</td><td class="ref" style="white-space:normal">view das fontes · marketing_finance</td><td>Volume, conversão e retorno financeiro.</td><td>Desempenho</td></tr>
+<tr><td><b>Prospecção</b></td><td class="ref" style="white-space:normal">prospecting</td><td class="ref" style="white-space:normal">prospecting_lists, blocklist, marketing_settings</td><td>Listas; wizard de importação (upload, mapeamento, dados da Lista, pré-análise); funil da pré-análise; aprovação da injeção; Lista de bloqueio; carência.</td><td>Marketing</td></tr>
+<tr><td><b>Carteira Ativa</b></td><td class="ref" style="white-space:normal">sweeps</td><td class="ref" style="white-space:normal">sweeps</td><td>Wizard da Varredura (Segmento, Filtro de base com contagem estimada, Operações); aprovação; pausa, retomada e edição da Recorrente.</td><td>Marketing</td></tr>
+</tbody></table></div>
+    <p class="note">Todos os recursos têm escopo <code>all</code>: o Marketing atua acima das Lojas. O botão de aprovar fica separado de criar e editar, porque liberar a injeção debita o saldo das Lojas.</p>
+  </section>
+  <section>
+    <h2>Notificações (RN-MKT-10)</h2>
+    <div class="tablewrap"><table><thead><tr><th>Evento</th><th>Quando</th><th>Quem recebe</th></tr></thead><tbody><tr><td><b>Aguardando aprovação</b></td><td>Pré-análise ou reprocessamento terminou</td><td class="ref" style="white-space:normal">Quem pode aprovar (prospecting_lists:approve ou sweeps:approve)</td></tr>
+<tr><td><b>Falha</b></td><td>Lista ou Varredura entrou em Falha</td><td class="ref" style="white-space:normal">Quem criou e quem pode aprovar</td></tr>
+<tr><td><b>Falha de execução recorrente</b></td><td>Uma execução da Recorrente falhou</td><td class="ref" style="white-space:normal">Quem criou e quem tem sweeps:approve</td></tr>
+</tbody></table></div>
+    <p class="note">Só exceções. Injeção concluída, execução diária bem-sucedida e Lead injetada não notificam: aparecem no Dashboard e no board da Loja.</p>
+  </section>
+  <div class="grid2">
+    <section>
+      <h2>Diferenças em relação ao Admin</h2>
+      <ul>
+        <li><b>Tempo real (ADR-0015):</b> o mesmo cliente do CRM, agora em pacote compartilhado. Entrega as notificações ao sino e avisa a tela aberta quando uma Lista ou Varredura muda de estado; a tela recarrega da API. Não há consulta periódica.</li>
+        <li><b>Processamento no Worker:</b> importação, pré-análise em lote, Varreduras e injeção rodam fora da UI; a tela só dispara e acompanha.</li>
+        <li><b>Upload de arquivo:</b> as Listas CSV/XLSX vão à API como multipart.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Dependências e decisões</h2>
+      <ul>
+        <li><b>Dashboard</b> usa Prospecção e Carteira Ativa pelo <code>index.ts</code>, para rótulos e filtros.</li>
+        <li><b>Combobox de Origem de Venda</b> vem do pacote candidato listado no CRM.</li>
+        <li><b>P-11 rejeitada</b> em favor da ADR-0015.</li>
+      </ul>
+      <p class="note">As seis regras do Admin valem igual.</p>
+    </section>
+  </div>
+</div>
+
+</body></html>

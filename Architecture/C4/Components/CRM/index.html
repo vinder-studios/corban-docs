@@ -1,0 +1,225 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>
+  (function() {
+    var saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  })();
+</script>
+</head><body>
+<title>SmartCorbans C4 CRM UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: documento técnico de arquitetura — cabeçalho curto, diagrama largo como peça central, tabelas de rastreabilidade abaixo */
+:root{
+  --bg:#f4f4f5; --surface:#ffffff; --ink:#1b1b1d; --muted:#5b5b62; --line:#d4d4d8; --edge:#6e6e76;
+  --brand:#900a10; --brand-ink:#ffffff; --person:#212121; --person-ink:#ffffff;
+  --ext:#e6e6e9; --ext-ink:#1b1b1d; --ext-stroke:#8b8b93; --evo:#f9f9fa; --chip:#efe3e3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:flex;flex-direction:column;gap:40px}
+header{display:flex;flex-direction:column;gap:10px;max-width:72ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--brand);font-weight:500}
+h1{font-size:clamp(26px,4vw,36px);line-height:1.15;margin:0;text-wrap:balance;font-weight:600}
+h1 .smart{color:var(--brand)}
+h2{font-size:20px;margin:0 0 12px;font-weight:600;text-wrap:balance}
+p{margin:0}
+.lede{color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+figure{margin:0;display:flex;flex-direction:column;gap:14px}
+.canvas{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.canvas svg{display:block;min-width:920px;width:100%;height:auto}
+figcaption{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:13px;color:var(--muted)}
+.key{display:inline-flex;align-items:center;gap:8px}
+.sw{width:22px;height:14px;border-radius:2px;display:inline-block}
+.sw.person{background:var(--person)} .sw.sys{background:var(--brand)}
+.sw.ext{background:var(--ext);border:1px solid var(--ext-stroke)}
+.sw.tbd{background:var(--ext);border:1px dashed var(--ext-stroke)}
+.sw.evo{background:var(--evo);border:1px dotted var(--ext-stroke)}
+
+/* SVG */
+.p-box{fill:var(--person)} .p-name{fill:var(--person-ink);font:600 14px var(--sans)} .p-type{fill:var(--person-ink);opacity:.7;font:400 11px var(--mono)} .p-desc{fill:var(--person-ink);opacity:.88;font:400 11.5px var(--sans)}
+.s-box{fill:var(--brand)} .s-name{fill:var(--brand-ink);font:700 21px var(--sans)} .s-type{fill:var(--brand-ink);opacity:.75;font:400 11px var(--mono)} .c-name{fill:var(--brand-ink);font:700 15px var(--sans)} .b-line{fill:none;stroke:var(--ext-stroke);stroke-width:1.4;stroke-dasharray:8 5} .b-title{fill:var(--muted);font:500 12px var(--mono);letter-spacing:.06em} .db-top{fill:var(--brand);stroke:var(--brand-ink);stroke-opacity:.35} .sw.db{background:var(--brand);border-radius:7px/4px} .sw.bound{border:1.5px dashed var(--ext-stroke)} .s-desc{fill:var(--brand-ink);font:400 12.5px var(--sans)} .s-apps{fill:var(--brand-ink);font:500 12px var(--mono)}
+.e-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1.2} .e-box.tbd{stroke-dasharray:6 4}
+.e-name{fill:var(--ext-ink);font:600 14px var(--sans)} .e-type{fill:var(--muted);font:400 11px var(--mono)} .e-desc{fill:var(--ext-ink);opacity:.85;font:400 11.5px var(--sans)}
+.v-bound{fill:var(--evo);stroke:var(--ext-stroke);stroke-width:1.2;stroke-dasharray:2 4}
+.v-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1;stroke-dasharray:2 3;opacity:.85}
+.v-title{fill:var(--muted);font:500 12px var(--mono);letter-spacing:.06em}
+.rel{stroke:var(--edge);stroke-width:1.4;fill:none} .rel.tbd{stroke-dasharray:6 4} .rel.evo{stroke-dasharray:2 4}
+.arrowhead{fill:var(--edge)}
+.l-bg{fill:var(--surface)} .l-txt{fill:var(--ink);font:400 11.5px var(--sans)} .l-tech{fill:var(--muted);font:400 10.5px var(--mono)}
+
+section{display:flex;flex-direction:column;gap:6px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+td.ref{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.pill{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.on{background:var(--chip);color:var(--brand)} .pill.tbd{border:1px dashed var(--ext-stroke);color:var(--muted)} .pill.evo{border:1px dotted var(--ext-stroke);color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px}
+ol,ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+li{max-width:70ch}
+.note{font-size:13px;color:var(--muted);max-width:72ch}
+code{font-family:var(--mono);font-size:.9em}
+
+:root{--comp:#b8343a;--comp-ink:#ffffff;--supp:#5a2528;--cont-line:#900a10}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}}
+:root[data-theme="dark"]{--comp:#9c2a30;--comp-ink:#ffffff;--supp:#4a2a2c;--cont-line:#d0545a}
+.k-box{fill:var(--comp)} .k-supp{fill:var(--supp)} .k-name{fill:var(--comp-ink);font:600 13.5px var(--sans)} .k-type{fill:var(--comp-ink);opacity:.72;font:400 10.5px var(--mono)} .k-desc{fill:var(--comp-ink);opacity:.92;font:400 11px var(--sans)}
+.o-box{fill:var(--surface);stroke:var(--cont-line);stroke-width:1.6} .o-name{fill:var(--ink);font:600 13.5px var(--sans)} .o-type{fill:var(--muted);font:400 10.5px var(--mono)}
+.tag{fill:var(--muted);font:400 10.5px var(--mono)} .sw.comp{background:var(--comp)} .sw.supp{background:var(--supp)} .sw.cont{background:var(--surface);border:1.6px solid var(--cont-line)}
+.sec{fill:var(--muted);font:500 10.5px var(--mono);letter-spacing:.06em} .k-code{fill:var(--comp-ink);opacity:.75;font:400 10.5px var(--mono)}
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><b>C4 Model</b> · Nível 3 de 4 · Componentes do CRM (UI) · <a href="../../Containers/index.html">Voltar ao Container</a> · <a href="../../index.html">Hub C4</a> · <a href="../../../../index.html">Início da doc</a></div>
+    <h1><span class="smart">Smart</span>Corbans — Componentes do CRM</h1>
+    <p class="lede">O container CRM aberto: a casca da aplicação com o cliente de tempo real e a rota pública do Modo TV, 14 features pelas cinco seções da navegação, e os mesmos pacotes do monorepo do Admin.</p>
+    <div class="meta"><span>v0.2 · Draft</span><span>Base: Containers v0.2 · CRM, Documento de Produto</span><span>Feature-Based · monorepo pnpm + Turborepo</span></div>
+  </header>
+  <figure>
+    <div class="canvas">
+      <svg viewBox="0 0 1260 820" role="img" aria-labelledby="dtitle" style="min-width:980px">
+        <title id="dtitle">Componentes do CRM</title>
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<rect class="v-bound" style="fill:none" x="20" y="150" width="1000" height="665" rx="10"/>
+<text class="b-title" x="560" y="174">CRM · [CONTAINER: SPA REACT 19 + VITE · NETLIFY]</text>
+<rect class="v-bound" style="fill:none;stroke-dasharray:4 4" x="34" y="300" width="972" height="290" rx="8"/>
+<text class="b-title" x="50" y="320">FEATURES · UMA POR MÓDULO DE PRODUTO</text>
+<line class="rel" x1="150" y1="110" x2="150" y2="188" marker-end="url(#ah)"/>
+<line class="rel" x1="325" y1="110" x2="370" y2="188" marker-end="url(#ah)"/>
+<line class="rel" x1="475" y1="110" x2="420" y2="188" marker-end="url(#ah)"/>
+<line class="rel" x1="278" y1="230" x2="262" y2="230" marker-end="url(#ah)"/>
+<line class="rel" x1="150" y1="270" x2="150" y2="298" marker-end="url(#ah)"/>
+<line class="rel" x1="640" y1="270" x2="640" y2="298" marker-end="url(#ah)"/>
+<line class="rel" x1="520" y1="590" x2="520" y2="638" marker-end="url(#ah)"/>
+<line class="rel" x1="1002" y1="240" x2="1150" y2="683" marker-end="url(#ah)"/>
+<line class="rel" x1="890" y1="298" x2="890" y2="272" marker-end="url(#ah)"/>
+<g><rect class="l-bg" x="102.0" y="139" width="96" height="17" rx="3"/><text class="tag" text-anchor="middle" x="150" y="152">link com token</text></g>
+<g><rect class="l-bg" x="355.7" y="139" width="84.6" height="17" rx="3"/><text class="tag" text-anchor="middle" x="398" y="152">Usa · HTTPS</text></g>
+<g><rect class="l-bg" x="31.80000000000001" y="274" width="236.39999999999998" height="17" rx="3"/><text class="tag" text-anchor="middle" x="150" y="287">renderiza a rota · checa permissão</text></g>
+<g><rect class="l-bg" x="544.9" y="274" width="190.2" height="17" rx="3"/><text class="tag" text-anchor="middle" x="640" y="287">QueryClient · MutationCache</text></g>
+<g><rect class="l-bg" x="372.1" y="604" width="295.8" height="17" rx="3"/><text class="tag" text-anchor="middle" x="520" y="617">usam: Auth, Permissões, Design system, HTTP</text></g>
+<g><rect class="l-bg" x="1052.0" y="449" width="66" height="17" rx="3"/><text class="tag" text-anchor="middle" x="1085" y="462">WebSocket</text></g>
+<g><rect class="l-bg" x="831.0" y="274" width="118" height="17" rx="3"/><text class="tag" text-anchor="middle" x="890" y="287">invalida consultas</text></g>
+<g><circle class="e-box" cx="150" cy="28" r="20"/><rect class="e-box" x="65.0" y="45" width="170" height="65" rx="12"/><text text-anchor="middle"><tspan class="e-name" x="150" y="72">TV da Loja</tspan><tspan class="e-type" x="150" y="90">[Sem login]</tspan></text></g>
+<g><circle class="p-box" cx="325" cy="28" r="20"/><rect class="p-box" x="260.0" y="45" width="130" height="65" rx="12"/><text text-anchor="middle"><tspan class="p-name" x="325" y="72">Operador</tspan><tspan class="p-type" x="325" y="90">[Pessoa]</tspan></text></g>
+<g><circle class="p-box" cx="475" cy="28" r="20"/><rect class="p-box" x="405.0" y="45" width="140" height="65" rx="12"/><text text-anchor="middle"><tspan class="p-name" x="475" y="72">Gestor(a) de Loja</tspan><tspan class="p-type" x="475" y="90">[Pessoa]</tspan></text></g>
+<g><rect class="k-box" x="40" y="190" width="222" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="151.0" y="212">Rotas e guarda</tspan><tspan class="k-code" x="151.0" y="228">apps/crm · app</tspan><tspan class="k-desc" x="151.0" y="246">Inclui rota pública do Modo TV.</tspan></text></g>
+<g><rect class="k-box" x="280" y="190" width="220" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="390.0" y="212">Shell Privado</tspan><tspan class="k-code" x="390.0" y="228">pacote do monorepo</tspan><tspan class="k-desc" x="390.0" y="246">Notificações em tempo real.</tspan></text></g>
+<g><rect class="k-box" x="520" y="190" width="240" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="640.0" y="212">Bootstrap e providers</tspan><tspan class="k-code" x="640.0" y="228">apps/crm · app</tspan><tspan class="k-desc" x="640.0" y="246">QueryClient, tema, HTTP client.</tspan></text></g>
+<g><rect class="k-box" x="780" y="190" width="220" height="80" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="890.0" y="212">Tempo real</tspan><tspan class="k-code" x="890.0" y="228">[cliente SignalR · pacote]</tspan><tspan class="k-desc" x="890.0" y="246">Eventos da API.</tspan></text></g>
+<text class="sec" x="48" y="348">VISÃO GERAL</text>
+<g><rect class="k-box" x="48" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="123.0" y="382">Dashboard</tspan><tspan class="k-code" x="123.0" y="398">dashboard</tspan></text></g>
+<text class="sec" x="208" y="348">OPERAÇÃO</text>
+<g><rect class="k-box" x="208" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="283.0" y="382">Leads</tspan><tspan class="k-code" x="283.0" y="398">leads</tspan></text></g>
+<g><rect class="k-box" x="208" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="283.0" y="454">Simulações</tspan><tspan class="k-code" x="283.0" y="470">simulations</tspan></text></g>
+<g><rect class="k-box" x="208" y="504" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="283.0" y="526">Propostas</tspan><tspan class="k-code" x="283.0" y="542">proposals</tspan></text></g>
+<g><rect class="k-box" x="368" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="443.0" y="382">Clientes</tspan><tspan class="k-code" x="443.0" y="398">clients</tspan></text></g>
+<g><rect class="k-box" x="368" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="443.0" y="454">Chat</tspan><tspan class="k-code" x="443.0" y="470">chats</tspan></text></g>
+<g><rect class="k-box" x="368" y="504" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="443.0" y="526">Configurações</tspan><tspan class="k-code" x="443.0" y="542">settings</tspan></text></g>
+<text class="sec" x="528" y="348">DESEMPENHO</text>
+<g><rect class="k-box" x="528" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="603.0" y="382">Rankings + TV</tspan><tspan class="k-code" x="603.0" y="398">rankings</tspan></text></g>
+<g><rect class="k-box" x="528" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="603.0" y="454">Relatórios</tspan><tspan class="k-code" x="603.0" y="470">reports</tspan></text></g>
+<text class="sec" x="688" y="348">GESTÃO</text>
+<g><rect class="k-box" x="688" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="763.0" y="382">Membros</tspan><tspan class="k-code" x="763.0" y="398">members</tspan></text></g>
+<g><rect class="k-box" x="688" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="763.0" y="454">Times</tspan><tspan class="k-code" x="763.0" y="470">teams</tspan></text></g>
+<g><rect class="k-box" x="688" y="504" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="763.0" y="526">Metas (anexada)</tspan><tspan class="k-code" x="763.0" y="542">goals</tspan></text></g>
+<text class="sec" x="848" y="348">FINANCEIRO</text>
+<g><rect class="k-box" x="848" y="360" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="923.0" y="382">Multiplicadores</tspan><tspan class="k-code" x="923.0" y="398">multipliers</tspan></text></g>
+<g><rect class="k-box" x="848" y="432" width="150" height="58" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="923.0" y="454">Créditos</tspan><tspan class="k-code" x="923.0" y="470">credits</tspan></text></g>
+<rect class="v-bound" style="fill:none;stroke-dasharray:4 4" x="34" y="640" width="972" height="160" rx="8"/>
+<text class="b-title" x="50" y="660">PACOTES DO MONOREPO · COMPILADOS NO APP</text>
+<g><rect class="k-supp" x="48" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="140.0" y="707">Auth</tspan><tspan class="k-code" x="140.0" y="723">core/features/auth</tspan><tspan class="k-desc" x="140.0" y="741">Login pela API (D-09).</tspan></text></g>
+<g><rect class="k-supp" x="240" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="332.0" y="707">Permissões</tspan><tspan class="k-code" x="332.0" y="723">core/features/permissions</tspan><tspan class="k-desc" x="332.0" y="741">Rotas, menu, botões.</tspan></text></g>
+<g><rect class="k-supp" x="432" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="524.0" y="707">Design system</tspan><tspan class="k-code" x="524.0" y="723">packages/ui + tokens</tspan><tspan class="k-desc" x="524.0" y="741">shadcn/ui, React Aria.</tspan></text></g>
+<g><rect class="k-supp" x="624" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="716.0" y="707">Modelos e utils</tspan><tspan class="k-code" x="716.0" y="723">packages/core/shared</tspan><tspan class="k-desc" x="716.0" y="741">Sem domínio.</tspan></text></g>
+<g><rect class="k-supp" x="816" y="685" width="184" height="90" rx="5"/><text text-anchor="middle"><tspan class="k-name" x="908.0" y="707">HTTP client</tspan><tspan class="k-code" x="908.0" y="723">packages/infra</tspan><tspan class="k-desc" x="908.0" y="741">Única saída p/ a API.</tspan></text></g>
+<g><rect class="o-box" x="1060" y="685" width="180" height="90" rx="5"/><text text-anchor="middle"><tspan class="o-name" x="1150" y="724">API SmartCorbans</tspan><tspan class="o-type" x="1150" y="741">[ASP.NET Core · Azure]</tspan></text></g>
+<line class="rel" x1="1002" y1="730" x2="1058" y2="730" marker-end="url(#ah)"/>
+<g><rect class="l-bg" x="1007.0" y="705" width="46" height="17" rx="3"/><text class="tag" text-anchor="middle" x="1030" y="718">HTTPS</text></g>
+      </svg>
+    </div>
+    <figcaption>
+      <span class="key"><span class="sw comp"></span>Componente do app</span>
+      <span class="key"><span class="sw supp"></span>Pacote compartilhado</span>
+      <span class="key"><span class="sw cont"></span>Outro container</span>
+      <span class="key"><span class="sw bound"></span>Fronteira</span>
+      <span class="key">Dependências entre features na tabela abaixo.</span>
+    </figcaption>
+  </figure>
+
+  <section>
+    <h2>Features</h2>
+    <div class="tablewrap"><table><thead><tr><th>Feature</th><th>Seção</th><th>Pasta</th><th>Recurso de permissão</th><th>Módulo na API</th></tr></thead><tbody><tr><td><b>Dashboard</b></td><td class="ref" style="white-space:normal">Visão geral</td><td class="ref" style="white-space:normal">dashboard</td><td class="ref" style="white-space:normal">view do módulo de cada bloco</td><td>Desempenho</td></tr>
+<tr><td><b>Leads (board, Card e Sheet pelo Layout de Lead)</b></td><td class="ref" style="white-space:normal">Operação</td><td class="ref" style="white-space:normal">leads</td><td class="ref" style="white-space:normal">leads</td><td>Leads e Distribuição</td></tr>
+<tr><td><b>Simulações</b></td><td class="ref" style="white-space:normal">Operação</td><td class="ref" style="white-space:normal">simulations</td><td class="ref" style="white-space:normal">simulations</td><td>Motor de Simulação</td></tr>
+<tr><td><b>Propostas</b></td><td class="ref" style="white-space:normal">Operação</td><td class="ref" style="white-space:normal">proposals</td><td class="ref" style="white-space:normal">proposals, proposals_*</td><td>Propostas</td></tr>
+<tr><td><b>Clientes</b></td><td class="ref" style="white-space:normal">Operação</td><td class="ref" style="white-space:normal">clients</td><td class="ref" style="white-space:normal">clients, clients_documents</td><td>Clientes</td></tr>
+<tr><td><b>Chat (tela dedicada e painel para o card)</b></td><td class="ref" style="white-space:normal">Operação</td><td class="ref" style="white-space:normal">chats</td><td class="ref" style="white-space:normal">chats</td><td>Atendimento</td></tr>
+<tr><td><b>Configurações da Loja</b></td><td class="ref" style="white-space:normal">Operação</td><td class="ref" style="white-space:normal">settings</td><td class="ref" style="white-space:normal">store_profile, store_segments</td><td>Estrutura</td></tr>
+<tr><td><b>Rankings, com o Modo TV</b></td><td class="ref" style="white-space:normal">Desempenho</td><td class="ref" style="white-space:normal">rankings</td><td class="ref" style="white-space:normal">rankings</td><td>Desempenho</td></tr>
+<tr><td><b>Relatórios</b></td><td class="ref" style="white-space:normal">Desempenho</td><td class="ref" style="white-space:normal">reports</td><td class="ref" style="white-space:normal">crm_reports_*</td><td>Desempenho</td></tr>
+<tr><td><b>Membros</b></td><td class="ref" style="white-space:normal">Gestão</td><td class="ref" style="white-space:normal">members</td><td class="ref" style="white-space:normal">members, members_sessions</td><td>Acesso</td></tr>
+<tr><td><b>Times</b></td><td class="ref" style="white-space:normal">Gestão</td><td class="ref" style="white-space:normal">teams</td><td class="ref" style="white-space:normal">crm_teams</td><td>Estrutura</td></tr>
+<tr><td><b>Metas: sem rota; blocos no Detalhe do Time e do Membro</b></td><td class="ref" style="white-space:normal">(anexada)</td><td class="ref" style="white-space:normal">goals</td><td class="ref" style="white-space:normal">goals</td><td>Desempenho</td></tr>
+<tr><td><b>Tabela de Multiplicadores</b></td><td class="ref" style="white-space:normal">Financeiro</td><td class="ref" style="white-space:normal">multipliers</td><td class="ref" style="white-space:normal">multipliers</td><td>Propostas</td></tr>
+<tr><td><b>Créditos</b></td><td class="ref" style="white-space:normal">Financeiro</td><td class="ref" style="white-space:normal">credits</td><td class="ref" style="white-space:normal">credits</td><td>Créditos</td></tr>
+</tbody></table></div>
+    <p class="note">Quando o módulo tem mais de um recurso no catálogo, a pasta leva o nome do módulo em inglês (<code>settings</code>), complementando a convenção de nome de pasta da skill (<code>naming.md</code>).</p>
+  </section>
+  <section>
+    <h2>Dependências entre features</h2>
+    <div class="tablewrap"><table><thead><tr><th>Feature</th><th>Usa (pelo index.ts)</th><th>Para quê</th></tr></thead><tbody><tr><td><b>Leads</b></td><td class="ref" style="white-space:normal">Chat, Simulações, Propostas</td><td>Painel de conversa no card; simular a partir da Lead; Formalizar.</td></tr>
+<tr><td><b>Propostas</b></td><td class="ref" style="white-space:normal">Simulações, Clientes</td><td>Simulação de referência; documentos do Cliente.</td></tr>
+<tr><td><b>Clientes</b></td><td class="ref" style="white-space:normal">Simulações, Chat, Propostas, Leads</td><td>Abas da ficha do Cliente.</td></tr>
+<tr><td><b>Times, Membros</b></td><td class="ref" style="white-space:normal">Metas</td><td>Metas no Detalhe.</td></tr>
+<tr><td><b>Dashboard</b></td><td class="ref" style="white-space:normal">Leads, Propostas, Metas, Créditos, Simulações</td><td>Blocos da tela inicial.</td></tr>
+<tr><td><b>Rankings</b></td><td class="ref" style="white-space:normal">Times, Membros</td><td>Cargos elegíveis e exibição.</td></tr>
+</tbody></table></div>
+    <p class="note">Funil, Layout de Lead, Ofertas e Status de Proposta chegam pela API, nunca por import de feature do Admin.</p>
+  </section>
+  <section>
+    <h2>Candidatos a pacote pela regra do segundo uso</h2>
+    <div class="tablewrap"><table><thead><tr><th>O quê</th><th>Primeiro uso</th><th>Segundo uso</th><th>Por quê</th></tr></thead><tbody><tr><td><b>Mecânica de Relatórios</b></td><td class="ref" style="white-space:normal">reports (Admin)</td><td class="ref" style="white-space:normal">reports (CRM)</td><td>Mesma mecânica nos três relatórios compartilhados.</td></tr>
+<tr><td><b>Combobox de Origem de Venda</b></td><td class="ref" style="white-space:normal">sale-origins (Admin)</td><td class="ref" style="white-space:normal">leads (CRM); Prospecção e Carteira Ativa (Marketing)</td><td>Cadastro gerido no ponto de uso, nas três aplicações.</td></tr>
+<tr><td><b>Formulário de Usuário</b></td><td class="ref" style="white-space:normal">users (Admin)</td><td class="ref" style="white-space:normal">members (CRM)</td><td>Membros é o mesmo Usuário com escopo store.</td></tr>
+</tbody></table></div>
+    <p class="note">Nenhum app importa feature de outro, então cada item vira pacote quando o segundo uso for implementado.</p>
+  </section>
+  <div class="grid2">
+    <section>
+      <h2>Diferenças em relação ao Admin</h2>
+      <ul>
+        <li><b>Tempo real:</b> cliente WebSocket que invalida as consultas do TanStack Query e dispara notificações no Shell. Fica no app porque só o CRM usa.</li>
+        <li><b>Modo TV:</b> rota pública, fora do Shell e sem login, aberta pelo link com token da Loja (RF-RNK-04).</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Regras extras</h2>
+      <ol>
+        <li><b>O Tempo real só invalida consultas</b>; o dado novo vem da API.</li>
+        <li><b>O Modo TV não usa sessão de usuário</b>; só o token do link, só leitura dos Rankings marcados para TV.</li>
+      </ol>
+      <p class="note">As seis regras do Admin valem igual.</p>
+    </section>
+  </div>
+</div>
+
+</body></html>

@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SmartCorbans — Persistência &amp; Modelo de Dados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: isDark ? 'dark' : 'neutral',
+      securityLevel: 'loose',
+      fontFamily: '"IBM Plex Sans", sans-serif'
+    });
+    updateThemeLabel();
+  });
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  function toggleMermaidCode(id) {
+    const diagram = document.getElementById('diagram-' + id);
+    const code = document.getElementById('code-' + id);
+    const btn = document.getElementById('toggle-btn-' + id);
+    if (code.style.display === 'block') {
+      code.style.display = 'none';
+      diagram.style.display = 'block';
+      btn.textContent = 'Ver Código Mermaid';
+    } else {
+      code.style.display = 'block';
+      diagram.style.display = 'none';
+      btn.textContent = 'Ver Diagrama Renderizado';
+    }
+  }
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 340px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .schema-badge {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--brand);
+  background: var(--chip);
+  border: 1px solid var(--chip-border);
+  padding: 3px 10px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 28px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+/* Diagram box */
+.diagram-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: auto;
+}
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 10px;
+}
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.diagram-toggle-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.diagram-toggle-btn:hover { color: var(--ink); border-color: var(--edge); }
+
+.mermaid-code-view {
+  display: none;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+.badge-key {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+  margin-right: 3px;
+  vertical-align: baseline;
+}
+
+/* Schema table specific column sizing */
+table.schema-table th:nth-child(1),
+table.schema-table td:nth-child(1) {
+  white-space: nowrap;
+  font-weight: 500;
+  width: 220px;
+  min-width: 170px;
+}
+table.schema-table th:nth-child(2),
+table.schema-table td:nth-child(2) {
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  width: 140px;
+  min-width: 110px;
+}
+table.schema-table th:nth-child(3),
+table.schema-table td:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+  width: 70px;
+}
+table.schema-table th:nth-child(4),
+table.schema-table td:nth-child(4) {
+  min-width: 320px;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px 22px;
+    }
+    .metric-item { display: flex; flex-direction: column; gap: 4px; }
+    .metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+    .metric-value.brand { color: var(--brand); }
+    .metric-label { font-size: 12.5px; color: var(--muted); }
+
+    .search-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .search-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      padding: 10px 14px 10px 38px;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .search-input:focus { border-color: var(--brand); }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+    .filter-pill.active {
+      background: var(--brand);
+      color: var(--brand-ink);
+      border-color: var(--brand);
+      font-weight: 500;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .mod-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .mod-card:hover {
+      border-color: var(--brand);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .schema-pill {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand);
+    }
+    .group-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: var(--muted);
+    }
+    .status-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .status-pill.accepted { background: var(--green-soft); color: var(--green); }
+    .status-pill.superseded { background: var(--amber-soft); color: var(--amber); }
+
+    .card-title {
+      font-size: 17px;
+      line-height: 1.3;
+      margin: 0;
+      font-weight: 600;
+    }
+    .card-title a:hover { color: var(--brand); }
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    .card-bottom {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand);
+    }
+
+    .view-toggle {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--bg);
+      padding: 2px;
+      margin-left: auto;
+    }
+    .view-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .view-btn.active {
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--brand);
+      font-family: var(--mono);
+      font-size: 11px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .pill-btn:hover { border-color: var(--brand); }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <span class="current">Persistência &amp; Modelo de Dados</span>
+    </div>
+    <div class="actions">
+      <a href="../../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Início da Doc
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow"><b>Modelo Lógico de Dados</b> · PostgreSQL Flexible Server</div>
+    <h1>Persistência &amp; Modelo de Dados Relacional</h1>
+    <p style="color:var(--muted);font-size:16px;margin:0;max-width:75ch">
+      Especificação lógica completa das entidades, relacionamentos e restrições de banco de dados do SmartCorbans. Modelagem organizada por schemas de domínio, sem chaves estrangeiras entre módulos (<a href="../ADR/0023-sem-fk-entre-modulos/index.html" style="color:var(--brand);text-decoration:underline">ADR-0023</a>) e com isolamento estrito via DbContext por camada (<a href="../ADR/0012-ef-core-dbcontext-por-modulo/index.html" style="color:var(--brand);text-decoration:underline">ADR-0012</a>).
+    </p>
+  </header>
+
+  <!-- Metrics -->
+  <div class="metrics-bar">
+    <div class="metric-item">
+      <span class="metric-value brand">12</span>
+      <span class="metric-label">Schemas de Domínio</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value">UUID v7</span>
+      <span class="metric-label">Identificadores Primários</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value">0 FKs</span>
+      <span class="metric-label">Entre Módulos Diferentes</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value">100%</span>
+      <span class="metric-label">Modelagem Validada</span>
+    </div>
+  </div>
+
+  <!-- Search & Filter -->
+  <div class="search-bar-wrap">
+    <div class="search-input-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar por tabela, coluna, schema (structure, leads, proposals, credits)..." oninput="applyFilters()">
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div class="filter-pills">
+        <button class="filter-pill active" data-group="all" onclick="setGroup('all', this)">Todos os Módulos (13)</button>
+        <button class="filter-pill" data-group="core" onclick="setGroup('core', this)">Estrutura &amp; Comercial</button>
+        <button class="filter-pill" data-group="sales" onclick="setGroup('sales', this)">Operação &amp; Vendas</button>
+        <button class="filter-pill" data-group="engage" onclick="setGroup('engage', this)">Atendimento &amp; Marketing</button>
+        <button class="filter-pill" data-group="infra" onclick="setGroup('infra', this)">Apoio &amp; Identidade</button>
+      </div>
+      <div class="view-toggle">
+        <button id="btnCards" class="view-btn active" onclick="setView('cards')">Cards</button>
+        <button id="btnTable" class="view-btn" onclick="setView('table')">Tabela</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards View -->
+  <div id="cardsContainer" class="cards-grid">
+    
+        <div class="mod-card" data-group="core" data-search="01-estrutura estrutura organizacional structure lojas, times, regiões, segmentos e vínculos operacionais. loja espelhada como organização no keycloak.">
+          <div class="card-top">
+            <span class="schema-pill"><code>structure</code></span>
+            <span class="group-pill">Estrutura & Comercial</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="01-estrutura/index.html">Estrutura Organizacional</a></h3>
+          <p class="card-desc">Lojas, Times, Regiões, Segmentos e vínculos operacionais. Loja espelhada como Organização no Keycloak.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.1 · PostgreSQL</span>
+            <a href="01-estrutura/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="core" data-search="02-funis funis & etapas funnels funis comerciais de venda vinculados a segmentos, etapas do pipeline, prazos de estagnação e motivos de perda.">
+          <div class="card-top">
+            <span class="schema-pill"><code>funnels</code></span>
+            <span class="group-pill">Estrutura & Comercial</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="02-funis/index.html">Funis & Etapas</a></h3>
+          <p class="card-desc">Funis comerciais de venda vinculados a Segmentos, etapas do pipeline, prazos de estagnação e motivos de perda.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.2 · PostgreSQL</span>
+            <a href="02-funis/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="core" data-search="03-catalogo catálogo comercial catalog promotoras bancárias, ofertas ativas, regras comerciais de crédito, convênios e tabelas de coeficientes.">
+          <div class="card-top">
+            <span class="schema-pill"><code>catalog</code></span>
+            <span class="group-pill">Estrutura & Comercial</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="03-catalogo/index.html">Catálogo Comercial</a></h3>
+          <p class="card-desc">Promotoras bancárias, Ofertas ativas, regras comerciais de crédito, convênios e tabelas de coeficientes.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.1 · PostgreSQL</span>
+            <a href="03-catalogo/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="sales" data-search="04-clientes clientes & contatos clients ficha completa do cliente tomador, telefones higienizados, endereços com viacep e histórico de vínculos por loja.">
+          <div class="card-top">
+            <span class="schema-pill"><code>clients</code></span>
+            <span class="group-pill">Operação & Vendas</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="04-clientes/index.html">Clientes & Contatos</a></h3>
+          <p class="card-desc">Ficha completa do cliente tomador, telefones higienizados, endereços com ViaCEP e histórico de vínculos por Loja.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.3 · PostgreSQL</span>
+            <a href="04-clientes/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="sales" data-search="05-leads leads & distribuição leads motor de distribuição de leads em duas camadas (loja -> operador), fila, tentativas de contato e histórico de funil.">
+          <div class="card-top">
+            <span class="schema-pill"><code>leads</code></span>
+            <span class="group-pill">Operação & Vendas</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="05-leads/index.html">Leads & Distribuição</a></h3>
+          <p class="card-desc">Motor de distribuição de leads em duas camadas (Loja -> Operador), fila, tentativas de contato e histórico de funil.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.2 · PostgreSQL</span>
+            <a href="05-leads/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="sales" data-search="06-creditos créditos & financeiro credits saldo pré-pago das lojas parceiras, extrato de consumo por lead/consulta e recarga pix via abacatepay.">
+          <div class="card-top">
+            <span class="schema-pill"><code>credits</code></span>
+            <span class="group-pill">Operação & Vendas</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="06-creditos/index.html">Créditos & Financeiro</a></h3>
+          <p class="card-desc">Saldo pré-pago das Lojas parceiras, extrato de consumo por lead/consulta e recarga Pix via AbacatePay.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.2 · PostgreSQL</span>
+            <a href="06-creditos/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="sales" data-search="07-simulacao motor de simulação simulation motor unificado de cálculo financeiro de consignado: cenários de simulação, parcelas, bancos e margem consignável.">
+          <div class="card-top">
+            <span class="schema-pill"><code>simulation</code></span>
+            <span class="group-pill">Operação & Vendas</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="07-simulacao/index.html">Motor de Simulação</a></h3>
+          <p class="card-desc">Motor unificado de cálculo financeiro de consignado: cenários de simulação, parcelas, bancos e margem consignável.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.2 · PostgreSQL</span>
+            <a href="07-simulacao/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="sales" data-search="08-propostas propostas comerciais proposals formalização de contratos de crédito consignado, snapshot da oferta contratada, anexos e ciclo de vida da proposta.">
+          <div class="card-top">
+            <span class="schema-pill"><code>proposals</code></span>
+            <span class="group-pill">Operação & Vendas</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="08-propostas/index.html">Propostas Comerciais</a></h3>
+          <p class="card-desc">Formalização de contratos de crédito consignado, snapshot da oferta contratada, anexos e ciclo de vida da proposta.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.3 · PostgreSQL</span>
+            <a href="08-propostas/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="engage" data-search="09-atendimento atendimento & chat messaging metadados de conversas e sessões omnichannel da huggy associadas a leads, operadores e canais whatsapp.">
+          <div class="card-top">
+            <span class="schema-pill"><code>messaging</code></span>
+            <span class="group-pill">Atendimento & Marketing</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="09-atendimento/index.html">Atendimento & Chat</a></h3>
+          <p class="card-desc">Metadados de conversas e sessões omnichannel da Huggy associadas a Leads, operadores e canais WhatsApp.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.2 · PostgreSQL</span>
+            <a href="09-atendimento/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="engage" data-search="10-marketing marketing & prospecção marketing listas importadas para enriquecimento, varreduras na carteira ativa e injeção assistida de novas oportunidades.">
+          <div class="card-top">
+            <span class="schema-pill"><code>marketing</code></span>
+            <span class="group-pill">Atendimento & Marketing</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="10-marketing/index.html">Marketing & Prospecção</a></h3>
+          <p class="card-desc">Listas importadas para enriquecimento, varreduras na carteira ativa e injeção assistida de novas oportunidades.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.1 · PostgreSQL</span>
+            <a href="10-marketing/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="engage" data-search="11-desempenho desempenho & metas performance metas comerciais individuais e por time, apuração de produção e rankings para exibição no modo tv.">
+          <div class="card-top">
+            <span class="schema-pill"><code>performance</code></span>
+            <span class="group-pill">Atendimento & Marketing</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="11-desempenho/index.html">Desempenho & Metas</a></h3>
+          <p class="card-desc">Metas comerciais individuais e por time, apuração de produção e rankings para exibição no Modo TV.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.1 · PostgreSQL</span>
+            <a href="11-desempenho/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="infra" data-search="12-apoio apoio & infraestrutura audit, integration, jobs, notifications auditoria de ações críticas (rnf005), idempotência de webhooks, fila transacional de jobs e sino de notificações.">
+          <div class="card-top">
+            <span class="schema-pill"><code>audit, integration, jobs, notifications</code></span>
+            <span class="group-pill">Identidade & Apoio</span>
+            <span class="status-pill accepted">Validado</span>
+          </div>
+          <h3 class="card-title"><a href="12-apoio/index.html">Apoio & Infraestrutura</a></h3>
+          <p class="card-desc">Auditoria de ações críticas (RNF005), idempotência de webhooks, fila transacional de jobs e sino de notificações.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.2 · PostgreSQL</span>
+            <a href="12-apoio/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-group="infra" data-search="01-acesso acesso & permissões acesso usuários, cargos e catálogo de permissões. credenciais e sessões vivem no keycloak (fora do modelo relacional).">
+          <div class="card-top">
+            <span class="schema-pill"><code>acesso</code></span>
+            <span class="group-pill">Identidade & Apoio</span>
+            <span class="status-pill superseded">Suspenso — Acesso fica fora do modelo de dados (Keycloak), Modelo de dados v0.2. Mantido só como registro.</span>
+          </div>
+          <h3 class="card-title"><a href="01-acesso/index.html">Acesso & Permissões</a></h3>
+          <p class="card-desc">Usuários, Cargos e catálogo de permissões. Credenciais e sessões vivem no Keycloak (fora do modelo relacional).</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.1 · PostgreSQL</span>
+            <a href="01-acesso/index.html" class="card-link">
+              <span>Ver ER &amp; Tabelas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+  </div>
+
+  <!-- Table View -->
+  <div id="tableContainer" class="tablewrap" style="display:none">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Módulo / Domínio</th>
+          <th>Schema PostgreSQL</th>
+          <th>Agrupamento</th>
+          <th>Status</th>
+          <th>Acesso</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr data-group="core" data-search="01-estrutura estrutura organizacional structure">
+          <td class="ref"><code>01</code></td>
+          <td><a href="01-estrutura/index.html"><b>Estrutura Organizacional</b></a></td>
+          <td><code>structure</code></td>
+          <td><span class="group-pill">Estrutura & Comercial</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="01-estrutura/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="core" data-search="02-funis funis & etapas funnels">
+          <td class="ref"><code>02</code></td>
+          <td><a href="02-funis/index.html"><b>Funis & Etapas</b></a></td>
+          <td><code>funnels</code></td>
+          <td><span class="group-pill">Estrutura & Comercial</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="02-funis/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="core" data-search="03-catalogo catálogo comercial catalog">
+          <td class="ref"><code>03</code></td>
+          <td><a href="03-catalogo/index.html"><b>Catálogo Comercial</b></a></td>
+          <td><code>catalog</code></td>
+          <td><span class="group-pill">Estrutura & Comercial</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="03-catalogo/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="sales" data-search="04-clientes clientes & contatos clients">
+          <td class="ref"><code>04</code></td>
+          <td><a href="04-clientes/index.html"><b>Clientes & Contatos</b></a></td>
+          <td><code>clients</code></td>
+          <td><span class="group-pill">Operação & Vendas</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="04-clientes/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="sales" data-search="05-leads leads & distribuição leads">
+          <td class="ref"><code>05</code></td>
+          <td><a href="05-leads/index.html"><b>Leads & Distribuição</b></a></td>
+          <td><code>leads</code></td>
+          <td><span class="group-pill">Operação & Vendas</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="05-leads/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="sales" data-search="06-creditos créditos & financeiro credits">
+          <td class="ref"><code>06</code></td>
+          <td><a href="06-creditos/index.html"><b>Créditos & Financeiro</b></a></td>
+          <td><code>credits</code></td>
+          <td><span class="group-pill">Operação & Vendas</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="06-creditos/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="sales" data-search="07-simulacao motor de simulação simulation">
+          <td class="ref"><code>07</code></td>
+          <td><a href="07-simulacao/index.html"><b>Motor de Simulação</b></a></td>
+          <td><code>simulation</code></td>
+          <td><span class="group-pill">Operação & Vendas</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="07-simulacao/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="sales" data-search="08-propostas propostas comerciais proposals">
+          <td class="ref"><code>08</code></td>
+          <td><a href="08-propostas/index.html"><b>Propostas Comerciais</b></a></td>
+          <td><code>proposals</code></td>
+          <td><span class="group-pill">Operação & Vendas</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="08-propostas/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="engage" data-search="09-atendimento atendimento & chat messaging">
+          <td class="ref"><code>09</code></td>
+          <td><a href="09-atendimento/index.html"><b>Atendimento & Chat</b></a></td>
+          <td><code>messaging</code></td>
+          <td><span class="group-pill">Atendimento & Marketing</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="09-atendimento/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="engage" data-search="10-marketing marketing & prospecção marketing">
+          <td class="ref"><code>10</code></td>
+          <td><a href="10-marketing/index.html"><b>Marketing & Prospecção</b></a></td>
+          <td><code>marketing</code></td>
+          <td><span class="group-pill">Atendimento & Marketing</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="10-marketing/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="engage" data-search="11-desempenho desempenho & metas performance">
+          <td class="ref"><code>11</code></td>
+          <td><a href="11-desempenho/index.html"><b>Desempenho & Metas</b></a></td>
+          <td><code>performance</code></td>
+          <td><span class="group-pill">Atendimento & Marketing</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="11-desempenho/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="infra" data-search="12-apoio apoio & infraestrutura audit, integration, jobs, notifications">
+          <td class="ref"><code>12</code></td>
+          <td><a href="12-apoio/index.html"><b>Apoio & Infraestrutura</b></a></td>
+          <td><code>audit, integration, jobs, notifications</code></td>
+          <td><span class="group-pill">Identidade & Apoio</span></td>
+          <td><span class="status-pill accepted">Validado</span></td>
+          <td class="ref"><a href="12-apoio/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-group="infra" data-search="01-acesso acesso & permissões acesso">
+          <td class="ref"><code>01</code></td>
+          <td><a href="01-acesso/index.html"><b>Acesso & Permissões</b></a></td>
+          <td><code>acesso</code></td>
+          <td><span class="group-pill">Identidade & Apoio</span></td>
+          <td><span class="status-pill superseded">Suspenso — Acesso fica fora do modelo de dados (Keycloak), Modelo de dados v0.2. Mantido só como registro.</span></td>
+          <td class="ref"><a href="01-acesso/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../index.html">← Início da Documentação</a>
+      <a href="../C4/index.html">Hub C4 Model</a>
+      <a href="../ADR/index.html">Decisões de Arquitetura (ADRs)</a>
+      <a href="README.md" target="_blank">Ver README.md Original</a>
+    </div>
+    <div>SmartCorbans · Arquitetura de Software · Modelo de Dados Lógico</div>
+  </footer>
+</div>
+
+<script>
+  let activeGroup = 'all';
+  let activeView = 'cards';
+
+  function setGroup(group, btn) {
+    activeGroup = group;
+    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function setView(view) {
+    activeView = view;
+    const cardsEl = document.getElementById('cardsContainer');
+    const tableEl = document.getElementById('tableContainer');
+    const btnC = document.getElementById('btnCards');
+    const btnT = document.getElementById('btnTable');
+
+    if (view === 'cards') {
+      cardsEl.style.display = 'grid';
+      tableEl.style.display = 'none';
+      btnC.classList.add('active');
+      btnT.classList.remove('active');
+    } else {
+      cardsEl.style.display = 'none';
+      tableEl.style.display = 'block';
+      btnC.classList.remove('active');
+      btnT.classList.add('active');
+    }
+  }
+
+  function applyFilters() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.mod-card');
+    const rows = document.querySelectorAll('#tableContainer tbody tr');
+
+    cards.forEach(c => {
+      const group = c.getAttribute('data-group');
+      const search = c.getAttribute('data-search');
+      const matchGroup = (activeGroup === 'all' || group === activeGroup);
+      const matchSearch = (!query || search.includes(query));
+      c.style.display = (matchGroup && matchSearch) ? 'flex' : 'none';
+    });
+
+    rows.forEach(r => {
+      const group = r.getAttribute('data-group');
+      const search = r.getAttribute('data-search');
+      const matchGroup = (activeGroup === 'all' || group === activeGroup);
+      const matchSearch = (!query || search.includes(query));
+      r.style.display = (matchGroup && matchSearch) ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>

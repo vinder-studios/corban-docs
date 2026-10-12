@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Funis de Vendas · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Funis de Vendas</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Rules/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Regras</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" selected>Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../SalesOrigin/index.html" class="pager-btn">Origem de Venda <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Vendas
+    </div>
+    <h1>Funis de Vendas <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Vendas</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.17 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-funis-de-vendas">Corban Admin · Funis de Vendas</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Vendas</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.17</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.17</td><td><b>Cada Loja escolhe quais Origens recebe em cada Segmento</b> (Lojas v0.13, <span class="badge rule-badge">RN-LOJ-17</span>). A <span class="badge rule-badge">RN-FNL-07</span> ganha a observação: as quatro linhas de preço são também as quatro Origens que a Loja liga ou desliga, e o preço de uma linha só é cobrado das Lojas que aceitam aquela Origem. Nenhuma regra do Funil muda</td></tr><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Fecha os itens abertos. Funil ganha <b>nome próprio</b> (sugerido a partir do Segmento). <b>Stage ganha o campo Tipo</b>, reaproveitando o enum de Status de Proposta — que passa a ter quatro valores, com a inclusão de <b>Novo</b>. Funil <b>não pode ser excluído</b>, apenas inativado, com regra de drenagem das leads em curso. Segmento do funil é <b>imutável</b> após a criação. Fluxo sem stage permitido fica cadastrado, sem exibição.</td></tr><tr><td>0.3</td><td>A tela de configuração passa de 3 para <b>5 abas</b>: a aba Board se divide em <b>Stages, Fluxos e Tags</b>, cada uma própria. Total: Informações gerais, Stages, Fluxos, Tags, Preço das leads.</td></tr><tr><td>0.4</td><td>Fecha o item aberto 1: <b>o Funil precisa ter ao menos um stage de cada Tipo</b> (Novo, Andamento, Pago, Cancelado) — <span class="badge rule-badge">RN-FNL-15</span>. Bloqueia criação e remoção que violem a cobertura.</td></tr><tr><td>0.5</td><td><b>O Funil deixa de ser criado manualmente — nasce automaticamente junto com o Segmento</b> (revoga <span class="badge rule-badge">RN-FNL-02</span>), já populado com o conjunto de stages sugerido, em novo status <b>"Aguardando configuração"</b>. Removida a Aba/fluxo de criação de funil (<span class="badge rf-badge">RF-FNL-01</span> reescrito). <span class="badge rule-badge">RN-FNL-09</span> revisada: <b>Funil que já foi ativado nunca é excluído</b> — a exceção (Funil nunca ativado) é excluído apenas em cascata, disparada pelo módulo de Segmentos, nunca por ação direta aqui. Item aberto 1 fechado (Status de Proposta já atualizado).</td></tr><tr><td>0.6</td><td>Adiciona a entidade <b>Histórico de Preço de Lead</b> (<span class="badge rule-badge">RN-FNL-16</span>) — registro append-only de custo/preço ao longo do tempo, insumo do bloco de gráfico no Dashboard do Admin.</td></tr><tr><td>0.7</td><td><b>StageType deixa de ser compartilhado com Status de Proposta.</b> Passa a ser enum próprio, com <b>cinco</b> valores (ganha "Formalização"); "Andamento" renomeado para "Negociação". Adiciona os dois eventos automáticos que ligam Lead e Proposta: entrar no Stage de tipo Formalização cria a Proposta (<span class="badge rule-badge">RN-FNL-17</span>); a Proposta atingir Pago/Cancelado move a Lead para o Stage correspondente, com desambiguação por Motivo quando há mais de um Stage do mesmo tipo terminal (<span class="badge rule-badge">RN-FNL-18</span>).</td></tr><tr><td>0.8</td><td>Correção: a v0.7 deixou referências antigas a "Andamento" e "quatro tipos" em cinco pontos do documento — propagação da divisão StageType/StatusType estava incompleta. Corrigido por completo nesta versão.</td></tr><tr><td>0.9</td><td>Adiciona a <b>6ª aba — Layout de Lead</b>, remetendo ao módulo próprio (Card e Sheet, Server-Driven UI configurável pelo tenant, catálogo fechado de blocos). A tela de Configuração do Funil passa de 5 para 6 abas.</td></tr><tr><td>0.10</td><td><b>Revoga parte de <span class="badge rule-badge">RN-FNL-04</span>.</b> O Corban passa a poder <b>disparar</b> a execução de um Fluxo já registrado — via o botão "Ações" do Card da Lead (módulo Layout de Lead) —, não só reagir a eventos da Huggy. O que permanece de <span class="badge rule-badge">RN-FNL-04</span>: o Corban continua sem modelar ou validar a lógica interna do que o Fluxo faz — só pede pra Huggy executar, e Huggy decide o resultado.</td></tr><tr><td>0.11</td><td><b>Substitui Fluxo por Ação — reformulação de fundo.</b> Fluxo (genérico, registrado da Huggy) deixa de existir. Em seu lugar, cinco tipos de Ação fixos do sistema: Mover lead (dinâmica, sem configuração), Desqualificar, Finalizar, Reabrir e Formalizar (configuráveis, múltiplas instâncias, cada uma com Stage de destino, mensagem e Huggy-id opcionais). Formalizar cria a Proposta automaticamente ao mover a Lead para Formalização — absorve o que era <span class="badge rule-badge">RN-FNL-17</span>. <span class="badge rule-badge">RN-FNL-18</span> (sincronização Proposta→Lead) permanece intacta, sem mudança.</td></tr><tr><td>0.12</td><td><b>Preço de lead passa de duas para quatro linhas fixas, por Origem da lead:</b> Campanha, Orgânica, Prospecção e Carteira Ativa (<span class="badge rule-badge">RN-FNL-07</span>). Interno vira Carteira Ativa e Externo vira Campanha; Orgânica e Prospecção são novas, esta última vinda do módulo Prospecção (Marketing). Recontato e Manual não têm linha porque não cobram (<span class="badge rule-badge">RN-LED-13</span>, módulo de Leads). <span class="badge rule-badge">RN-FNL-06</span> passa a distinguir três "origens" (campanha, Origem de Venda, Origem da lead); <span class="badge rule-badge">RN-FNL-16</span> registra a Origem da lead no histórico. Registra o item aberto: linha de preço sem valor.</td></tr><tr><td>0.13</td><td><b>Revisão completa do módulo.</b> <b>Um só stage de Novo, Formalização e Pago</b> (<span class="badge rule-badge">RN-FNL-15</span>), porque o sistema precisa de um destino único para onde a lead nasce, para a Ação Formalizar e para a Proposta paga; Negociação e Cancelado continuam admitindo vários. <b>"Mover lead" passa a oferecer só Stages tipo Negociação à frente</b> (§3.3, <span class="badge rule-badge">RN-FNL-19</span>), de modo que ninguém chegue a Formalização, Pago ou Cancelado sem passar pela Ação certa (Leads v0.8, <span class="badge rule-badge">RN-LED-11</span>). <b>Preço de lead nasce em 0</b> nas quatro linhas, o que fecha o item aberto "linha sem valor" (<span class="badge rule-badge">RN-FNL-07</span>, <span class="badge rule-badge">RN-FNL-16</span>). <b><span class="badge rule-badge">RN-FNL-18</span> passa a existir no corpo</b>: constava só do consolidado e do histórico, e era citada em Propostas, Leads e neste módulo. <span class="badge rule-badge">RN-FNL-13</span> corrigida (dizia que o enum era compartilhado com Status de Proposta e listava 4 tipos, sem Formalização); "quatro" → "cinco" em <span class="badge rule-badge">RN-FNL-02</span> e <span class="badge rule-badge">RN-FNL-15</span>; <span class="badge rule-badge">RN-FNL-17</span> aponta o status em que a Proposta nasce (<span class="badge rule-badge">RN-STP-08</span>); §8 cita a Ação Formalizar, e não mais "entrar no Stage". Consolidado ganha a <span class="badge rule-badge">RN-FNL-16</span>. Corrige esta tabela (fora de ordem e com a linha da v0.5 sem o fechamento). Novo item aberto: Formalizar sem status Novo em Status de Proposta.</td></tr><tr><td>0.14</td><td><b>Fecha o item aberto "Formalizar sem status Novo"</b>: Status de Proposta passa a nascer com um status padrão de cada tipo (Status de Proposta v0.7, <span class="badge rule-badge">RN-STP-10</span>), então a Ação Formalizar sempre encontra um status Novo ativo. §9 sem pendências. Decisão do usuário.</td></tr><tr><td>0.15</td><td><b>Reabrir passa a ter como destino só um Stage tipo Negociação</b> (<span class="badge rule-badge">RN-FNL-19</span>), e não mais "qualquer não-terminal": levá-la a Formalização deixaria a Lead num Stage de Formalização sem Proposta (Reabrir não cria uma) e sem acesso do operador (<span class="badge rule-badge">RN-LED-10</span>). A Lead reaberta volta ao pipeline em curso. Mesmo defeito que a v0.13 corrigiu em "Mover lead", achado na revisão de Layout de Lead. Decisão do usuário.</td></tr><tr><td>0.16</td><td><b>Reabrir passa a valer só para Lead que nunca teve Proposta</b> (decisão do usuário, levantamento do CRM): a tabela dizia "volta ao pipeline, sem Proposta", mas nada impedia reabrir uma Lead cancelada por uma Proposta, o que levaria a uma segunda Proposta e violaria o 1:1 (Propostas, <span class="badge rule-badge">RN-PRP-01</span>).</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-FNL) e regras de negócio (RN-FNL) próprios.</p>
+<blockquote><p><b>Este é o módulo mais amplo do Admin até aqui.</b> Reúne quatro domínios sob uma mesma tela, organizados em abas: identificação do funil, configuração do board (colunas, ações e tags), layout de Lead e precificação das leads entregues nele.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Configurar o funil de vendas de cada Segmento: as etapas pelas quais a lead avança, as automações que a movimentam, as tags que classificam a origem de campanha, e quanto a Loja paga por cada lead entregue ali.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor comercial</b> — usuário cujas permissões efetivas incluem a gestão deste módulo. Tipicamente um Cargo de escopo <code>all</code>, já que o funil é tenant-wide.</li>
+<li><b>Operador</b> — consome o funil no CRM (board kanban), sem configurá-lo aqui.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-funil-de-vendas">3.1. Funil de Vendas</h2>
+<p><b><span class="badge rule-badge">RN-FNL-01</span> — Um funil por Segmento, tenant-wide.</b> Cada Funil pertence a exatamente um Segmento, e cada Segmento tem exatamente um Funil — relação 1:1 obrigatória (<span class="badge rule-badge">RN-SEG-05</span>, módulo de Segmentos). A configuração é <b>única para todas as Lojas</b> — não há variação por Loja. Uma Loja associa-se ao Funil (não ao Segmento), e é isso que lhe dá acesso ao pipeline daquele público.</p>
+<p><b><span class="badge rule-badge">RN-FNL-02</span> — O Funil nasce automaticamente, junto com o Segmento.</b> <i>(Revoga a versão anterior desta regra, que previa criação manual e separada.)</i> Não existe fluxo de "criar funil" neste módulo — o Funil já existe desde o instante em que o Segmento é criado, disparado de lá (<span class="badge rule-badge">RN-SEG-05</span>). Ele nasce <b>já populado</b> com o conjunto de stages sugerido (<span class="badge rule-badge">RN-FNL-03</span>), cobrindo os cinco Tipos exigidos por <span class="badge rule-badge">RN-FNL-15</span>, em status <b>"Aguardando configuração"</b>. O que este módulo oferece é a <b>configuração</b> de um Funil que já existe, nunca a criação de um do zero.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Nome próprio do funil, <b>sugerido automaticamente a partir do nome do Segmento</b> no momento da criação automática — o gestor pode alterá-lo depois.</td></tr><tr><td>Segmento</td><td>Sim</td><td>Qual Segmento este funil atende. Único, e <b>imutável</b> (<span class="badge rule-badge">RN-FNL-12</span>).</td></tr><tr><td>Descrição</td><td>Não</td><td>Texto curto sobre o funil.</td></tr><tr><td>Status</td><td>Sim</td><td><b>Aguardando configuração</b> / Ativo / Drenando / Inativo (ver §6).</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-FNL-12</span> — O Segmento é imutável.</b> Não pode ser alterado depois de criado. Trocá-lo moveria todo o pipeline de um público para outro — leads de INSS passariam a ser de CLT sem que ninguém as tivesse movido.</p>
+<h2 id="3-2-stage-coluna-do-board">3.2. Stage (coluna do board)</h2>
+<p>Etapa pela qual a lead avança. <b>Livremente definidas pelo gestor</b> — nome e ordem.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Como a coluna aparece no board. Quando o Tipo é <b>Cancelado</b> e há mais de um Stage desse tipo, o Nome também funciona como o <b>Motivo</b> apresentado ao operador (<span class="badge rule-badge">RN-FNL-18</span>) — não há campo separado.</td></tr><tr><td>Tipo</td><td>Sim</td><td>Enum próprio <b>StageType</b>: <b>Novo</b>, <b>Negociação</b>, <b>Formalização</b>, <b>Pago</b> ou <b>Cancelado</b> — ver <span class="badge rule-badge">RN-FNL-13</span>.</td></tr><tr><td>Ordem</td><td>Sim</td><td>Posição da coluna no board.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-FNL-03</span> — O sistema sugere uma estrutura padrão, não a impõe.</b> Ao criar um funil, o sistema oferece um conjunto inicial de stages — <b>Novo, Negociação, Formalização, Venda, Desqualificado</b> — que o gestor pode aceitar, editar por completo ou descartar. Cobre os cinco Tipos, um a um (Venda → tipo Pago; Desqualificado → tipo Cancelado). É sugestão, não estrutura obrigatória: <b>não existem stages de sistema</b>, e qualquer um pode ser removido ou renomeado.</p>
+<p><i>Isso revoga a Especificação v1.2, que previa Entrada, Ganho e Perdido como etapas fixas em existência.</i></p>
+<p><b><span class="badge rule-badge">RN-FNL-15</span> — O funil precisa cobrir os cinco Tipos; Novo, Formalização e Pago admitem um só stage.</b> Não basta ter um stage terminal (o mínimo que evitaria o funil nunca drenar, <span class="badge rule-badge">RN-FNL-14</span>) — é exigida cobertura completa: <b>Novo, Negociação, Formalização, Pago e Cancelado</b>, e a quantidade varia por tipo:</p>
+<div class="tablewrap"><table><thead><tr><th>Tipo</th><th>Quantidade</th><th>Por quê</th></tr></thead><tbody><tr><td><b>Novo</b></td><td><b>Exatamente um</b></td><td>É onde toda lead nasce (<span class="badge rule-badge">RN-FNL-13</span>)</td></tr><tr><td><b>Formalização</b></td><td><b>Exatamente um</b></td><td>Destino único da Ação Formalizar (<span class="badge rule-badge">RN-FNL-19</span>)</td></tr><tr><td><b>Pago</b></td><td><b>Exatamente um</b></td><td>Destino único quando a Proposta é paga (<span class="badge rule-badge">RN-FNL-18</span>)</td></tr><tr><td><b>Negociação</b></td><td>Um ou mais</td><td>O pipeline em curso pode ter quantas etapas o tenant quiser</td></tr><tr><td><b>Cancelado</b></td><td>Um ou mais</td><td>Cada stage pode ser um motivo (<span class="badge rule-badge">RN-FNL-18</span>)</td></tr></tbody></table></div>
+<p>Três pontos de aplicação:</p>
+<ul>
+<li><b>Ao criar o funil</b>, não é possível salvar sem que a configuração de stages cubra os cinco tipos. O conjunto sugerido (<span class="badge rule-badge">RN-FNL-03</span>) já satisfaz isso por construção.</li>
+<li><b>Ao remover um stage</b>, se ele for o único do seu tipo, a remoção é bloqueada — mesmo que o stage esteja vazio. Essa checagem acontece <b>antes</b> da regra de destino para leads (<span class="badge rule-badge">RN-FNL-10</span>): um stage que é o único do seu tipo não pode ser removido, então a pergunta "para onde vão as leads" nem chega a ser feita.</li>
+<li><b>Ao criar um stage — ou mudar o Tipo de um stage existente — para Novo, Formalização ou Pago</b>, quando o funil já tem um stage desse tipo, a operação é bloqueada. Mudar o Tipo do único stage de um tipo para outro também é bloqueado, porque deixaria o tipo original sem cobertura. <i>(Decisão do usuário: um só stage de Novo, Formalização e Pago. A regra sobre mudar o Tipo é consequência.)</i></li>
+</ul>
+<p><b><span class="badge rule-badge">RN-FNL-13</span> — O Tipo do stage é o que o sistema entende; o nome é livre.</b> Sem stages de sistema, o produto precisa de outra forma de saber se uma lead está entrando, em curso, em formalização, convertida ou perdida — não dá para interpretar o nome que o tenant deu à coluna. Essa função passa a ser do <b>Tipo</b> (enum próprio, <b>StageType</b>):</p>
+<div class="tablewrap"><table><thead><tr><th>Tipo</th><th>Significado no board</th></tr></thead><tbody><tr><td><b>Novo</b></td><td>Lead recém-chegada, ainda não trabalhada. <b>É onde toda lead nasce</b></td></tr><tr><td><b>Negociação</b></td><td>Lead em curso, ainda sem proposta</td></tr><tr><td><b>Formalização</b></td><td>Lead com proposta em andamento — a Proposta é criada quando a lead vem para cá, pela Ação Formalizar (<span class="badge rule-badge">RN-FNL-17</span>)</td></tr><tr><td><b>Pago</b></td><td>Lead convertida — virou produção</td></tr><tr><td><b>Cancelado</b></td><td>Lead perdida</td></tr></tbody></table></div>
+<p>Um tenant pode ter três colunas de tipo Negociação com nomes próprios ("Primeiro contato", "Aguardando documento", "Reanálise") — para o sistema, as três significam "em curso, sem proposta ainda".</p>
+<p><b>O enum é próprio do Funil.</b> Status de Proposta tem o seu, <b>StatusType</b>, com quatro valores (sem Formalização), cadastrados pelo tenant. As duas entidades não compartilham enum; ligam-se pelos eventos de <span class="badge rule-badge">RN-FNL-17</span> e <span class="badge rule-badge">RN-FNL-18</span>.</p>
+<h2 id="3-3-a-o">3.3. Ação</h2>
+<p><b>Como a Lead se move entre Stages — sempre via Ação, nunca por drag-and-drop (<span class="badge rule-badge">RN-LED-11</span>, módulo de Leads).</b> Cinco tipos, fixos do sistema — o tenant não cria tipos novos, só configura instâncias dos quatro configuráveis.</p>
+<h3 id="mover-lead-din-mica-sem-configura-o">Mover lead — dinâmica, sem configuração</h3>
+<p>Não tem cadastro: a cada Lead em Stage tipo <b>Novo ou Negociação</b>, o board calcula quais Stages <b>tipo Negociação</b> estão <b>à frente</b> do Stage atual (pela ordem configurada, <span class="badge rf-badge">RF-FNL-03</span>) e oferece como destino. <b>Nunca move para trás</b>, e <b>nunca oferece</b> Formalização (só se chega lá pela Ação Formalizar, que cria a Proposta), Pago (só pela Proposta, <span class="badge rule-badge">RN-FNL-18</span>) nem Cancelado (papel de Desqualificar e Finalizar). Se não houver Stage de Negociação à frente, a Ação não é oferecida. Sem mensagem, sem Huggy-id — é só reposicionamento.</p>
+<h3 id="desqualificar-finalizar-reabrir-formalizar-configur-veis-m-ltiplas-inst-ncias">Desqualificar, Finalizar, Reabrir, Formalizar — configuráveis, múltiplas instâncias</h3>
+<p>Cada tipo pode ter <b>várias instâncias</b> cadastradas pelo tenant — por exemplo, dois "Desqualificar" diferentes ("Sem margem" → um Stage Cancelado; "Documentação inválida" → outro Stage Cancelado), cada um com sua própria mensagem e Huggy-id.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Como a Ação aparece no Sheet de execução (módulo Layout de Lead).</td></tr><tr><td>Mensagem</td><td>Não</td><td>Enviada ao cliente ao executar — texto livre.</td></tr><tr><td>Huggy-id</td><td>Não</td><td>Referência a um Flow da Huggy, disparado como efeito colateral opcional (<span class="badge rule-badge">RN-FNL-04</span>).</td></tr><tr><td>Stage de destino</td><td>Sim, com regra por tipo</td><td>Ver tabela abaixo — varia conforme o tipo de Ação.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-FNL-19</span> — Destino varia por tipo de Ação:</b></p>
+<div class="tablewrap"><table><thead><tr><th>Tipo</th><th>Destino permitido</th><th>Semântica</th></tr></thead><tbody><tr><td><b>Mover lead</b></td><td>Um Stage tipo Negociação à frente do atual (dinâmico)</td><td>Reposicionamento no pipeline, sem sair dele</td></tr><tr><td><b>Desqualificar</b></td><td>Um Stage tipo Cancelado</td><td>Cliente não atende a algum critério (ex.: sem margem)</td></tr><tr><td><b>Finalizar</b></td><td>Um Stage tipo Cancelado</td><td>Cliente sem interesse, ou parou de responder</td></tr><tr><td><b>Reabrir</b></td><td>Um Stage tipo Negociação</td><td>Só disponível quando a Lead está num Stage tipo Cancelado <b>e nunca teve Proposta</b> (foi descartada antes da Formalização) — volta ao pipeline em curso. Uma Lead cancelada por uma Proposta <b>não reabre</b>: a Proposta é terminal e é 1:1 com a Lead (Propostas, <span class="badge rule-badge">RN-PRP-01</span>)</td></tr><tr><td><b>Formalizar</b></td><td>O Stage tipo Formalização</td><td>Move a Lead <b>e</b> cria a Proposta automaticamente (<span class="badge rule-badge">RN-FNL-17</span>)</td></tr></tbody></table></div>
+<p><b>Desqualificar e Finalizar são semanticamente distintos, mesmo levando ambos a um Stage Cancelado</b> — a diferença é o motivo de negócio (critério não atendido vs. desinteresse/silêncio do cliente), refletida na Mensagem configurada para cada instância.</p>
+<p><b><span class="badge rule-badge">RN-FNL-04</span> — O Huggy-id é efeito colateral opcional, nunca bloqueante.</b> Executar uma Ação sempre move a Lead no Corban, independentemente da Huggy. Se a Ação tiver um Huggy-id configurado, o Corban também solicita a execução daquele Flow — mas o resultado dessa solicitação não afeta se a Ação foi bem-sucedida no Corban.</p>
+<p><b><span class="badge rule-badge">RN-FNL-17</span> — Formalizar cria a Proposta automaticamente.</b> <i>(Antes uma regra de gatilho por Stage; agora incorporada à própria definição da Ação Formalizar — como toda movimentação é via Ação, não há mais um "entrar em Formalização" que não seja através desta Ação específica.)</i> A Proposta nasce no <b>status ativo mais antigo do tipo Novo</b> (StatusType, <span class="badge rule-badge">RN-STP-08</span>, módulo de Status de Proposta) — que sempre existe, porque o tenant nasce com um status padrão de cada tipo (<span class="badge rule-badge">RN-STP-10</span>).</p>
+<p><b><span class="badge rule-badge">RN-FNL-18</span> — A Proposta atingir Pago ou Cancelado move a Lead.</b> <i>(Reescrita no corpo na v0.13: a regra constava só do consolidado e do histórico.)</i> Quando o Status da Proposta passa a um tipo terminal, a Lead vinculada é movida automaticamente para o Stage do mesmo Tipo, sem Ação do operador (<span class="badge rule-badge">RN-PRP-03</span>, módulo de Propostas). <b>Pago</b> → o Stage tipo Pago, que é único (<span class="badge rule-badge">RN-FNL-15</span>), sempre direto. <b>Cancelado</b> → se o Funil tem <b>um</b> Stage tipo Cancelado, direto; se tem <b>mais de um</b>, o operador escolhe, e <b>a escolha é o Motivo</b>: o Nome do Stage faz esse papel (§3.2, <span class="badge rule-badge">RN-PRP-04</span>). A regra só vale para Lead com Proposta; uma Lead sem Proposta é descartada pela Ação Desqualificar ou Finalizar (<span class="badge rule-badge">RN-LED-09</span>).</p>
+<p><b><span class="badge rule-badge">RN-FNL-20</span> — Stages tipo Pago não têm Ações associadas.</b> Nenhuma das cinco Ações pode ter um Stage tipo Pago como destino, e nenhuma Ação é oferecida a uma Lead que já está num Stage desse tipo — coerente com <span class="badge rule-badge">RN-FNL-18</span>: só se chega a Pago pela Proposta, nunca por Ação direta na Lead.</p>
+<blockquote><p><b>Nota de evolução — trazer a automação para o sistema.</b> A dependência do Huggy-id como integração externa é decisão desta fase. Evolução prevista: o Corban executar sua própria lógica de automação, sem depender de um Flow externo configurado na Huggy.</p></blockquote>
+<h2 id="3-4-tag">3.4. Tag</h2>
+<p><b>Classificador de card</b>, usado para marcar leads com informação de campanha. Também vem da Huggy.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Id</td><td>Sim</td><td>Identificador da tag na Huggy.</td></tr><tr><td>Nome</td><td>Sim</td><td>Como a tag aparece no card.</td></tr><tr><td>Categoria</td><td>Sim</td><td><b>Audiência</b>, <b>Origem</b> ou <b>Departamento</b> — enum fixo do sistema.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-FNL-05</span> — Categoria é fixa; as tags dentro dela são livres.</b> As três categorias são do sistema e não podem ser criadas nem editadas pelo tenant. Dentro de cada uma, o gestor cadastra quantas tags quiser.</p>
+<p><b><span class="badge rule-badge">RN-FNL-06</span> — "Origem" aqui é origem de campanha, não Origem de Venda nem Origem da lead.</b> São três coisas distintas, com nomes parecidos:</p>
+<div class="tablewrap"><table><thead><tr><th>Conceito</th><th>Onde vive</th><th>O que é</th></tr></thead><tbody><tr><td><b>Tag de categoria Origem</b></td><td>Aqui, no Funil</td><td>De qual campanha de marketing a lead veio (ex.: "Campanha Black Friday", "Remarketing base")</td></tr><tr><td><b>Origem de Venda</b></td><td>Cadastro de Lead, no CRM</td><td>Por onde a venda chegou (ex.: "Indicação", "Porta a porta")</td></tr><tr><td><b>Origem da lead</b></td><td>Campo da Lead, definido pelo sistema (módulo de Leads, <span class="badge rule-badge">RN-LED-12</span>)</td><td>Como a lead nasceu — Campanha, Orgânica, Recontato, Prospecção, Carteira Ativa ou Manual; é o que define o preço (<span class="badge rule-badge">RN-FNL-07</span>)</td></tr></tbody></table></div>
+<p>Vale registrar porque a confusão é provável e o efeito seria modelar uma como a outra.</p>
+<h2 id="3-5-pre-o-de-lead">3.5. Preço de lead</h2>
+<p><b>Quanto a Loja paga por cada lead entregue neste funil</b>, conforme a Origem da lead (módulo de Leads, <span class="badge rule-badge">RN-LED-12</span>).</p>
+<p><b><span class="badge rule-badge">RN-FNL-07</span> — Quatro linhas fixas, por Origem da lead.</b> A tabela tem exatamente quatro registros, não criáveis nem excluíveis — o gestor apenas preenche os valores de cada:</p>
+<div class="tablewrap"><table><thead><tr><th>Origem da lead</th><th>O que é</th></tr></thead><tbody><tr><td><b>Campanha</b></td><td>Lead gerada por campanha paga externa (Facebook Ads, TikTok, Google Ads, etc.)</td></tr><tr><td><b>Orgânica</b></td><td>Contato espontâneo <b>novo</b> na Huggy — sem campanha e de pessoa ainda desconhecida do tenant</td></tr><tr><td><b>Prospecção</b></td><td>Lead gerada pela importação de uma base externa (módulo Prospecção, Marketing)</td></tr><tr><td><b>Carteira Ativa</b></td><td>Lead gerada pela mineração da base interna de clientes (módulo Carteira Ativa, Marketing)</td></tr></tbody></table></div>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Notas</th></tr></thead><tbody><tr><td>Custo</td><td>O que o tenant gastou para adquirir a lead — por exemplo, a verba de anúncio (Campanha) ou o custo da base comprada (Prospecção).</td></tr><tr><td>Preço</td><td>O que a Loja paga ao tenant para receber a lead.</td></tr></tbody></table></div>
+<p><b>Recontato e Manual não aparecem na tabela:</b> não têm linha de preço e não cobram (<span class="badge rule-badge">RN-LED-13</span>, módulo de Leads).</p>
+<p><b>As quatro linhas são também os tipos de lead que a Loja escolhe receber.</b> Em cada Segmento, a Loja liga ou desliga cada Origem (Lojas, <span class="badge rule-badge">RN-LOJ-17</span>), e o preço de uma linha só é cobrado das Lojas que aceitam aquela Origem.</p>
+<p><b>Todas as linhas nascem com custo 0 e preço 0.</b> Zero é um valor válido (nada é gasto, nada é cobrado) e evita a linha vazia: o gestor edita quando quiser. O Funil nasce em "Aguardando configuração" (<span class="badge rule-badge">RN-FNL-02</span>) e só passa a receber leads quando é ativado, então os zeros iniciais não geram cobrança indevida. <i>(Decisão do usuário, na revisão.)</i></p>
+<blockquote><p><b>Migração.</b> O histórico de preço existente (Interno/Externo) é convertido: Interno → Carteira Ativa e Externo → Campanha. Orgânica e Prospecção começam com custo 0 e preço 0.</p></blockquote>
+<p><b><span class="badge rule-badge">RN-FNL-08</span> — A margem é a diferença, e pode ser negativa.</b> Preço menos custo é o que o tenant ganha por lead. Nada impede configurar preço abaixo do custo — é decisão comercial legítima (subsidiar a loja para ganhar volume), então o sistema não bloqueia, mas sinaliza (ver Microcopy).</p>
+<blockquote><p><b>Nota de evolução — integração com ferramentas de anúncio.</b> Nesta fase o custo é <b>informado manualmente</b> pelo gestor. Está prevista a integração com plataformas de anúncio (Facebook Ads, Google Ads, TikTok Ads) para que o custo real por lead seja importado automaticamente, tornando a precificação dinâmica em vez de estática. A ausência dessa integração é o que torna a versão atual viável a curto prazo.</p></blockquote>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-fnl-01-listagem-e-configura-o-de-funis"><span class="badge rf-badge">RF-FNL-01</span> — Listagem e configuração de funis</h2>
+<p><b>Como</b> gestor comercial, <b>eu quero</b> ver os funis existentes e configurar cada um <b>para</b> que as leads de cada Segmento tenham um pipeline funcional.</p>
+<p><b>Comportamento esperado:</b> a listagem mostra <b>um funil por Segmento — sempre, sem exceção</b>, já que todo Segmento tem o seu (<span class="badge rule-badge">RN-FNL-01</span>). Mostra o Segmento, o status do Funil e a quantidade de Lojas que o utilizam. <b>Não há ação de "criar funil"</b> — a lista é só de consulta e navegação para a configuração de cada um; a criação acontece automaticamente, disparada pelo cadastro de um Segmento novo (<span class="badge rule-badge">RN-FNL-02</span>).</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-FNL-09</span> — Funil que já foi ativado nunca é excluído.</b> <i>(Revisão: a versão anterior dizia apenas "não há exclusão de funil" — agora existe uma exceção pontual.)</i> Um Funil que já passou por Ativo alguma vez (está Ativo, Drenando, ou Inativo após ter sido usado) não tem exclusão, em nenhuma circunstância — a descontinuação é só por inativação, com drenagem (<span class="badge rule-badge">RN-FNL-14</span>). Um Funil que <b>nunca saiu de "Aguardando configuração"</b> pode ser excluído, mas <b>não por ação direta neste módulo</b> — só em cascata, quando o Segmento pai é excluído (<span class="badge rule-badge">RN-SEG-04</span>, módulo de Segmentos). Este módulo não oferece um botão de excluir Funil isoladamente, em hipótese alguma.</p>
+<h2 id="rf-fnl-02-aba-informa-es-gerais"><span class="badge rf-badge">RF-FNL-02</span> — Aba Informações gerais</h2>
+<p>Nome (sugerido a partir do Segmento na criação automática, editável depois), Segmento (imutável, <span class="badge rule-badge">RN-FNL-12</span>), descrição e status. O controle de status aqui é o mesmo Switch usado na Lista — permite inativar/reativar o Funil <b>diretamente</b>, independente de qualquer ação sobre o Segmento. A cascata vinda do Segmento (<span class="badge rule-badge">RN-SEG-06</span>, <span class="badge rule-badge">RN-SEG-07</span>) é um segundo caminho para o mesmo campo, não um campo separado.</p>
+<h2 id="rf-fnl-03-aba-stages"><span class="badge rf-badge">RF-FNL-03</span> — Aba Stages</h2>
+<p>Criar, renomear, reordenar e remover colunas. Ao criar o funil, o conjunto sugerido já vem preenchido (<span class="badge rule-badge">RN-FNL-03</span>). Salvar e remover são validados contra a cobertura completa de tipos (<span class="badge rule-badge">RN-FNL-15</span>) — a interface precisa indicar, por tipo, se o tipo está coberto; impedir a remoção do único stage de qualquer tipo antes mesmo de perguntar sobre destino de leads; e impedir criar (ou mudar o tipo de um stage para) um segundo stage de Novo, Formalização ou Pago (<span class="badge rule-badge">RN-FNL-15</span>).</p>
+<h2 id="rf-fnl-04-aba-a-es"><span class="badge rf-badge">RF-FNL-04</span> — Aba Ações</h2>
+<p>Cadastrar as instâncias dos quatro tipos configuráveis (Desqualificar, Finalizar, Reabrir, Formalizar) — Nome, Mensagem, Huggy-id, Stage de destino (<span class="badge rule-badge">RN-FNL-19</span>). "Mover lead" não aparece aqui — é dinâmica, sem cadastro (§3.3).</p>
+<h2 id="rf-fnl-05-aba-tags"><span class="badge rf-badge">RF-FNL-05</span> — Aba Tags</h2>
+<p>Cadastrar as tags da Huggy: Id, nome e categoria (Audiência / Origem / Departamento).</p>
+<p><b><span class="badge rule-badge">RN-FNL-10</span> — Remover um stage exige destino para as leads.</b> Se o stage contém leads, o gestor indica obrigatoriamente para qual stage elas vão, em lote. Mesmo padrão da RN022 da Especificação v1.2.</p>
+<p><b><span class="badge rule-badge">RN-FNL-21</span> — Remover um stage que é destino de alguma Ação exige reatribuir a Ação.</b> Se o stage removido é o destino configurado de uma ou mais instâncias de Desqualificar/Finalizar/Reabrir/Formalizar, o gestor precisa apontar essas instâncias para outro Stage do mesmo Tipo antes de concluir a remoção — mesmo espírito de <span class="badge rule-badge">RN-FNL-10</span>, aplicado a Ações em vez de leads.</p>
+<h2 id="rf-fnl-06-aba-layout-de-lead"><span class="badge rf-badge">RF-FNL-06</span> — Aba Layout de Lead</h2>
+<p>Configuração do Card (board) e do Sheet de Detalhe da Lead — módulo próprio, <b>Corban Admin · Layout de Lead (Card e Sheet)</b>. Não redefinido aqui; esta aba só hospeda aquela configuração, por Funil (<span class="badge rule-badge">RN-LAY-02</span>).</p>
+<h2 id="rf-fnl-07-aba-pre-o-das-leads"><span class="badge rf-badge">RF-FNL-07</span> — Aba Preço das leads</h2>
+<p>Tabela de quatro linhas (Campanha, Orgânica, Prospecção e Carteira Ativa), com custo e preço editáveis em cada. As linhas já nascem com custo e preço 0 (<span class="badge rule-badge">RN-FNL-07</span>).</p>
+<p><b><span class="badge rule-badge">RN-FNL-16</span> — Cada mudança de valor gera um registro de histórico.</b> Toda vez que o gestor salva a aba Preço das leads com um custo ou preço <b>diferente</b> do valor anterior (para aquele Funil e Origem da lead), o sistema grava um registro em <b>Histórico de Preço de Lead</b> — entidade <b>append-only</b>, nunca editada nem excluída, com: Funil, Origem da lead, Custo, Preço, Data/hora. Os registros anteriores a esta versão, que guardam Interno/Externo, são convertidos (Interno → Carteira Ativa, Externo → Campanha).</p>
+<p>Salvar sem alterar nenhum valor <b>não gera registro novo</b> — evita pontos redundantes num eventual gráfico de série temporal. Os valores iniciais (0 e 0) também <b>não</b> geram registro: o primeiro registro nasce quando o gestor salva um valor diferente do anterior. <i>(Consequência da decisão de nascer em zero.)</i> A aba Preço das leads em si continua mostrando só o valor <b>atual</b>; o histórico é consumido em outro lugar (Dashboard do Admin), não há tela de consulta ao histórico dentro deste módulo.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-FNL-01</span></b> — Um funil por Segmento, tenant-wide; Lojas associam-se ao Funil.</li>
+<li><b><span class="badge rule-badge">RN-FNL-02</span></b> — O Funil nasce automaticamente com o Segmento, já populado, em "Aguardando configuração".</li>
+<li><b><span class="badge rule-badge">RN-FNL-03</span></b> — O sistema sugere stages padrão, não os impõe; não há stage de sistema.</li>
+<li><b><span class="badge rule-badge">RN-FNL-04</span></b> — Huggy-id é efeito colateral opcional de uma Ação, nunca bloqueante.</li>
+<li><b><span class="badge rule-badge">RN-FNL-19</span></b> — Destino da Ação varia por tipo (Desqualificar/Finalizar → Cancelado; Reabrir → Negociação; Formalizar → Formalização). Reabrir só vale para Lead sem Proposta.</li>
+<li><b><span class="badge rule-badge">RN-FNL-20</span></b> — Stages tipo Pago não têm Ações associadas.</li>
+<li><b><span class="badge rule-badge">RN-FNL-21</span></b> — Remover stage que é destino de Ação exige reatribuir a Ação primeiro.</li>
+<li><b><span class="badge rule-badge">RN-FNL-05</span></b> — Categoria de tag é fixa; as tags dentro dela são livres.</li>
+<li><b><span class="badge rule-badge">RN-FNL-06</span></b> — Tag de categoria Origem (campanha) ≠ Origem de Venda ≠ Origem da lead.</li>
+<li><b><span class="badge rule-badge">RN-FNL-07</span></b> — Preço de lead tem quatro linhas fixas, por Origem da lead: Campanha, Orgânica, Prospecção e Carteira Ativa. Recontato e Manual não cobram. Todas as linhas nascem com custo e preço 0.</li>
+<li><b><span class="badge rule-badge">RN-FNL-08</span></b> — A margem pode ser negativa; o sistema sinaliza, não bloqueia.</li>
+<li><b><span class="badge rule-badge">RN-FNL-16</span></b> — Cada mudança de custo ou preço gera um registro append-only no Histórico de Preço de Lead; os valores iniciais (0 e 0) não geram.</li>
+<li><b><span class="badge rule-badge">RN-FNL-09</span></b> — Funil já ativado nunca é excluído; Funil nunca ativado só se exclui em cascata pelo Segmento pai (fora deste módulo).</li>
+<li><b><span class="badge rule-badge">RN-FNL-10</span></b> — Remover stage com leads exige destino.</li>
+<li><b><span class="badge rule-badge">RN-FNL-12</span></b> — O Segmento do funil é imutável após a criação.</li>
+<li><b><span class="badge rule-badge">RN-FNL-13</span></b> — O Tipo do stage (StageType, 5 valores) é o que o sistema entende; o nome é livre. Não compartilhado com Status de Proposta. A lead nasce no Stage Novo (único).</li>
+<li><b><span class="badge rule-badge">RN-FNL-17</span></b> — A Ação Formalizar cria a Proposta automaticamente ao mover a Lead para Formalização, no status ativo mais antigo do tipo Novo (<span class="badge rule-badge">RN-STP-08</span>).</li>
+<li><b><span class="badge rule-badge">RN-FNL-18</span></b> — Proposta atingir Pago/Cancelado move a Lead ao Stage correspondente, com desambiguação por Nome (o Motivo) quando há mais de um Stage Cancelado; Pago é único.</li>
+<li><b><span class="badge rule-badge">RN-FNL-14</span></b> — Inativar drena: leads em curso seguem, e o funil some das Lojas quando esvaziar.</li>
+<li><b><span class="badge rule-badge">RN-FNL-15</span></b> — O funil cobre os cinco Tipos; um só stage de Novo, Formalização e Pago, e um ou mais de Negociação e Cancelado; a remoção do único stage de um tipo é bloqueada.</li>
+</ul>
+<p><i><span class="badge rule-badge">RN-FNL-11</span>: numeração sem uso; nenhum texto a cita.</i></p>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b><span class="badge rule-badge">RN-FNL-14</span> — Funil não é excluído; é inativado, com drenagem.</b> Não existe exclusão de funil — a operação de descontinuação é a inativação, e ela acontece em duas fases:</p>
+<div class="tablewrap"><table><thead><tr><th>Fase</th><th>O que acontece</th></tr></thead><tbody><tr><td><b>Ao inativar</b></td><td>O funil <b>para de receber leads novas</b>. As leads que já estão nele — de tipo <b>Novo</b>, <b>Negociação</b> ou <b>Formalização</b> (todos não-terminais) — continuam sendo trabalhadas normalmente, sem interrupção. O funil segue visível para as Lojas.</td></tr><tr><td><b>Depois da drenagem</b></td><td>Quando não restar nenhuma lead em nenhum Tipo não-terminal, o funil <b>deixa de ser exibido às Lojas</b>.</td></tr></tbody></table></div>
+<p>A drenagem é o que evita o problema clássico de desligar um pipeline: leads em negociação não são abandonadas nem migradas à força — elas terminam o ciclo onde começaram.</p>
+<p><b>Funil:</b></p>
+<ul>
+<li><b>Aguardando configuração</b> — estado inicial, desde a criação automática. Nunca recebeu leads, nunca foi ativado. Já tem a estrutura sugerida de stages, mas não está disponível às Lojas.</li>
+<li><b>Ativo</b> — recebe leads novas e é exibido às Lojas.</li>
+<li><b>Inativo, drenando</b> — não recebe leads novas; as leads em curso seguem; ainda exibido às Lojas.</li>
+<li><b>Inativo, drenado</b> — sem leads em curso; não exibido às Lojas.</li>
+</ul>
+<p>Transições: aguardando configuração → ativo (livre — primeira ativação); ativo → inativo (livre, inicia a drenagem; pode ser direta, nesta tela, ou cascateada pela inativação do Segmento — <span class="badge rule-badge">RN-SEG-06</span>); inativo → ativo (livre; pode ser direta, ou oferecida na reativação do Segmento — <span class="badge rule-badge">RN-SEG-07</span>); inativo drenando → inativo drenado (automática, quando a última lead sai de qualquer Tipo não-terminal — Novo, Negociação ou Formalização).</p>
+<p><b>A diferença entre "Aguardando configuração" e "Inativo (drenado)" importa</b> — visualmente podem parecer o mesmo estado ("não ativo, sem leads"), mas a origem é diferente: um nunca foi usado; o outro já foi e voltou a ficar vazio. Manter os rótulos distintos evita que o gestor confunda um Funil recém-criado com um que já teve um ciclo de vida inteiro.</p>
+<p><i>Não há transição de "Aguardando configuração" (ou qualquer outro status) para "excluído" dentro deste módulo — a exclusão, quando possível, é sempre externa (<span class="badge rule-badge">RN-FNL-09</span>).</i></p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: o board kanban operacional, onde as leads são trabalhadas (módulo de Leads, CRM); a associação de Lojas a Funis (módulo de Lojas); a execução das automações (Huggy); nem o cadastro de Segmentos.</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Segmentos</b> — o evento de criação de um Segmento, que dispara a criação automática do Funil correspondente (<span class="badge rule-badge">RN-FNL-02</span>); e o evento de inativação/reativação do Segmento, que pode cascatear para o Funil (<span class="badge rule-badge">RN-SEG-06</span>, <span class="badge rule-badge">RN-SEG-07</span>).</li>
+<li><b>Huggy</b> — Huggy-id opcional das Ações configuráveis, e Id das Tags; o Flow associado (se houver) executa lá, sem bloquear a Ação no Corban (<span class="badge rule-badge">RN-FNL-04</span>).</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Lojas</b> — a lista de Funis, para associação.</li>
+<li><b>Leads (CRM)</b> — stages, ações e tags do funil da operação.</li>
+<li><b>Créditos (CRM)</b> — custo e preço por lead entregue, para o débito automático.</li>
+<li><b>Dashboard (Admin)</b> — o Histórico de Preço de Lead (<span class="badge rule-badge">RN-FNL-16</span>), insumo do gráfico de custo × preço por Segmento.</li>
+<li><b>Propostas (CRM)</b> — o evento da Ação Formalizar, que cria a Proposta (<span class="badge rule-badge">RN-FNL-17</span>), e recebe de volta o evento de Status Pago/Cancelado (<span class="badge rule-badge">RN-FNL-18</span>).</li>
+<li><b>Layout de Lead (Admin)</b> — hospeda a 6ª aba (<span class="badge rf-badge">RF-FNL-06</span>); a configuração em si vive no módulo próprio.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência.</p>
+<hr class="divider">
+<p><i>Fim do documento. Funis de Vendas v0.17 — módulo da aplicação Admin, seção Vendas.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-funis-de-vendas-matriz-de-permiss-es">Corban Admin · Funis de Vendas — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Vendas</p>
+<p><b>Documento pai:</b> Corban Admin · Funis de Vendas (módulo v0.10)</p>
+<p><b>Versão:</b> 0.3</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td><b>Remove a ação <code>create</code></b> — não existe mais fluxo manual de criação de funil; ele nasce automaticamente com o Segmento (<span class="badge rule-badge">RN-FNL-02</span>).</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre o recurso deste módulo (<code>funnels</code>). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>funnels</code></td><td><code>view</code></td><td><code>all</code></td></tr><tr><td><code>funnels</code></td><td><code>edit</code></td><td><code>all</code></td></tr><tr><td><code>funnels</code></td><td><code>manage_pricing</code></td><td><code>all</code></td></tr><tr><td><code>funnels</code></td><td><code>inactivate</code></td><td><code>all</code></td></tr><tr><td><code>funnels</code></td><td><code>reactivate</code></td><td><code>all</code></td></tr></tbody></table></div>
+<p><b>Sem <code>create</code>.</b> Não existe ação de criar Funil — ele nasce automaticamente junto com o Segmento (<span class="badge rule-badge">RN-FNL-02</span>, módulo v0.5). A permissão que efetivamente cria o Funil, de forma indireta, é <code>segments:create:all</code>, no catálogo de Segmentos.</p>
+<p><b>Sem <code>delete</code>.</b> Funil já ativado nunca tem exclusão. Um Funil nunca ativado só é excluído em cascata pela exclusão do Segmento pai — governada por <code>segments:delete:all</code>, não por nenhuma permissão deste módulo.</p>
+<hr class="divider">
+<h2 id="2-por-que-manage-pricing-a-o-separada-de-edit">2. Por que <code>manage_pricing</code> é ação separada de <code>edit</code></h2>
+<p>As abas Informações gerais, Stages, Fluxos, Tags e Layout de Lead são todas cobertas por <code>funnels:edit:all</code> — mudam a estrutura do pipeline (ou sua apresentação), não valores financeiros. A aba <b>Preço das leads</b> carrega custo e preço, informação sensível o bastante para merecer permissão própria, no mesmo espírito de outras permissões financeiras já isoladas no produto (ex.: indicadores financeiros do Dashboard, na Especificação v1.2).</p>
+<p>Consequência: um Cargo pode ter <code>funnels:edit:all</code> (configura stages, fluxos, tags) sem <code>manage_pricing:all</code> (não vê nem altera custo/preço), ou o inverso — alguém do time financeiro que só mexe em preço, sem tocar na estrutura do funil.</p>
+<hr class="divider">
+<h2 id="3-por-que-tudo-em-all">3. Por que tudo em <code>all</code></h2>
+<p>Funil é tenant-wide (<span class="badge rule-badge">RN-FNL-01</span>) — a configuração é única para todas as Lojas, não pertence a nenhuma em particular.</p>
+<hr class="divider">
+<h2 id="4-owner-tenant">4. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Funis de Vendas v0.1.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

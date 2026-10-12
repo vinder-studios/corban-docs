@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Propostas · CRM — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">CRM</a>
+      <span class="sep">/</span>
+      <span class="current">Propostas</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do CRM
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../MultiplierTable/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Tabelas Multiplicadoras</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Chat/index.html" >Chat</option><option value="../Clients/index.html" >Clientes</option><option value="../Credits/index.html" >Créditos</option><option value="../Dashboard/index.html" >Dashboard</option><option value="../Goals/index.html" >Metas</option><option value="../Leads/index.html" >Leads</option><option value="../Members/index.html" >Membros</option><option value="../MultiplierTable/index.html" >Tabelas Multiplicadoras</option><option value="../Proposals/index.html" selected>Propostas</option><option value="../Rankings/index.html" >Rankings</option><option value="../Reports/index.html" >Relatórios</option><option value="../Settings/index.html" >Configurações</option><option value="../Simulations/index.html" >Simulações</option><option value="../Teams/index.html" >Times</option></select>
+    <a href="../Rankings/index.html" class="pager-btn">Rankings <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · CRM · Geral
+    </div>
+    <h1>Propostas <span class="app-badge crm">CRM</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">CRM · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.14 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-crm-propostas">Corban CRM · Propostas</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</p>
+<p><b>Versão:</b> 0.14</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.14</td><td><b>Valor liberado e Valor financiado</b> (§3.1) existem em qualquer Operação, junto do Valor da dívida; o valor base é um deles conforme a Operação (Ofertas v0.16, <span class="badge rule-badge">RN-OFR-07</span>). O "Valor do contrato" passa a se chamar Valor financiado. Decisão do usuário.</td></tr><tr><td>0.13</td><td><b>Campos do contrato confirmados pelo usuário</b> (Valor, Parcela e Prazo, §3.1).</td></tr><tr><td>0.12</td><td><b>Valor, Parcela e Prazo do contrato</b> (campos novos, opcionais, §3.1) e <b>geração do Contrato</b> no histórico do Cliente quando a Proposta chega a Pago (nova <span class="badge rule-badge">RN-PRP-18</span>), para a Carteira Ativa do Marketing. A importação de Propostas passa a aceitar essas três colunas, e a referência ao "padrão de cargas do Marketing" aponta para a Lista de Prospecção. Decisão do usuário: o sistema passa a guardar o histórico de contratos e propostas do Cliente; os campos são propostos [confirmar].</td></tr><tr><td>0.11</td><td><b>Levantamento do CRM, decisões do usuário.</b> (1) <b>A Proposta guarda uma única Oferta como snapshot, gravado ao associá-la</b>, com o multiplicador junto; a taxa de comissão congela na associação; a Oferta pode ficar vazia em Novo e é obrigatória para sair de Novo; Duplicar copia a Oferta atual (<span class="badge rule-badge">RN-PRP-05</span>, <span class="badge rule-badge">RN-PRP-07</span>). (2) <b>A atribuição é gravada no Pago</b> (Operador, Time e Cargo), para Metas, Rankings e relatórios não perderem vendas quando alguém é promovido ou inativado. (3) <b>Propostas não se excluem</b> (<span class="badge rule-badge">RN-PRP-08</span>; sai o <span class="badge rf-badge">RF-PRP-08</span>). (4) <b>Pago e Cancelado só editam Documentos, Datas e Comentário</b> (<span class="badge rule-badge">RN-PRP-15</span>). (5) <b>Novo campo Operador</b> e <b>Origem de Venda</b> (a Tag "Origem"), <code>self</code> = Operador ou Ator (<span class="badge rule-badge">RN-PRP-16</span>/17). (6) O Status é o do cadastro do tenant, e nasce no status ativo mais antigo do tipo Novo. (7) Busca por CPF só entre Clientes da Loja. Corrige o aviso de abertura (a Proposta tem quatro caminhos) e reordena este histórico.</td></tr><tr><td>0.10</td><td><b>Comissão passa a ser gravada no Pago</b>, junto com o multiplicador (<span class="badge rule-badge">RN-PRP-05</span>). Motivo: o relatório Comissões a pagar (Admin · Relatórios) recalcularia Propostas antigas se a taxa da Oferta mudasse depois. Novo campo "Comissão aplicada".</td></tr><tr><td>0.9</td><td><b>Corrige resíduo da v0.6</b>, encontrado ao analisar o CRM para Relatórios: a v0.6 registrou a remoção do campo "Tabela Multiplicadora usada", mas a tabela de campos, o ator Operador e dois itens do consolidado continuaram citando-o. Removido em todos os pontos — cada Oferta já é a "tabela" (módulo Tabelas Multiplicadoras), não há escolha de tabela.</td></tr><tr><td>0.8</td><td>Corrige <span class="badge rule-badge">RN-PRP-13</span>: Operação é campo próprio da Oferta de novo (módulo de Ofertas v0.9), não mais "do Produto". Adiciona <b>Banco de origem</b> (<span class="badge rule-badge">RN-PRP-14</span>) — obrigatório quando a Operação é Portabilidade ou Portabilidade com Refinanciamento, capturado na criação manual e na importação, exibido como badge na linha de Tags.</td></tr><tr><td>0.7</td><td><span class="badge rule-badge">RN-PRP-09</span> ganha a regra de travamento: cada Ator trava individualmente assim que atribuído — diferente de Documentos e Datas, que continuam editáveis em qualquer Status.</td></tr><tr><td>0.6</td><td>Corrige a Tag "Nome da tabela multiplicadora": não existe uma entidade "Tabela" separada para referenciar (módulo Tabelas Multiplicadoras v0.2, revertido) — cada Oferta já É, em si, uma "tabela". Remove o campo "Tabela Multiplicadora usada" e <span class="badge rule-badge">RN-MUT-04</span> (renumerado); a Tag mostra a identificação da própria Oferta (Nome + taxa), não um nome de coleção separado.</td></tr><tr><td>0.5</td><td><b>Correção real de inferência errada.</b> Lead deixa de ser vínculo obrigatório — vira <b>opcional</b>. O vínculo de verdade é com <b>Cliente</b> (existente ou dados capturados inline, mesmo padrão de Simulações <span class="badge rule-badge">RN-SIM-05</span>). Nem toda Proposta nasce do board de Leads: criação manual, Duplicar e Importação podem gerar Propostas <b>sem nenhuma Lead</b>. <span class="badge rule-badge">RN-PRP-01</span> e <span class="badge rule-badge">RN-PRP-03</span> revisadas para essa condicionalidade.</td></tr><tr><td>0.4</td><td><b>Reformulação de fundo, motivada pela especificação do Card de Proposta.</b> Ganha destino de topo próprio (nunca foi só contextual — era engano tratar como tal). Ganha quatro Atores complementares ao operador (Consultor, Averbador, Emissor de Boleto, Digitador). Ganha novas formas de criação — manual, Duplicar, Importação — <b>além</b> da automática (<span class="badge rule-badge">RN-PRP-02</span> continua intacta para o caminho automático). Ganha Excluir. Ganha datas de operação, Val. Dívida, Documentos da Proposta (distintos de Documentos do Cliente), linha do tempo de eventos, Comentário opcional na mudança de Status, e Tags computadas (Tabela Multiplicadora, Operação, Produto, Banco, Origem — da Lead). Referencia Tabelas Multiplicadoras (plural), não mais o módulo singular.</td></tr><tr><td>0.3</td><td>Fecha os dois itens abertos: <b>sem reabertura de Proposta</b> — Pago e Cancelado são definitivamente terminais; <b>sem múltiplos Stages tipo Pago</b> — só Cancelado pode ter mais de um, <span class="badge rule-badge">RN-PRP-04</span> nunca se estende a Pago.</td></tr><tr><td>0.2</td><td>Adiciona o campo <b>Oferta</b> à Proposta (<span class="badge rule-badge">RN-PRP-07</span>) — durante a negociação, várias Ofertas podem estar em consideração (vindas da Simulação); o operador seleciona qual delas embasa a Proposta única. <span class="badge rule-badge">RN-PRP-01</span> não muda: continua sendo uma Proposta por Lead. Substitui o modo demonstração da Digitação de Proposta (Módulo 5, v1.2) — Proposta entra como funcionalidade plena.</td></tr><tr><td>0.1</td><td>Versão inicial.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-PRP) e regras de negócio (RN-PRP) próprios.</p>
+<blockquote><p><b>A Proposta nasce por quatro caminhos:</b> o automático (o gatilho é a Lead entrar em Formalização, <span class="badge rule-badge">RN-FNL-17</span>, módulo de Funis de Vendas) e três manuais — criação manual, Duplicar e Importação (<span class="badge rf-badge">RF-PRP-03</span>/04/05) —, nenhum deles exigindo Lead. <b>Propostas não se excluem:</b> uma criada por engano se cancela (<span class="badge rule-badge">RN-PRP-08</span>).</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Formalizar e acompanhar a Proposta de crédito — do nascimento (automático, ao entrar a Lead em Formalização, ou manual/duplicado/importado) até o desfecho (Pago ou Cancelado), que move a Lead de volta quando aplicável.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Operador</b> (Vendedor) — trabalha a Proposta: atualiza o Status, escolhe a Oferta, registra o motivo ao cancelar. É o mesmo operador responsável pela Lead (módulo de Leads).</li>
+<li><b>Consultor, Averbador, Emissor de Boleto, Digitador</b> — Atores complementares, atribuídos manualmente por Proposta (<span class="badge rule-badge">RN-PRP-09</span>). Não substituem o Operador — cada um cobre uma etapa específica da formalização.</li>
+<li><b>Sistema</b> — cria a Proposta automaticamente quando a Lead entra em Formalização (<span class="badge rule-badge">RN-PRP-02</span>), e sincroniza o Status com o Stage da Lead nos dois sentidos.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-proposta">3.1. Proposta</h2>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Lead</td><td><b>Não</b></td><td>Opcional — presente quando a Proposta nasceu do caminho automático (Formalização) ou foi manualmente associada a uma. Quando presente, é 1:1: aquela Lead não tem outra Proposta (<span class="badge rule-badge">RN-PRP-01</span>).</td></tr><tr><td><b>Cliente</b></td><td>Sim, de alguma forma</td><td>O vínculo real da Proposta. Cliente cadastrado (referência) <b>ou</b> dados capturados inline (CPF, Nome completo, Telefone — mesmo padrão de <span class="badge rule-badge">RN-SIM-05</span>, módulo de Simulações) quando não está cadastrado. Toda Proposta tem um Cliente, com ou sem Lead.</td></tr><tr><td><b>Operador</b></td><td>Sim</td><td>O responsável pela Proposta: o da Lead, quando há; senão, quem a criou (manual, Duplicar) ou quem a importou. É o Operador que recebe o crédito de Produção, Quantidade e Valor de meta (<span class="badge rule-badge">RN-PRP-16</span>); os Atores não.</td></tr><tr><td><b>Origem de Venda</b></td><td>Não</td><td>Rótulo do tenant (módulo de Origem de Venda, Admin), <code>Combobox</code> criável. <b>Copiada da Lead</b> na criação, quando há, e <b>depois independente</b> dela; sem Lead, é capturada no cadastro manual ou na importação. É a Tag "Origem" do Card (<span class="badge rule-badge">RN-PRP-13</span>).</td></tr><tr><td>Número da proposta</td><td>Não</td><td>Identificador, quando aplicável — pode ficar em branco ("-") até ser preenchido/atribuído.</td></tr><tr><td>Simulação de referência</td><td>Não</td><td>Se a Lead teve simulação, pré-preenche o valor (herdado de RF030 da v1.2).</td></tr><tr><td>Status</td><td>Sim</td><td>O <b>Status</b> do cadastro do tenant (módulo de Status de Proposta); o <b>Tipo</b> dele — Novo, Negociação, Pago ou Cancelado — comanda o comportamento. Nasce no <b>status ativo mais antigo do tipo Novo</b> (<span class="badge rule-badge">RN-STP-08</span>).</td></tr><tr><td>Oferta</td><td>Para sair de Novo</td><td>A Oferta que embasa esta Proposta — a Proposta guarda <b>uma só</b>, como <b>snapshot</b> gravado ao associá-la (<span class="badge rule-badge">RN-PRP-05</span>, <span class="badge rule-badge">RN-PRP-07</span>): Oferta, Produto, Promotora, Banco, Operação e a taxa de comissão. Pode ficar <b>vazia enquanto a Proposta está em Novo</b>; é obrigatória para sair de Novo. Determina o valor base (<span class="badge rule-badge">RN-OFR-07</span>), a Operação e o Produto/Banco exibidos como Tag.</td></tr><tr><td>Banco de origem</td><td>Condicional</td><td>Obrigatório quando a Operação da Oferta é Portabilidade ou Portabilidade com Refinanciamento (<span class="badge rule-badge">RN-PRP-14</span>) — de qual banco o contrato está sendo portado.</td></tr><tr><td>Multiplicador aplicado</td><td>Sim, junto com a Oferta</td><td>Snapshot do multiplicador da Loja para a Oferta, gravado <b>no mesmo momento do snapshot da Oferta</b> (<span class="badge rule-badge">RN-PRP-05</span>, <span class="badge rule-badge">RN-MUT-04</span>) e regravado a cada troca de Oferta.</td></tr><tr><td>Valor de meta</td><td>Calculado</td><td><code>Valor base (RN-OFR-07) × Multiplicador aplicado</code> — calculado quando a Proposta chega a Pago, e só conta para Metas a partir daí (<span class="badge rule-badge">RN-MET-03</span>).</td></tr><tr><td>Comissão aplicada</td><td>Taxa na associação; valor no Pago</td><td>A <b>taxa</b> de comissão fica congelada junto com o snapshot da Oferta; o <b>valor</b> resultante (taxa × valor base, <span class="badge rule-badge">RN-OFR-07</span>) é gravado quando o Status chega a Pago (<span class="badge rule-badge">RN-PRP-05</span>).</td></tr><tr><td>Motivo (se Cancelado)</td><td>Condicional</td><td>Obrigatório só quando há mais de um Stage do tipo Cancelado no Funil (<span class="badge rule-badge">RN-PRP-04</span>).</td></tr><tr><td><b>Atribuição no Pago</b></td><td>Sim, no fechamento</td><td>Gravados quando a Proposta chega a Pago: o <b>Operador</b>, o <b>Time</b> e o <b>Cargo</b> dele naquele momento. Metas, Rankings, Dashboard e os relatórios baseados em Pago leem esta atribuição, e não o cadastro atual: promoção, inativação ou troca de Time depois não movem a venda (<span class="badge rule-badge">RN-PRP-05</span>).</td></tr><tr><td>Comentário (mudança de Status)</td><td>Não</td><td>Sempre opcional, em qualquer mudança de Status — <span class="badge rule-badge">RN-PRP-10</span>.</td></tr><tr><td>Atores</td><td>Não</td><td>Consultor, Averbador, Emissor de Boleto, Digitador — <span class="badge rule-badge">RN-PRP-09</span>.</td></tr><tr><td><b>Datas da operação</b></td><td>Não</td><td>Data do contrato, Data de averbação, Data de pagamento ao cliente, Data de quitação, Data de retorno de saldo.</td></tr><tr><td>Valor liberado, Valor financiado</td><td>Não</td><td>Valores da operação. Existem em <b>qualquer</b> Operação, e o operador preenche os que se aplicam. O <b>valor base</b> (<span class="badge rule-badge">RN-OFR-07</span>) é um deles, conforme a Operação da Oferta: Valor liberado no Novo; Valor financiado em Refinanciamento, Portabilidade e Portabilidade com Refinanciamento. O Valor financiado é o valor do contrato.</td></tr><tr><td>Parcela e Prazo (meses)</td><td>Não</td><td>Dados do contrato fechado. Alimentam o Contrato do histórico do Cliente (<span class="badge rule-badge">RN-PRP-18</span>); sem Parcela e Prazo, a Carteira Ativa não consegue analisar o Cliente. Editáveis em qualquer Status, como as Datas.</td></tr><tr><td>Valor da dívida</td><td>Não</td><td>"Val. Dívida" no Card — relevante para Operações de Portabilidade/Refinanciamento.</td></tr><tr><td>Resíduo (data + valor)</td><td>Não</td><td>—</td></tr><tr><td>Documentos da Proposta</td><td>Não</td><td>Distintos de Documentos do Cliente (módulo de Clientes) — exclusivos desta negociação, não aparecem em outras Propostas do mesmo Cliente (<span class="badge rule-badge">RN-PRP-11</span>).</td></tr><tr><td>Linha do tempo</td><td>Calculado</td><td>Feed cronológico de eventos desta Proposta — mudanças de Status, documentos anexados, Atores atribuídos, cada um com autor e data (<span class="badge rule-badge">RN-PRP-12</span>).</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-PRP-01</span> — Quando há Lead, é 1:1 — mas Proposta pode existir sem nenhuma Lead.</b> Se uma Proposta está vinculada a uma Lead, aquela Lead não tem outra Proposta — mesmo quando várias Ofertas estão sendo consideradas (<span class="badge rule-badge">RN-PRP-07</span>), é sempre uma Proposta só por Lead, com uma Oferta selecionada. <b>Mas nem toda Proposta tem Lead</b>: criação manual, Duplicar e Importação (<span class="badge rf-badge">RF-PRP-03</span>/04/05) podem gerar Propostas vinculadas só a um Cliente, sem passar pelo board de Leads em nenhum momento.</p>
+<p><b><span class="badge rule-badge">RN-PRP-07</span> — A Proposta guarda uma única Oferta, que pode ser substituída.</b> Durante a negociação, mais de uma Oferta pode ser considerada (tipicamente as elegíveis retornadas pela Simulação), mas a Proposta carrega <b>uma só</b>, a escolhida pelo operador. A escolha preenche o campo Oferta e grava o snapshot (<span class="badge rule-badge">RN-PRP-05</span>). <b>Trocar a Oferta</b> é permitido em Novo e Negociação (dentro do Editar) e grava um <b>novo</b> snapshot, que substitui o anterior; em Pago e Cancelado a Oferta fica travada (<span class="badge rule-badge">RN-PRP-15</span>). A Oferta pode ficar vazia em Novo, mas é obrigatória para sair de Novo.</p>
+<p><b><span class="badge rule-badge">RN-PRP-02</span> — Nascimento automático continua existindo, sem alteração — mas deixou de ser o único caminho.</b> A Proposta ainda nasce automaticamente quando a Lead entra num Stage de tipo Formalização (<span class="badge rule-badge">RN-FNL-17</span>, módulo de Funis de Vendas) — esse caminho é intocado, e é o único que sempre vem com Lead. <b>Além dele</b>, agora existem: criação manual (<span class="badge rf-badge">RF-PRP-03</span>), Duplicar (<span class="badge rf-badge">RF-PRP-04</span>) e Importação (<span class="badge rf-badge">RF-PRP-05</span>) — nenhum dos três exige Lead. Todos exigem um Cliente (<span class="badge rule-badge">RN-PRP-01</span>, campo Cliente).</p>
+<p><b><span class="badge rule-badge">RN-PRP-09</span> — Atores são atribuídos manualmente, complementando o Operador — e travam individualmente assim que definidos.</b> Consultor, Averbador, Emissor de Boleto e Digitador são campos próprios da Proposta, cada um atribuível a um Membro da Loja — independentes do Operador (que segue sendo o responsável pela Lead, módulo de Leads). Nenhum é obrigatório. <b>Cada Ator trava assim que atribuído</b> — não editável depois, independentemente do Status da Proposta ou dos demais Atores (cada campo trava por si, não em bloco). Diferente de Documentos e Datas (<span class="badge rule-badge">RN-PRP-11</span> e a seção de Datas), que continuam editáveis em qualquer Status. O Ator <b>não recebe crédito</b> de Produção nem de Quantidade (<span class="badge rule-badge">RN-PRP-16</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRP-10</span> — Comentário na mudança de Status é sempre opcional.</b> Diferente do Motivo (obrigatório só em Cancelado com ambiguidade, <span class="badge rule-badge">RN-PRP-04</span>), o Comentário é um campo de texto livre, nunca obrigatório, disponível em qualquer mudança de Status.</p>
+<p><b><span class="badge rule-badge">RN-PRP-11</span> — Documentos da Proposta são exclusivos da negociação, distintos de Documentos do Cliente.</b> Um documento anexado à Proposta não aparece em outras Propostas do mesmo Cliente — ao contrário de Documentos do Cliente (módulo de Clientes), que aparecem em todas as negociações dele. Mesma distinção já registrada no módulo Layout de Lead (<span class="badge rule-badge">RN-LAY-06</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRP-12</span> — Linha do tempo é gerada automaticamente, não editável.</b> Todo evento relevante da Proposta (mudança de Status, documento anexado, Ator atribuído) gera uma entrada na linha do tempo — autor, data/hora, descrição. Consultável, nunca editável diretamente.</p>
+<h2 id="3-2-sincroniza-o-com-a-lead-s-quando-ela-existe">3.2. Sincronização com a Lead — só quando ela existe</h2>
+<p><b><span class="badge rule-badge">RN-PRP-03</span> — Status de tipo Pago ou Cancelado move a Lead automaticamente, quando há Lead vinculada.</b> Consequência de <span class="badge rule-badge">RN-FNL-18</span> (módulo de Funis de Vendas): ao mudar o Status da Proposta para um Status de tipo Pago ou Cancelado, o sistema move a Lead correspondente para o Stage do mesmo Tipo no Funil — <b>só quando a Proposta tem Lead</b> (<span class="badge rule-badge">RN-PRP-01</span>). Proposta sem Lead (criação manual/Duplicar/Importação, sem associação) simplesmente não dispara esse evento — não existe Stage para sincronizar. <b>Uma Lead cancelada por uma Proposta não reabre</b> (Funis, <span class="badge rule-badge">RN-FNL-19</span>): a Proposta é terminal e é 1:1 com a Lead (<span class="badge rule-badge">RN-PRP-01</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRP-04</span> — Cancelar com múltiplos Stages do tipo exige Motivo — regra exclusiva de Cancelado.</b> Se o Funil da Lead tem mais de um Stage de tipo Cancelado (caso raro — ex.: "Cancelado" vs. "Desqualificado"), o operador que muda o Status para Cancelado <b>precisa escolher</b> entre os Stages disponíveis daquele Tipo — a escolha é o próprio Motivo, não um campo à parte (o Nome do Stage já cumpre esse papel, <span class="badge rule-badge">RN-FNL-18</span>). Com um único Stage do tipo, a mudança de Status é direta, sem esse passo extra. <b>Não se estende a Pago</b> — há exatamente um Stage tipo Pago por Funil (Funis, <span class="badge rule-badge">RN-FNL-15</span>); mudar para Pago é sempre direto, sem escolha de destino.</p>
+<h2 id="3-3-multiplicador-de-meta">3.3. Multiplicador de Meta</h2>
+<p><b><span class="badge rule-badge">RN-PRP-05</span> — A Oferta é congelada ao ser associada; a atribuição e os valores finais, no Pago.</b> Quando a Oferta é associada à Proposta (e a cada troca), a Proposta grava um snapshot: a Oferta, o Produto, a Promotora, o Banco, a Operação, a <b>taxa de comissão</b> e o <b>multiplicador</b> da Loja para aquela Oferta (<span class="badge rule-badge">RN-MUT-04</span>). Editar, inativar ou excluir a Oferta, ou mudar o multiplicador, depois da associação <b>não altera</b> a Proposta; uma troca de Oferta grava outro snapshot. <b>No momento do Pago</b>, a Proposta grava ainda o Valor de meta (valor base × multiplicador), o valor da comissão (taxa congelada × valor base) e a <b>atribuição</b>: o Operador, o <b>Time</b> e o <b>Cargo</b> dele naquele instante. Metas, Rankings, Dashboard e os relatórios baseados em Pago leem essa atribuição, e não o cadastro atual — promoção, inativação ou troca de Time depois não retiram a venda do Time nem do Membro. Antes do Pago, o Valor de meta não existe. <i>(Decisões do usuário, levantamento do CRM: snapshot da Oferta na associação; multiplicador gravado junto; atribuição fixada no Pago.)</i></p>
+<h2 id="3-4-sem-consumo-de-cr-ditos">3.4. Sem consumo de Créditos</h2>
+<p><b><span class="badge rule-badge">RN-PRP-06</span> — Proposta não debita saldo.</b> O débito já aconteceu quando a Lead foi atribuída à Loja (módulo de Créditos, <span class="badge rule-badge">RN-CRD-01</span>) — nenhuma ação sobre a Proposta gera novo lançamento no Extrato.</p>
+<h2 id="3-5-tags-do-card-computadas-sem-campo-pr-prio">3.5. Tags do Card (computadas, sem campo próprio)</h2>
+<p><b><span class="badge rule-badge">RN-PRP-13</span> — Tags, todas derivadas de campos já existentes — cinco fixas, mais uma condicional.</b> Identificação da Oferta selecionada (o que aparecia como "Nome da tabela multiplicadora" — cada Oferta já é, em si, uma "tabela" no módulo Tabelas Multiplicadoras, sem entidade separada para nomear), <b>Operação (campo próprio da Oferta — módulo de Ofertas v0.9, não mais derivada do Produto)</b>, Produto, Banco (da Oferta), e <b>Origem</b> — a <b>Origem de Venda</b> da própria Proposta (campo seu, copiado da Lead na criação e independente depois; sem Lead, capturada no cadastro manual ou na importação — módulo de Origem de Venda). <b>Sexta Tag, condicional:</b> Banco de origem (<span class="badge rule-badge">RN-PRP-14</span>), só quando a Operação for Portabilidade ou Portabilidade com Refinanciamento. Nenhuma delas é a entidade Tag de Funis de Vendas (categorias Audiência/Origem/Departamento) — conceitos distintos, já registrado anteriormente.</p>
+<p><b><span class="badge rule-badge">RN-PRP-14</span> — Banco de origem é obrigatório em Portabilidade e Portabilidade com Refinanciamento.</b> Quando a Operação da Oferta selecionada for uma dessas duas, a Proposta exige informar <b>de qual banco o contrato está sendo portado</b> — campo próprio, buscado via API do Banco Central (mesmo padrão já usado em Regras e Ofertas para campos de Banco). Não se aplica a Novo nem Refinanciamento puro. Capturado na criação manual (<span class="badge rf-badge">RF-PRP-03</span>) e na importação (<span class="badge rf-badge">RF-PRP-05</span>) — linha/formulário sem esse campo preenchido, quando a Operação exige, é rejeitado (importação) ou bloqueia salvar (manual). Exibido como badge na linha de Tags (<span class="badge rule-badge">RN-PRP-13</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRP-18</span> — O Pago gera um Contrato no histórico do Cliente.</b> Quando a Proposta chega a Pago, o sistema grava um Contrato no histórico do Cliente (Clientes, <span class="badge rule-badge">RN-CLI-13</span>) com Segmento, Operação, Banco, Valor, Parcela, Prazo e Data de pagamento ao cliente da Proposta. O Contrato <b>acompanha</b> as edições posteriores desses campos na Proposta. O histórico é de uso interno do tenant e não aparece para as Lojas.</p>
+<p><b><span class="badge rule-badge">RN-PRP-08</span> — Proposta não se exclui, em nenhum Status.</b> Nem o gestor pode excluí-la. Uma Proposta criada por engano se resolve <b>cancelando-a</b> (Status de tipo Cancelado, <span class="badge rule-badge">RN-PRP-04</span>): ela permanece no histórico, nos relatórios e na Lead, quando há. <i>(Decisão do usuário, levantamento do CRM.)</i></p>
+<p><b><span class="badge rule-badge">RN-PRP-15</span> — O que se edita depende do Tipo do Status.</b> Em <b>Novo</b> e <b>Negociação</b>, tudo é editável (inclusive trocar a Oferta, <span class="badge rule-badge">RN-PRP-07</span>), respeitando a trava individual dos Atores (<span class="badge rule-badge">RN-PRP-09</span>). Em <b>Pago</b> e <b>Cancelado</b>, só <b>Documentos</b>, <b>Datas</b> e <b>Comentário</b>; o resto fica travado. <i>(Decisão do usuário.)</i></p>
+<p><b><span class="badge rule-badge">RN-PRP-16</span> — O Operador recebe o crédito da venda.</b> Produção, Quantidade, Valor de meta e Metas são creditados <b>só ao Operador</b> da Proposta (o da Lead, ou quem a criou ou importou); os Atores (Consultor, Averbador, Emissor de Boleto, Digitador) não contam. <i>(Consequência de <code>self</code> incluir o Ator, <span class="badge rule-badge">RN-PRP-17</span>.)</i></p>
+<p><b><span class="badge rule-badge">RN-PRP-17</span> — <code>self</code> em Propostas são as Propostas em que o usuário é o Operador ou um Ator.</b> O escopo <code>self</code> alcança as Propostas das Leads atribuídas ao usuário, as que ele criou (sem Lead) <b>e</b> aquelas em que foi atribuído como Consultor, Averbador, Emissor de Boleto ou Digitador. Os escopos <code>team</code>, <code>store</code> e <code>all</code> herdam esse recorte, ampliado. <i>(Decisão do usuário; antes só constava nas Variações.)</i></p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-prp-01-acompanhamento-da-proposta"><span class="badge rf-badge">RF-PRP-01</span> — Acompanhamento da Proposta</h2>
+<p><b>Como</b> operador, <b>eu quero</b> ver e atualizar o Status da Proposta vinculada à minha Lead <b>para</b> formalizar a negociação até o desfecho.</p>
+<p><b>Comportamento esperado:</b> a partir da Lead (já em Formalização), o operador acessa a Proposta, atualiza o Status conforme o processo avança. Ao mover para Pago ou Cancelado, a sincronização com o Funil (<span class="badge rule-badge">RN-PRP-03</span>) acontece imediatamente.</p>
+<h2 id="rf-prp-02-cancelamento-com-motivo"><span class="badge rf-badge">RF-PRP-02</span> — Cancelamento com motivo</h2>
+<p>Coberto em <span class="badge rule-badge">RN-PRP-04</span>. A tela de mudança de Status para Cancelado, quando há ambiguidade de Stage, exige a escolha antes de confirmar.</p>
+<h2 id="rf-prp-03-cria-o-manual-de-proposta"><span class="badge rf-badge">RF-PRP-03</span> — Criação manual de Proposta</h2>
+<p><b>Como</b> operador, <b>eu quero</b> criar uma Proposta manualmente para um Cliente <b>para</b> cobrir casos que não passaram pelo board de Leads (ex.: negociação iniciada direto por telefone, sem lead registrada).</p>
+<p><b>Comportamento esperado:</b> destino de topo (<span class="badge rf-badge">RF-PRP-06</span>) oferece "Nova proposta" — o operador informa os dados do Cliente (o CPF busca entre os Clientes <b>associados à Loja do operador</b>; se não achar, captura inline — mesmo padrão de <span class="badge rule-badge">RN-SIM-05</span>, Simulações; um CPF que só outras Lojas conhecem não revela nenhum dado, <span class="badge rule-badge">RN-CLI-04</span>) e, <b>opcionalmente</b>, associa a uma Lead existente sem Proposta ainda. Sem Lead associada, a Proposta segue seu ciclo de Status normalmente, só sem o efeito de mover nenhum card no board (<span class="badge rule-badge">RN-PRP-03</span> não se aplica). Ao escolher uma Oferta cuja Operação é Portabilidade ou Portabilidade com Refinanciamento, o campo Banco de origem passa a obrigatório (<span class="badge rule-badge">RN-PRP-14</span>). O formulário tem ainda o campo opcional <b>Origem de Venda</b> (<code>Combobox</code> criável); a Oferta pode ficar vazia (<span class="badge rule-badge">RN-PRP-07</span>); o <b>Operador</b> é quem cria.</p>
+<h2 id="rf-prp-04-duplicar-proposta"><span class="badge rf-badge">RF-PRP-04</span> — Duplicar Proposta</h2>
+<p><b>Como</b> operador, <b>eu quero</b> duplicar uma Proposta existente <b>para</b> reaproveitar a maior parte dos dados numa negociação nova.</p>
+<p><b>Comportamento esperado:</b> a partir de uma Proposta existente, "Duplicar" copia os campos preenchíveis (Cliente, Origem de Venda, datas e a <b>Oferta atual</b>, com um <b>novo snapshot</b> — se a Oferta não existir mais, o campo fica vazio para o operador escolher), <b>sem os Atores</b> (cada negociação tem os seus papéis) para uma Proposta nova, <b>sem Lead</b> por padrão (a cópia não herda a Lead da original, mesmo que ela tivesse uma — evita duas Propostas competindo pela mesma Lead, <span class="badge rule-badge">RN-PRP-01</span>). Status sempre reinicia em Novo; linha do tempo começa vazia.</p>
+<h2 id="rf-prp-05-importa-o-de-propostas"><span class="badge rf-badge">RF-PRP-05</span> — Importação de Propostas</h2>
+<p><b>Como</b> gestor de Loja, <b>eu quero</b> importar Propostas em lote <b>para</b> trazer uma base existente para o sistema.</p>
+<p><b>Comportamento esperado:</b> herdado do mesmo padrão de importação já usado nas Listas do Marketing (Prospecção, <span class="badge rf-badge">RF-PRS-01</span>) — envio de arquivo, mapeamento de colunas, validação linha a linha, resumo final. Cada linha traz os dados do Cliente (obrigatório) — Lead é opcional, associada só se a coluna de referência for preenchida e apontar para uma Lead sem Proposta. Linhas cuja Oferta tem Operação Portabilidade ou Portabilidade com Refinanciamento <b>exigem</b> a coluna de Banco de origem preenchida (<span class="badge rule-badge">RN-PRP-14</span>) — sem ela, a linha é rejeitada, com relatório de erro. A coluna Origem de Venda é opcional, assim como as colunas Valor, Parcela e Prazo do contrato; o Operador das linhas importadas é o gestor que importa.</p>
+<h2 id="rf-prp-06-lista-de-propostas-destino-de-topo"><span class="badge rf-badge">RF-PRP-06</span> — Lista de Propostas (destino de topo)</h2>
+<p><b>Como</b> operador ou gestor, <b>eu quero</b> uma tela dedicada listando as Propostas ao meu alcance <b>para</b> localizar e trabalhar sem precisar navegar pela Lead toda vez.</p>
+<p><b>Comportamento esperado:</b> lista de Cards de Proposta (colapsados por padrão — Fase 2 detalha a estrutura visual completa, com base na especificação do Card), cada card expansível. Filtros por Status, Loja/Time (conforme escopo), período, Ator.</p>
+<h2 id="rf-prp-07-gest-o-de-documentos-da-proposta"><span class="badge rf-badge">RF-PRP-07</span> — Gestão de Documentos da Proposta</h2>
+<p>Herdado do mesmo padrão de upload já usado no produto (ex.: importações) — filepicker com drag-and-drop, tabela com Descrição, Data de envio, Operador, ações de Baixar e Excluir. Distintos de Documentos do Cliente (<span class="badge rule-badge">RN-PRP-11</span>).</p>
+<h2 id="rf-prp-08-sem-uso"><span class="badge rf-badge">RF-PRP-08</span> — sem uso</h2>
+<p>Propostas não se excluem (<span class="badge rule-badge">RN-PRP-08</span>); a numeração fica sem uso.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-PRP-01</span></b> — Uma Lead tem no máximo uma Proposta, qualquer que seja a origem de criação.</li>
+<li><b><span class="badge rule-badge">RN-PRP-02</span></b> — Nascimento automático continua existindo, sem alteração; deixou de ser o único caminho.</li>
+<li><b><span class="badge rule-badge">RN-PRP-03</span></b> — Status de tipo Pago/Cancelado move a Lead automaticamente (<span class="badge rule-badge">RN-FNL-18</span>); Lead cancelada por Proposta não reabre.</li>
+<li><b><span class="badge rule-badge">RN-PRP-04</span></b> — Cancelar com múltiplos Stages do tipo exige escolha de Motivo (= Stage); nunca se estende a Pago.</li>
+<li><b><span class="badge rule-badge">RN-PRP-05</span></b> — A Oferta e o multiplicador são congelados ao associar a Oferta; no Pago, gravam-se o Valor de meta, a comissão e a atribuição (Operador, Time, Cargo).</li>
+<li><b><span class="badge rule-badge">RN-PRP-06</span></b> — Proposta não consome Créditos.</li>
+<li><b><span class="badge rule-badge">RN-PRP-07</span></b> — A Proposta guarda uma única Oferta, substituível em Novo e Negociação; pode ficar vazia em Novo.</li>
+<li><b><span class="badge rule-badge">RN-PRP-08</span></b> — Proposta não se exclui, em nenhum Status; criada por engano, cancela-se.</li>
+<li><b><span class="badge rule-badge">RN-PRP-09</span></b> — Atores (Consultor, Averbador, Emissor de Boleto, Digitador) complementam o Operador.</li>
+<li><b><span class="badge rule-badge">RN-PRP-10</span></b> — Comentário na mudança de Status é sempre opcional.</li>
+<li><b><span class="badge rule-badge">RN-PRP-11</span></b> — Documentos da Proposta são exclusivos da negociação, distintos de Documentos do Cliente.</li>
+<li><b><span class="badge rule-badge">RN-PRP-12</span></b> — Linha do tempo gerada automaticamente, não editável.</li>
+<li><b><span class="badge rule-badge">RN-PRP-13</span></b> — Seis Tags computadas (identificação da Oferta, Operação, Produto, Banco, Origem de Venda, e Banco de origem quando aplicável).</li>
+<li><b><span class="badge rule-badge">RN-PRP-14</span></b> — Banco de origem obrigatório em Portabilidade e Portabilidade com Refinanciamento.</li>
+<li><b><span class="badge rule-badge">RN-PRP-18</span></b> — Ao chegar a Pago, a Proposta gera um Contrato no histórico do Cliente.</li>
+<li><b><span class="badge rule-badge">RN-PRP-15</span></b> — O que se edita depende do Tipo do Status: Pago e Cancelado só Documentos, Datas e Comentário.</li>
+<li><b><span class="badge rule-badge">RN-PRP-16</span></b> — O Operador recebe o crédito da venda; os Atores não contam.</li>
+<li><b><span class="badge rule-badge">RN-PRP-17</span></b> — <code>self</code> = Propostas em que o usuário é Operador ou Ator.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Proposta:</b> segue o <b>StatusType</b> do módulo de Status de Proposta — Novo → Negociação → (Pago | Cancelado), com os status intermediários livres, definidos pelo tenant dentro de cada Tipo.</p>
+<p>Transições Pago e Cancelado são <b>terminais e definitivas</b> e disparam <span class="badge rule-badge">RN-PRP-03</span>. Não há transição de volta a partir delas — confirmado, sem reabertura de Proposta em nenhuma hipótese nesta versão. Em Pago e Cancelado só Documentos, Datas e Comentário seguem editáveis (<span class="badge rule-badge">RN-PRP-15</span>).</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: o disparo automático em si (evento do módulo de Funis de Vendas — este só reage), a configuração das Tabelas Multiplicadoras (módulo próprio), a gestão de Membros que podem ser Atores (módulo de Membros), nem o cálculo/consumo do valor de meta em Metas (módulo de Metas — este só grava o snapshot e a atribuição).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Funis de Vendas</b> (Admin) — dispara a criação automática (<span class="badge rule-badge">RN-FNL-17</span>) e recebe o evento de sincronização (<span class="badge rule-badge">RN-FNL-18</span>).</li>
+<li><b>Status de Proposta</b> (Admin) — o StatusType e os status configurados pelo tenant.</li>
+<li><b>Ofertas, Produtos</b> (Admin) — valor base (<span class="badge rule-badge">RN-OFR-07</span>) e Operação (campo da Oferta).</li>
+<li><b>API do Banco Central</b> — busca do Banco de origem (<span class="badge rule-badge">RN-PRP-14</span>), mesmo padrão já usado em Regras e Ofertas.</li>
+<li><b>Tabelas Multiplicadoras</b> (CRM) — o multiplicador vigente por Oferta, no momento do Pago.</li>
+<li><b>Simulações</b> (CRM) — a simulação de referência e as Ofertas em consideração, se houver.</li>
+<li><b>Clientes</b> (CRM) — Documentos do Cliente, distintos dos Documentos da Proposta.</li>
+<li><b>Membros</b> (CRM) — quem pode ser atribuído como Ator.</li>
+<li><b>Leads</b> (CRM) — a Lead de origem, quando há, e a Origem de Venda copiada dela na criação.</li>
+<li><b>Origem de Venda</b> (Admin) — a lista do <code>Combobox</code> do campo Origem de Venda (<span class="badge rule-badge">RN-PRP-13</span>).</li>
+<li><b>Usuários</b> (Admin) — a Proposta acompanha a Lead na redistribuição por inativação, e os Atores permanecem (<span class="badge rule-badge">RN-USR-05</span>, <span class="badge rule-badge">RN-PRP-09</span>).</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Clientes</b> (CRM) e <b>Marketing</b> (Carteira Ativa) — o Contrato gerado no Pago (<span class="badge rule-badge">RN-PRP-18</span>), com Valor, Parcela, Prazo e Data de pagamento ao cliente.</li>
+<li><b>Metas, Rankings e Dashboard</b> (CRM) — o Valor de meta (valor base × multiplicador) e a atribuição (Operador, Time, Cargo) gravados no Pago.</li>
+<li><b>Relatórios</b> (CRM) — produção e motivos de cancelamento. Também <b>Relatórios (Admin)</b> — a comissão gravada no Pago, base de Comissões a pagar.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Propostas v0.14 — módulo da aplicação CRM.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-crm-propostas-matriz-de-permiss-es">Corban CRM · Propostas — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM · Propostas (módulo v0.7)</p>
+<p><b>Versão:</b> 0.5</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial (módulo pré-reformulação) — recurso <code>proposals</code> com só <code>view</code>/<code>manage</code>. Obsoleto.</td></tr><tr><td>0.2</td><td>Reescrita pós-reformulação — adiciona <code>create</code> e <code>delete</code> num recurso <code>proposals</code> único.</td></tr><tr><td>0.3</td><td>Leitura errada de "granularidade por status" — modelei como ações de transição (<code>advance_to_X</code>) num recurso só. Não era isso.</td></tr><tr><td>0.4</td><td><b>Correção: decomposição em sub-recursos</b>, cada um com seu próprio <code>manager</code> — <code>proposals_documents</code>, <code>proposals_actors</code>, <code>proposals_dates</code>, e um por Tipo de Status (<code>proposals_new</code>, <code>proposals_negotiation</code>, <code>proposals_paids</code>, <code>proposals_canceled</code>). O recurso base <code>proposals</code> fica só com <code>view</code>/<code>create</code>/<code>delete</code>.</td></tr></tbody></table></div>
+<p>| 0.5 | Adiciona dois sub-recursos que faltavam: <code>proposals_timeline:view</code> (Linha do tempo, dado de auditoria — mesmo critério de gate próprio já usado em Documentos) e <code>proposals_offer:manager</code> (trocar a Oferta, <span class="badge rule-badge">RN-PRP-07</span> — ação financeiramente significativa, separada da edição geral). <code>proposals_offer:manager</code> cobre Novo, Negociação <b>e Cancelado</b> — não só os dois primeiros.</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre <b>oito recursos</b>, todos começando por <code>proposals</code> — o recurso base e sete sub-recursos, cada um cobrindo uma parte específica do Card de Proposta. Formato: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<h3 id="recurso-base">Recurso base</h3>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>proposals:view</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals:create</code></td><td><code>store</code></td></tr><tr><td><code>proposals:delete</code></td><td><code>store</code>, <code>all</code></td></tr></tbody></table></div>
+<h3 id="sub-recursos-pain-is-do-card">Sub-recursos — painéis do Card</h3>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>proposals_documents:view</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_documents:manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_actors:manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_dates:manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_timeline:view</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_offer:manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr></tbody></table></div>
+<h3 id="sub-recursos-por-tipo-de-status">Sub-recursos — por Tipo de Status</h3>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>proposals_new:manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_negotiation:manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_paids:manager</code></td><td><code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>proposals_canceled:manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-notas-sobre-os-sub-recursos">2. Notas sobre os sub-recursos</h2>
+<p><b>Por que sub-recursos, não ações numa entidade só.</b> Cada painel do Card (Documentos, Atores, Datas) e cada Tipo de Status precisa poder ser concedido independentemente — um Cargo pode gerenciar Datas sem poder tocar em Documentos, ou avançar uma negociação sem poder marcar como Paga.</p>
+<p><b><code>proposals_documents:view</code> é separado do <code>proposals:view</code> geral.</b> Ver o Card (nome, grid, tags) não implica ver os Documentos anexados — gate próprio para dado potencialmente sensível, mesmo critério já usado em outros módulos para dado financeiro/sensível.</p>
+<p><b><code>proposals_actors:manager</code> e <code>proposals_dates:manager</code> não têm <code>view</code> próprio.</b> Ver Atores e Datas já vem incluído no <code>proposals:view</code> geral — só a <b>edição</b> exige a permissão do sub-recurso. Editar respeita, além disso, o travamento por campo (<span class="badge rule-badge">RN-PRP-09</span> — Ator travado não é editável nem por quem tem a permissão).</p>
+<p><b>Os quatro por Tipo de Status cobrem edição de dados gerais e a transição para aquele Tipo</b> — exceto a Oferta, que tem permissão própria (abaixo).</p>
+<p><b><code>proposals_offer:manager</code> cobre trocar a Oferta (<span class="badge rule-badge">RN-PRP-07</span>) em Novo, Negociação e Cancelado.</b> Ação financeiramente significativa o bastante para ter permissão separada da edição geral — um Cargo pode editar Datas/Atores sem poder trocar a Oferta, por exemplo. Relevante em três dos quatro Tipos: Novo e Negociação (negociação ainda aberta) e <b>Cancelado</b> (a Oferta pode seguir ajustável até o fechamento definitivo daquele caminho). <b>Não relevante em Pago</b> — a Oferta já está definitivamente travada como snapshot (<span class="badge rule-badge">RN-PRP-05</span>) antes desse Tipo ser alcançado.</p>
+<p><b><code>proposals_timeline:view</code> é separado do <code>proposals:view</code> geral</b>, mesmo critério de <code>proposals_documents:view</code> — a Linha do tempo é dado de auditoria (quem fez o quê, quando), sensível o bastante para gate próprio.</p>
+<p><b><code>proposals_paids:manager</code> não oferece <code>self</code>.</b> Marcar como Pago tem efeito financeiro direto (gera valor de meta, <span class="badge rule-badge">RN-PRP-05</span>) — exige ao menos visão de Time, mesmo critério já usado antes.</p>
+<p><b>Comentário (<span class="badge rule-badge">RN-PRP-10</span>), sempre opcional em qualquer mudança de Status</b>, é preenchido dentro da mesma ação de transição — não tem permissão própria.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Propostas v0.5.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do CRM</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · CRM</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

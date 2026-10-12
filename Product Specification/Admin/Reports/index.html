@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Relatórios · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Relatórios</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Regions/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Regiões</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" selected>Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../Roles/index.html" class="pager-btn">Cargos <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Análise
+    </div>
+    <h1>Relatórios <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Análise</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.7 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-relat-rios">Corban Admin · Relatórios</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Análise</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.7</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial. Relatórios do ponto de vista do tenant (escopo <code>all</code>). Define os 3 tipos compartilhados com o CRM (Produção, Funil e Conversão, Esteira de Propostas) e os 3 exclusivos do tenant (Venda de leads, Comissões a pagar, Ofertas e Elegibilidade).</td></tr><tr><td>0.2</td><td>Fecha os 4 itens abertos: Visões salvas são pessoais (confirmado); comissão passa a ser gravada no Pago (Propostas v0.10), então Comissões a pagar usa o valor gravado; caso "nenhuma Loja elegível" coberto pela Loja do tenant com a flag (premissa registrada em Leads v0.6) — métrica "demanda não atendida" descartada; marco do speed-to-lead confirmado.</td></tr><tr><td>0.3</td><td><b>"Origem" passa a ser duas dimensões distintas:</b> Origem da lead (campo do sistema, módulo de Leads) e Origem de Venda (rótulo do tenant). O relatório de Funil e Conversão contava "leads por Origem de Venda", mas a origem que a v1.2 pedia (RF039) era o canal, hoje a Origem da lead. Venda de leads ganha a dimensão Origem da lead. Novas <span class="badge rule-badge">RN-REL-16</span> (as duas dimensões; Proposta sem Lead) e <span class="badge rule-badge">RN-REL-17</span> (Origem de Venda agrupada pelo rótulo, o que fecha o item aberto do rótulo órfão de Origem de Venda).</td></tr><tr><td>0.4</td><td><b>"Time" é o Time atual do Operador</b> (nova <span class="badge rule-badge">RN-REL-19</span>, decisão do usuário), declarado como regra, com a nota de que mudar de Time reatribui o histórico (mudanças são raras). <b>Lojas, Times e Operadores excluídos continuam nos relatórios</b>, marcados como excluídos (nova <span class="badge rule-badge">RN-REL-18</span>, consequência do soft-delete de Lojas e Usuários). <b>"Regras que mais desqualificaram" passa a agrupar pela Regra gravada no snapshot</b> (<span class="badge rule-badge">RN-SIM-11</span>), e não pela mensagem isolada (Regras v0.8: duas Regras podem ter a mesma mensagem). Declara a <b>Seção "Análise"</b>, a única que faltava entre os módulos do Admin. Atualiza a nota do prefixo (a colisão entre os Dashboards foi resolvida). Reordena esta tabela.</td></tr><tr><td>0.5</td><td><b>Venda de leads deixa de ter a dimensão e o filtro "Produto"</b>: o Débito do Extrato não tem Produto (o Funil só tem preço por Origem da lead, e a Lead não tem Produto), então a dimensão não tinha fonte — escapou da revisão da v0.4 e foi achada no levantamento do Admin. <b>Nova <span class="badge rule-badge">RN-REL-20</span></b>: os relatórios de Propostas leem o snapshot da Oferta gravado na Proposta (decisão do usuário), e não a Oferta atual.</td></tr><tr><td>0.6</td><td><b>O §3.2 deixa de chamar a configuração da Visão de "snapshot"</b>, o que contradizia a <span class="badge rule-badge">RN-REL-07</span> (o período relativo não é congelado): agora diz que o período relativo reabre acompanhando a data de hoje e o intervalo fixo reabre com as mesmas datas. O <span class="badge rf-badge">RF-REL-02</span> passa a prever o texto de apoio do diálogo de salvar, que informa isso. Achado na auditoria dos artefatos para o wireframe.</td></tr><tr><td>0.7</td><td>Acompanha Créditos v0.6: Créditos adicionados por origem passam a ser Pix e manual (sem Boleto nesta versão).</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-REL) e regras de negócio (RN-REL) próprios.</p>
+<blockquote><p><b>Este módulo é a fonte das definições compartilhadas.</b> Produção, Funil e Conversão e Esteira de Propostas são definidos <b>aqui</b>, na versão completa (escopo <code>all</code>, com a dimensão "Agrupar por Loja"). O módulo CRM · Relatórios referencia esses três tipos como <b>recorte</b> — limitados a <code>store</code> e abaixo, sem a dimensão Loja — no mesmo espírito de Membros (CRM) em relação a Usuários (Admin). Uma mudança num tipo compartilhado é feita aqui e vale nas duas aplicações.</p></blockquote>
+<blockquote><p><b>Prefixo de regras.</b> Este módulo usa RN-REL / RF-REL. O módulo CRM · Relatórios usa o prefixo próprio RN-RLC, e os Dashboards ficaram em RN-DSH (Admin) e RN-DSC (CRM), de modo que nenhum identificador se repete entre as aplicações.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Dar ao tenant uma visão <b>global</b> — todas as Lojas — do resultado comercial, da operação de propostas, da venda de leads, das comissões devidas às Lojas e do desempenho das Ofertas, com filtros, agrupamento escolhível e Visões salvas.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Usuário do Admin</b> com permissão de relatórios — tipicamente gestão do tenant (dono, financeiro, comercial). Cada tipo de relatório tem permissão própria (§3.5), então o acesso a dado financeiro pode ser separado do acesso a dado operacional.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-tipo-de-relat-rio-mec-nica-comum">3.1. Tipo de relatório — mecânica comum</h2>
+<p>Os tipos são <b>fixos</b> — o usuário não cria tipos novos (<span class="badge rule-badge">RN-REL-01</span>). Dentro de cada tipo, ele configura:</p>
+<div class="tablewrap"><table><thead><tr><th>Elemento</th><th>Notas</th></tr></thead><tbody><tr><td>Período</td><td>Padrão: mês atual (<span class="badge rule-badge">RN-REL-04</span>). Aceita períodos relativos ("mês atual", "últimos 30 dias") ou um intervalo fixo de datas.</td></tr><tr><td>Comparação</td><td>Com o período anterior equivalente — valores dos dois períodos, variação absoluta e percentual (<span class="badge rule-badge">RN-REL-04</span>).</td></tr><tr><td>Filtros</td><td>Conjunto próprio de cada tipo (§3.3), combináveis entre si.</td></tr><tr><td>Agrupar por</td><td>Uma dimensão por vez, entre as que o tipo oferece (§3.3). Troca a granularidade da mesma tabela, sem trocar de relatório.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-REL-01</span> — Tipos são fixos; a personalização é filtro, agrupamento e Visão salva.</b> Não existe construtor livre de relatório — decisão consciente, já registrada na v1.2 ("não inclui construtor de relatórios customizados"). Cada tipo tem forma de dado própria (o Funil é passo a passo por Stage; a Venda de leads é um ledger), e generalizar isso numa grade única é onde a complexidade explodiria.</p>
+<p><b><span class="badge rule-badge">RN-REL-02</span> — Cada tipo declara seus próprios filtros e dimensões de agrupamento.</b> Nem toda dimensão faz sentido em todo tipo (ex.: "Ator" só existe na Esteira de Propostas; "Regra" só em Ofertas e Elegibilidade).</p>
+<p><b><span class="badge rule-badge">RN-REL-03</span> — No Admin, todo relatório é escopo <code>all</code>.</b> É a visão do tenant — todas as Lojas. Nenhum tipo do Admin oferece <code>store</code>, <code>team</code> ou <code>self</code>: esses recortes pertencem ao CRM (módulo CRM · Relatórios). A dimensão "Agrupar por Loja" existe só aqui.</p>
+<p><b><span class="badge rule-badge">RN-REL-04</span> — Período padrão é o mês atual, sempre com comparação ao período anterior.</b> Herdado de RN059/RN064 da v1.2.</p>
+<p><b><span class="badge rule-badge">RN-REL-05</span> — Exportação fiel ao que está na tela, e auditada.</b> CSV/XLSX com os mesmos filtros, agrupamento, colunas e comparação exibidos — cada exportação registra autor, momento, tipo e filtros (herdado de RN065 da v1.2). Relatórios trazem dado de clientes e financeiro; a trilha de exportação é exigência de LGPD (<span class="badge rnf-badge">RNF003</span> da v1.2).</p>
+<h2 id="3-2-vis-o-salva">3.2. Visão salva</h2>
+<p>Combinação nomeada de um tipo com filtros, período e agrupamento — reaparece depois sem precisar reconfigurar.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Título</td><td>Sim</td><td>Ex.: "Produção por Loja — INSS".</td></tr><tr><td>Tipo</td><td>Sim, travado</td><td>O tipo de relatório de origem. Não muda depois de salva.</td></tr><tr><td>Filtros, Período, Agrupar por</td><td>Sim</td><td>A configuração no momento de salvar. <b>O período relativo ("mês atual", "últimos 30 dias") é salvo como relativo e reabre sempre acompanhando a data de hoje</b>; o intervalo fixo reabre com as mesmas datas (<span class="badge rule-badge">RN-REL-07</span>).</td></tr><tr><td>Dono</td><td>Implícito</td><td>Quem salvou.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-REL-06</span> — Visão salva pertence a quem a criou.</b> Confirmado: Visões são pessoais — cada usuário vê e gerencia só as próprias, sem compartilhamento nesta versão.</p>
+<p><b><span class="badge rule-badge">RN-REL-07</span> — Período relativo é salvo como relativo; intervalo fixo, como fixo.</b> <i>(Decisão própria, não pedida explicitamente.)</i> Uma Visão salva com "mês atual" mostra o mês corrente sempre que é reaberta — não congela o mês em que foi salva. Uma Visão salva com datas fixas reabre exatamente aquelas datas.</p>
+<p><b><span class="badge rule-badge">RN-REL-08</span> — Reabrir uma Visão aplica a configuração salva; mudar algo não altera a Visão até salvar de novo.</b> O usuário pode ajustar filtros a partir de uma Visão e, se quiser manter, salvar por cima ou como nova Visão.</p>
+<h2 id="3-3-os-seis-tipos">3.3. Os seis tipos</h2>
+<h3 id="compartilhados-com-o-crm-defini-o-nica-aqui">Compartilhados com o CRM (definição única, aqui)</h3>
+<p><b>Produção</b></p>
+<ul>
+<li><b>Base:</b> Propostas que chegaram a Pago no período.</li>
+<li><b>Métricas:</b> Produção (R$) — soma do <b>valor base</b> (<span class="badge rule-badge">RN-OFR-07</span>, módulo de Ofertas) — e Quantidade de Propostas Pagas.</li>
+<li><b>Agrupar por:</b> Loja, Segmento, Time, Operador, Produto, Operação, Banco, Promotora, Origem da lead, Origem de Venda.</li>
+<li><b>Filtros:</b> os mesmos campos do agrupamento.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-REL-09</span> — Produção usa o valor base, sem multiplicador.</b> <i>(Decisão própria.)</i> O multiplicador é configurado por cada Loja (módulo CRM · Tabelas Multiplicadoras) e serve para metas; somar valores multiplicados de Lojas diferentes misturaria escalas diferentes. No recorte do CRM, o "valor de meta" (multiplicado) pode aparecer como coluna adicional, porque ali é sempre uma Loja só.</p>
+<p><b>Funil e Conversão</b></p>
+<ul>
+<li><b>Base:</b> Leads criadas no período, por Funil.</li>
+<li><b>Métricas:</b> Leads por Origem da lead; conversão por Stage e do funil inteiro (até Pago); tempo médio em cada Stage; tempo até o primeiro atendimento (speed-to-lead); motivos de perda.</li>
+<li><b>Agrupar por:</b> Loja, Segmento/Funil, Origem da lead, Origem de Venda, Time, Operador.</li>
+<li><b>Filtros:</b> os mesmos campos do agrupamento.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-REL-10</span> — Motivos de perda vêm de duas fontes.</b> Antes de existir Proposta: o nome da instância de Desqualificar ou Finalizar executada (Ações, módulo de Funis de Vendas). Depois: o Motivo do cancelamento da Proposta — o Stage tipo Cancelado escolhido (<span class="badge rule-badge">RN-PRP-04</span>). O relatório mostra as duas fontes separadas, para não misturar "o cliente não tinha margem" com "a proposta foi cancelada no banco".</p>
+<p><b><span class="badge rule-badge">RN-REL-11</span> — Speed-to-lead é medido até a primeira Ação executada.</b> Confirmado (a v1.2 deixava esse marco "a definir", RN066). Como toda movimentação de Lead acontece por Ação (<span class="badge rule-badge">RN-LED-11</span>), a primeira Ação executada pelo responsável é o marco natural de "primeiro atendimento".</p>
+<p><b>Esteira de Propostas</b></p>
+<ul>
+<li><b>Base:</b> Propostas existentes no período — em andamento ou concluídas.</li>
+<li><b>Métricas:</b> Quantidade por Status (os específicos do tenant, módulo de Status de Proposta); tempo entre os marcos — Data do contrato → Data de averbação → Data de pagamento ao cliente → Data de quitação; produtividade por Ator (Propostas por Consultor, Averbador, Emissor de Boleto e Digitador); cancelamentos por motivo; portabilidades por Banco de origem.</li>
+<li><b>Agrupar por:</b> Loja, Status, Ator, Produto, Banco, Banco de origem.</li>
+<li><b>Filtros:</b> os mesmos campos do agrupamento.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-REL-12</span> — Tempos só contam quando as duas datas existem, e o relatório mostra a cobertura.</b> As datas da operação são preenchidas manualmente e são opcionais (módulo de Propostas). Um tempo entre marcos só é calculado para Propostas com as duas datas preenchidas, e o relatório exibe a cobertura ("calculado sobre N de M propostas"), para que um número bom não esconda uma base pequena.</p>
+<h3 id="exclusivos-do-tenant">Exclusivos do tenant</h3>
+<p><b>Venda de leads</b></p>
+<ul>
+<li><b>Base:</b> lançamentos do Extrato de Créditos de todas as Lojas, no período (módulo CRM · Créditos).</li>
+<li><b>Métricas:</b> Consumo — leads entregues (quantidade e valor dos Débitos), menos Estornos; Créditos adicionados, por origem (Pix, manual); Estornos (quantidade e valor); Lojas com saldo negativo e o valor em aberto.</li>
+<li><b>Agrupar por:</b> Loja, Funil, Origem da lead, Origem do crédito.</li>
+<li><b>Filtros:</b> os mesmos campos do agrupamento.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-REL-13</span> — Consumo e entrada de crédito são métricas separadas.</b> Consumo (Débitos por lead entregue) é a venda efetiva de leads. Crédito adicionado é dinheiro que entra antes do consumo. As duas não se somam nem se substituem. Créditos manuais (Admin) aparecem separados do Pix, porque podem não representar entrada de dinheiro (ex.: bonificação).</p>
+<p><b>Comissões a pagar</b></p>
+<ul>
+<li><b>Base:</b> Propostas que chegaram a Pago no período.</li>
+<li><b>Métricas:</b> Comissão gravada no Pago (taxa da Oferta × valor base, <span class="badge rule-badge">RN-OFR-07</span> — snapshot de <span class="badge rule-badge">RN-PRP-05</span>), somada por recorte.</li>
+<li><b>Agrupar por:</b> Loja (principal), Oferta, Produto, Banco, Promotora.</li>
+<li><b>Filtros:</b> os mesmos campos do agrupamento.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-REL-14</span> — É um relatório de valores devidos, não um controle de pagamento.</b> O produto não registra a quitação das comissões — gestão financeira (contas a pagar, conciliação) está fora do escopo desde a v1.2. O cálculo usa a comissão gravada no Pago (<span class="badge rule-badge">RN-PRP-05</span>, módulo de Propostas), não a taxa atual da Oferta — editar a Oferta depois não altera comissões já devidas.</p>
+<p><b>Ofertas e Elegibilidade</b></p>
+<ul>
+<li><b>Base:</b> Simulações realizadas no período (módulo CRM · Simulações), de todas as Lojas.</li>
+<li><b>Métricas:</b> volume de simulações (manual × automática via Lead); por Oferta, quantas vezes foi avaliada, aprovada e rejeitada; Regras que mais desqualificaram (a Regra gravada no snapshot, com a sua mensagem de erro — <span class="badge rule-badge">RN-SIM-11</span>); conversão de Simulação em Proposta (Propostas com Simulação de referência).</li>
+<li><b>Agrupar por:</b> Oferta, Promotora, Produto, Banco, Segmento, Regra, Loja.</li>
+<li><b>Filtros:</b> os mesmos campos do agrupamento.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-REL-15</span> — Ofertas e Elegibilidade lê o snapshot, não a configuração atual.</b> Como cada Simulação guarda o resultado da época (RN033 da v1.2, mantido em Simulações), o relatório mostra o que de fato aconteceu — se uma Regra foi editada depois, as rejeições antigas continuam atribuídas à versão que existia na hora. A Regra é identificada pelo que o snapshot grava (a Regra, a mensagem e os requisitos que falharam, <span class="badge rule-badge">RN-SIM-11</span>), e não pela mensagem isolada: duas Regras podem ter a mesma mensagem, e uma Regra excluída continua aparecendo pelo nome gravado.</p>
+<p><b><span class="badge rule-badge">RN-REL-16</span> — "Origem da lead" e "Origem de Venda" são dimensões distintas.</b> <i>Origem da lead</i> é o campo do sistema na Lead (Campanha, Orgânica, Recontato, Prospecção, Carteira Ativa, Manual — módulo de Leads, <span class="badge rule-badge">RN-LED-12</span>); <i>Origem de Venda</i> é o rótulo livre do tenant (módulo de Origem de Venda). Nos relatórios sobre <b>Propostas</b> (Produção e Esteira), a Origem da lead vem da Lead da Proposta; Proposta sem Lead aparece em "Sem lead" <i>(decisão desta revisão)</i>.</p>
+<p><b><span class="badge rule-badge">RN-REL-17</span> — Origem de Venda é agrupada pelo rótulo.</b> Agrupa-se e filtra-se pelo texto do rótulo (<span class="badge rule-badge">RN-ORI-04</span>, módulo de Origem de Venda): um rótulo órfão, de uma Origem excluída, e um cadastro de mesmo nome caem na mesma linha. Lead sem Origem de Venda aparece em "Sem origem de venda". O filtro lista os rótulos presentes nos dados do período, inclusive os excluídos.</p>
+<p><b><span class="badge rule-badge">RN-REL-18</span> — Lojas, Times e Operadores excluídos continuam nos relatórios.</b> A exclusão de Loja (<span class="badge rule-badge">RN-LOJ-15</span>, com os Times em cascata) e a de usuário (<span class="badge rule-badge">RN-USR-05</span>) são soft-delete: o histórico permanece referenciando-os. Os relatórios do período em que atuaram os mostram normalmente, marcados como "(excluída)" ou "(excluído)", e os filtros listam os excluídos presentes nos dados do período — o mesmo tratamento do rótulo de Origem de Venda (<span class="badge rule-badge">RN-REL-17</span>). <i>(Decisão desta revisão, consequência do soft-delete.)</i></p>
+<p><b><span class="badge rule-badge">RN-REL-19</span> — "Time" é o Time atual do Operador.</b> Em "Agrupar por Time" e no filtro de Time, o Time de cada registro é o <b>Time em que o Operador está hoje</b>, e não o da data do evento. Se o Operador mudou de Time, o histórico dele passa a aparecer no Time novo. Mudanças de Time são raras (informação do usuário), então a distorção é pequena; guardar o Time no momento do evento (lead atribuída, proposta paga) fica como evolução, caso incomode na prática. A <b>Loja</b> da Lead não muda depois da entrega, então não tem esse problema. <i>(Decisão do usuário.)</i></p>
+<p><b><span class="badge rule-badge">RN-REL-20</span> — Relatórios de Propostas leem o snapshot da Oferta gravado na Proposta.</b> Produção, Esteira de Propostas e Comissões a pagar agrupam e filtram por Produto, Promotora, Banco, Operação, Oferta e valor base <b>como estavam quando a Oferta foi associada à Proposta</b> (snapshot da Proposta, módulo de Propostas), e não pela Oferta atual: editar, inativar ou excluir uma Oferta depois não reescreve a história. Uma Oferta excluída continua aparecendo pelo nome gravado, marcada "(excluída)". <i>(Decisão do usuário: a Proposta carrega um snapshot da Oferta. A regra correspondente em Propostas está sendo escrita na revisão do CRM, e hoje o <span class="badge rule-badge">RN-PRP-05</span> ainda diz o contrário para o que vem antes do Pago.)</i></p>
+<h2 id="3-4-tela-de-entrada">3.4. Tela de entrada</h2>
+<p>A tela de Relatórios mostra os seis tipos como ponto de partida e, abaixo, a lista de Visões salvas do usuário (Título, Tipo). Detalhamento de telas fica para a Fase 2.</p>
+<h2 id="3-5-acesso">3.5. Acesso</h2>
+<p>Cada tipo é um sub-recurso de permissão próprio — mesmo padrão já usado em Propostas (<code>proposals_documents</code>, etc.) — permitindo, por exemplo, que um Cargo veja Produção sem ver Comissões a pagar. Todos com escopo único <code>all</code> (<span class="badge rule-badge">RN-REL-03</span>). Exportar é ação separada de ver. Salvar Visão é consequência de poder ver o tipo — não exige permissão própria. Catálogo completo na Matriz de Permissões (Fase 2).</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-rel-01-consultar-um-relat-rio"><span class="badge rf-badge">RF-REL-01</span> — Consultar um relatório</h2>
+<p><b>Como</b> usuário do tenant, <b>eu quero</b> abrir um tipo de relatório, ajustar período, filtros e agrupamento <b>para</b> responder a pergunta de negócio que tenho agora.</p>
+<p><b>Comportamento esperado:</b> escolhe o tipo, vê o resultado do mês atual com comparação ao período anterior, ajusta filtros e "Agrupar por" livremente; a tabela atualiza a cada mudança.</p>
+<h2 id="rf-rel-02-salvar-reabrir-e-gerenciar-vis-es"><span class="badge rf-badge">RF-REL-02</span> — Salvar, reabrir e gerenciar Visões</h2>
+<p><b>Como</b> usuário do tenant, <b>eu quero</b> salvar uma configuração de relatório com um nome <b>para</b> reabri-la depois sem reconfigurar.</p>
+<p><b>Comportamento esperado:</b> "Salvar como Visão" pede um Título. A Visão aparece na lista da tela de entrada; reabri-la aplica a configuração salva (<span class="badge rule-badge">RN-REL-07</span>/08). O diálogo de salvar informa, em texto de apoio, como o período será guardado (relativo ou fixo). O dono pode renomear, salvar por cima ou excluir.</p>
+<h2 id="rf-rel-03-exportar"><span class="badge rf-badge">RF-REL-03</span> — Exportar</h2>
+<p><b>Como</b> usuário do tenant com permissão de exportação, <b>eu quero</b> baixar o relatório em CSV ou XLSX <b>para</b> trabalhar os dados fora do sistema.</p>
+<p><b>Comportamento esperado:</b> gera o arquivo fiel ao que está na tela e registra a exportação na trilha de auditoria (<span class="badge rule-badge">RN-REL-05</span>).</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-REL-01</span></b> — Tipos fixos; personalização é filtro, agrupamento e Visão salva.</li>
+<li><b><span class="badge rule-badge">RN-REL-02</span></b> — Cada tipo declara seus filtros e dimensões.</li>
+<li><b><span class="badge rule-badge">RN-REL-03</span></b> — No Admin, todo relatório é escopo <code>all</code>; "Agrupar por Loja" só existe aqui.</li>
+<li><b><span class="badge rule-badge">RN-REL-04</span></b> — Período padrão mês atual, com comparação ao anterior.</li>
+<li><b><span class="badge rule-badge">RN-REL-05</span></b> — Exportação fiel e auditada.</li>
+<li><b><span class="badge rule-badge">RN-REL-06</span></b> — Visão salva é pessoal.</li>
+<li><b><span class="badge rule-badge">RN-REL-07</span></b> — Período relativo salvo como relativo; fixo como fixo.</li>
+<li><b><span class="badge rule-badge">RN-REL-08</span></b> — Ajustes não alteram a Visão até salvar de novo.</li>
+<li><b><span class="badge rule-badge">RN-REL-09</span></b> — Produção usa valor base, sem multiplicador.</li>
+<li><b><span class="badge rule-badge">RN-REL-10</span></b> — Motivos de perda em duas fontes, exibidas separadas.</li>
+<li><b><span class="badge rule-badge">RN-REL-11</span></b> — Speed-to-lead medido até a primeira Ação executada.</li>
+<li><b><span class="badge rule-badge">RN-REL-12</span></b> — Tempos da Esteira só com as duas datas; cobertura exibida.</li>
+<li><b><span class="badge rule-badge">RN-REL-13</span></b> — Consumo e entrada de crédito separados; crédito manual à parte.</li>
+<li><b><span class="badge rule-badge">RN-REL-14</span></b> — Comissões a pagar é relatório de valor devido, calculado sobre a comissão gravada no Pago; não é controle de pagamento.</li>
+<li><b><span class="badge rule-badge">RN-REL-15</span></b> — Ofertas e Elegibilidade lê o snapshot das Simulações; a Regra é a gravada no snapshot, não a mensagem isolada.</li>
+<li><b><span class="badge rule-badge">RN-REL-16</span></b> — Origem da lead e Origem de Venda são dimensões distintas; Proposta sem Lead aparece em "Sem lead".</li>
+<li><b><span class="badge rule-badge">RN-REL-17</span></b> — Origem de Venda é agrupada pelo rótulo; lead sem ela aparece em "Sem origem de venda".</li>
+<li><b><span class="badge rule-badge">RN-REL-18</span></b> — Lojas, Times e Operadores excluídos (soft-delete) continuam nos relatórios, marcados como excluídos.</li>
+<li><b><span class="badge rule-badge">RN-REL-19</span></b> — "Time" é o Time atual do Operador, e não o da data do evento.</li>
+<li><b><span class="badge rule-badge">RN-REL-20</span></b> — Relatórios de Propostas leem o snapshot da Oferta gravado na Proposta; editar, inativar ou excluir a Oferta não reescreve a história.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Relatório não tem ciclo de vida — é consulta computada. <b>Visão salva</b> existe ou não existe; sem estados intermediários.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: construtor livre de relatório; agendamento ou envio automático; integração com ferramentas de BI; projeções; relatórios de atendimento (o Chat não grava mensagens — módulo CRM · Chat); Metas entre Lojas (cada Loja define as próprias Metas, com alvos diferentes — comparar percentuais entre Lojas mistura réguas); e controle de pagamento de comissões.</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Propostas, Leads, Simulações, Créditos</b> (CRM) — dados de todos os relatórios.</li>
+<li><b>Ofertas, Produtos, Promotoras, Regras, Segmentos, Origem de Venda, Status de Proposta, Funis de Vendas, Lojas</b> (Admin) — dimensões, valor base, comissão e motivos.</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>CRM · Relatórios</b> — a definição dos três tipos compartilhados (Produção, Funil e Conversão, Esteira de Propostas), consumida como recorte <code>store</code> e abaixo, sem "Agrupar por Loja".</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Relatórios v0.6 — módulo da aplicação Admin.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-relat-rios-matriz-de-permiss-es">Corban Admin · Relatórios — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Documento pai:</b> Corban Admin · Relatórios (módulo v0.2)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Seis sub-recursos, um por tipo (módulo §3.5) — não um recurso <code>reports</code> genérico, porque um Cargo pode ver um tipo sem ver outro (ex.: Produção sem Comissões a pagar). Formato: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ações</th><th>Escopo</th></tr></thead><tbody><tr><td><code>reports_production</code></td><td><code>view</code>, <code>export</code></td><td><code>all</code></td></tr><tr><td><code>reports_funnel</code></td><td><code>view</code>, <code>export</code></td><td><code>all</code></td></tr><tr><td><code>reports_proposals_pipeline</code></td><td><code>view</code>, <code>export</code></td><td><code>all</code></td></tr><tr><td><code>reports_lead_sales</code></td><td><code>view</code>, <code>export</code></td><td><code>all</code></td></tr><tr><td><code>reports_commissions</code></td><td><code>view</code>, <code>export</code></td><td><code>all</code></td></tr><tr><td><code>reports_offers_eligibility</code></td><td><code>view</code>, <code>export</code></td><td><code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-notas-sobre-as-a-es">2. Notas sobre as ações</h2>
+<p><b>Só <code>all</code>, em todos os seis</b> — <span class="badge rule-badge">RN-REL-03</span>: no Admin, todo relatório é a visão do tenant inteiro. Não há recorte menor aqui.</p>
+<p><b><code>export</code> é ação separada de <code>view</code>.</b> Mesmo critério já usado em todo o produto (RN065/<span class="badge rnf-badge">RNF003</span> da v1.2) — exportar dado financeiro e de clientes é mais sensível que só visualizar.</p>
+<p><b>Salvar Visão não tem permissão própria.</b> É consequência de ter <code>view</code> no tipo — quem vê um tipo pode salvar a própria configuração dele como Visão (<span class="badge rf-badge">RF-REL-02</span>).</p>
+<p><b><code>reports_commissions</code> e <code>reports_lead_sales</code> são os mais sensíveis</b> — valor devido a cada Loja e receita de venda de leads. Esperado que, na prática, só o Owner e o financeiro do tenant tenham esses dois.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Relatórios v0.1.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

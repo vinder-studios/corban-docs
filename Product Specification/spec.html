@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Especificação Geral do Produto — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topbar">
+    <div class="breadcrumbs">
+      <a href="../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="index.html">Especificação</a>
+      <span class="sep">/</span>
+      <span class="current">Especificação Geral</span>
+    </div>
+    <div class="actions">
+      <a href="index.html" class="btn-nav">Catálogo de Módulos</a>
+      <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+  <header>
+    <div class="eyebrow"><b>Documento Mestre</b> · SmartCorbans Single-Tenant</div>
+    <h1>Especificação Geral do Produto <span class="app-badge admin">v2.6</span></h1>
+  </header>
+  <article>
+    <h1 id="smartcorbans-especifica-o-geral-do-produto">SmartCorbans — Especificação Geral do Produto</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Versão:</b> 2.6</p>
+<p><b>Data:</b> [a definir]</p>
+<p><b>Autor:</b> [a definir]</p>
+<p><b>Aprovado por:</b> [a definir]</p>
+<p><b>Substitui:</b> <code>corban-especificacao-v1</code> (v1.2) e as v2.0 a v2.2</p>
+<p><b>Documentos de Produto das aplicações:</b> Admin v0.2 · CRM v0.1 · Marketing v0.8</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>2.6</td><td>Inclui o <b>ViaCEP</b> na §4.4, que já constava em CRM · Clientes (<span class="badge rule-badge">RN-CLI-07</span>).</td></tr><tr><td>2.5</td><td><b>Auditoria decidida (<span class="badge rnf-badge">RNF005</span>).</b> Lista única de ações críticas por critério (acesso, dinheiro, regra comercial, dados pessoais e estrutura), conteúdo do registro e consulta sem tela na v1; a tela de auditoria vira nota de evolução (§11). Fecha o último item aberto da §12. Corrige a referência do <span class="badge rnf-badge">RNF003</span> (<span class="badge rule-badge">RN-REL-05</span>). Decisão do usuário.</td></tr><tr><td>2.4</td><td><b>Acesso, pagamento e transição decididos</b> (C4 · Contexto, D-01 a D-07). (1) <b>Keycloak</b> é o provedor de identidade, o mesmo já usado hoje, acessado diretamente, sem a abstração FeijucaAuth; <b>SSO corporativo não entra</b> agora. (2) <b>Senha inicial definida por quem cadastra</b>, sem troca obrigatória e sem recuperação de senha ou e-mails de cadastro nesta versão. (3) <b>AbacatePay</b> é o provedor de pagamento, <b>só Pix</b>. (4) A <b>migração é completa</b> (configuração base, Leads, Clientes, Usuários etc.), com o detalhe num plano de migração próprio. Inclui a <b>API do Banco Central</b> na §4.4, que já constava nos módulos. Atualiza §3.2, §4.2, §4.4, <span class="badge rnf-badge">RNF004</span>, §8, §10 e §11; os itens 1 e 2 da §12 são fechados e o antigo item 3 passa a item 1.</td></tr><tr><td>2.3</td><td><b>Duas notas de evolução novas (§11):</b> IA para inteligência de negócio e leilão CLT. Decisão do usuário.</td></tr><tr><td>2.2</td><td><b>Remove a §1.3 (problemas que a evolução resolve)</b> e as menções a resolver problemas do sistema atual. O item aberto correspondente sai da §12 e os itens seguintes são renumerados. A §1.4 e a §1.5 passam a §1.3 e §1.4.</td></tr><tr><td>2.1</td><td><b>Instância única (single-tenant).</b> O SmartCorbans <b>não é multi-tenant</b>: é uma instância da Smartconsig, e os <b>parceiros da Smartconsig entram como Lojas</b>. Consequências: o isolamento que importa é <b>entre Lojas</b> (<span class="badge rnf-badge">RNF002</span> reescrito); o <b>Console da Plataforma sai do escopo</b> (não há tenants a provisionar); o termo <b>tenant</b> passa a significar a própria organização Smartconsig. O impacto nos documentos das aplicações está em §14.</td></tr><tr><td>2.0</td><td><b>Nova especificação geral, com o nome SmartCorbans.</b> (1) O produto passa a se chamar <b>SmartCorbans</b> e é apresentado como <b>proposta de evolução do sistema que a Smartconsig usa hoje</b>. (2) A Parte I da v1.2 é reescrita sobre o modelo atual: três aplicações (Admin, CRM e Marketing), Cargos no lugar de Grupos, Loja e Time no lugar de Operação, Segmento com Funil próprio, Oferta, Regras, Origem da lead, distribuição em duas camadas, Créditos e Proposta. (3) A <b>Parte II da v1.2 (módulos 1 a 11, RF001–RF043) é aposentada</b>: o detalhe de cada módulo vive hoje nos documentos de módulo, e cada aplicação tem o seu Documento de Produto. (4) Os RNFs são atualizados (§6) e a numeração <b><span class="badge rnf-badge">RNF001</span>–<span class="badge rnf-badge">RNF006</span> é mantida</b>. (5) O mapa de módulos passa de 11 para 32 (§9). <b>Não cria regra de módulo</b>: aponta para o documento de origem.</td></tr><tr><td>1.2</td><td>Versão anterior, ainda com o nome Corban. Ver <code>corban-especificacao-v1</code>.</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="1-vis-o-geral">1. Visão geral</h1>
+<h2 id="1-1-o-que-o-smartcorbans">1.1. O que é o SmartCorbans</h2>
+<p>O <b>SmartCorbans</b> é uma plataforma SaaS de gestão comercial para <b>correspondentes bancários</b> que operam crédito consignado. Ele reúne, em um só sistema, a <b>estrutura da operação</b> (quem acessa o quê, quais Lojas e Funis existem, quais Ofertas são vendidas), o <b>dia a dia comercial</b> (Leads, atendimento, Simulações, Propostas, metas e saldo) e a <b>geração de demanda</b> (Prospecção e Carteira Ativa).</p>
+<p>O sistema é <b>single-tenant</b>: é uma instância única, operada pela <b>Smartconsig</b>. Os <b>parceiros da Smartconsig são tratados como Lojas</b> dentro dessa instância, isolados entre si pelo escopo de acesso. Neste documento e nos de módulo, <b>tenant</b> é a própria organização Smartconsig (a dona da instância), e não um cliente entre vários.</p>
+<h2 id="1-2-contexto-uma-evolu-o-do-sistema-atual">1.2. Contexto: uma evolução do sistema atual</h2>
+<p>O SmartCorbans é uma <b>proposta de evolução do sistema que a Smartconsig usa hoje</b>, sem ser uma cópia do que existe.</p>
+<p>Isso orienta duas leituras do documento:</p>
+<ul>
+<li><b>O ponto de partida é o negócio como ele funciona hoje</b>, e não o sistema como ele foi construído. Onde o modelo do sistema atual e o do negócio divergem, a especificação segue o negócio.</li>
+<li><b>O SmartCorbans é entregue como evolução</b>, não como produto novo no vazio: a transição da Smartconsig entra nos pré-requisitos de lançamento (§10).</li>
+</ul>
+<h2 id="1-3-personas">1.3. Personas</h2>
+<p><b>Sérgio — dono da Smartconsig (Owner).</b> Define a estrutura da operação: Cargos, Lojas (inclusive as dos parceiros), Segmentos, Funis e Ofertas. Precisa saber o que cada Loja produz e quanto custa a Lead. Usa o <b>Admin</b> e os relatórios globais.</p>
+<p><b>Marina — gestora de Loja.</b> Lidera Times de operadores, acompanha metas, funil e saldo da Loja, e cuida dos Membros. Usa o <b>CRM</b>, dentro do escopo <code>store</code>.</p>
+<p><b>Diego — operador de vendas.</b> Recebe Leads pela distribuição, conversa pelo Chat, simula contra as Ofertas, formaliza a Proposta e acompanha a própria meta. Usa o <b>CRM</b>, normalmente com escopo <code>self</code>.</p>
+<p><b>Gestor de Marketing.</b> Importa bases, cria Listas e Varreduras, aprova a injeção de Leads e acompanha o retorno. Usa o <b>Marketing</b>, acima das Lojas.</p>
+<p>Os nomes são figuras de referência, e não papéis do sistema. O acesso é sempre por permissão (§5).</p>
+<h2 id="1-4-promessa-de-valor">1.4. Promessa de valor</h2>
+<p>O SmartCorbans acompanha o negócio do primeiro contato à Proposta Paga: a demanda é gerada ou captada, a Lead é distribuída à Loja e ao operador certos, é atendida e simulada contra as Ofertas do tenant, vira Proposta e, quando paga, alimenta metas, rankings e relatórios. Cada pessoa vê o sistema pela sua lente: o dono configura e acompanha o todo, a gestora de Loja conduz o Time, o operador trabalha a sua carteira.</p>
+<hr class="divider">
+<h1 id="2-estrutura-do-produto">2. Estrutura do produto</h1>
+<h2 id="2-1-as-tr-s-aplica-es">2.1. As três aplicações</h2>
+<div class="tablewrap"><table><thead><tr><th>Aplicação</th><th>Papel</th><th>Quem usa</th><th>Documento de Produto</th></tr></thead><tbody><tr><td><b>Admin</b></td><td>O tenant <b>configura a estrutura</b> da operação. Define as regras do jogo.</td><td>Owner e gestores do tenant</td><td><code>corban-admin-produto-v0_2</code></td></tr><tr><td><b>CRM</b></td><td>A Loja <b>opera o dia a dia comercial</b>. Consome o que o Admin define.</td><td>Gestores de Loja e operadores</td><td><code>corban-crm-produto-v0_1</code></td></tr><tr><td><b>Marketing</b></td><td>O tenant <b>gera demanda</b> acima das Lojas e entrega Leads ao CRM.</td><td>Gestor de Marketing</td><td><code>corban-marketing-produto-v0_8</code></td></tr></tbody></table></div>
+<p>As três aplicações compartilham o mesmo <b>Shell</b> (sidebar, header, app switcher, notificações, tema e menu de conta), descrito em <code>corban-shell-privado-v0_4</code>. O app switcher aparece para quem tem acesso a mais de uma aplicação.</p>
+<p>Não há aplicação de provisionamento de tenants: sendo uma instância única, o <b>Console da Plataforma</b> da v1.2 deixa de existir (§4.3).</p>
+<h2 id="2-2-como-as-aplica-es-se-encaixam">2.2. Como as aplicações se encaixam</h2>
+<ul>
+<li><b>Admin → CRM e Marketing.</b> O Admin fornece o Funil, as Ofertas, as Regras, os cadastros, os Usuários e as Lojas. Os outros dois <b>consomem</b>, nunca redefinem.</li>
+<li><b>Marketing → CRM.</b> O Marketing injeta Leads (Origem Prospecção ou Carteira Ativa) e cria Clientes. O CRM <b>devolve</b> o desfecho e o histórico de contratos, que alimentam a Carteira Ativa.</li>
+<li><b>O mesmo motor.</b> As Simulações do CRM e a pré-análise em lote do Marketing avaliam as mesmas Ofertas e Regras, com o mesmo resultado.</li>
+</ul>
+<h2 id="2-3-fluxo-de-ponta-a-ponta">2.3. Fluxo de ponta a ponta</h2>
+<ol>
+<li><b>Configuração (Admin).</b> O tenant monta Cargos, Usuários, cadastros-base, Segmentos (cada um com seu Funil), Regras, Ofertas, Lojas e Times.</li>
+<li><b>Entrada (CRM e Marketing).</b> A Lead nasce por campanha ou canal orgânico (Huggy), por Recontato, por injeção do Marketing ou por cadastro manual.</li>
+<li><b>Distribuição.</b> Primeiro entre as Lojas elegíveis, depois entre os operadores da Loja, em rodízio, com cobrança conforme a Origem.</li>
+<li><b>Atendimento.</b> O operador conversa pelo Chat, executa Ações que movem a Lead pelos Stages do Funil e simula contra as Ofertas.</li>
+<li><b>Formalização.</b> A Ação Formalizar cria a Proposta, que guarda a Oferta escolhida.</li>
+<li><b>Desfecho.</b> A Proposta chega a Pago ou Cancelado. O Pago grava a atribuição, calcula o Valor de meta e gera o Contrato no histórico do Cliente.</li>
+<li><b>Acompanhamento.</b> Metas, Rankings, Dashboards e Relatórios leem o Pago. A Carteira Ativa do Marketing lê o histórico de contratos e reinicia o ciclo.</li>
+</ol>
+<hr class="divider">
+<h1 id="3-escopo">3. Escopo</h1>
+<h2 id="3-1-o-que-entra">3.1. O que entra</h2>
+<ul>
+<li>Acesso por <b>Cargos</b> e permissões, com escopo por Loja e Time.</li>
+<li><b>Estrutura comercial</b>: Lojas, Times, Segmentos, Funis de Vendas, Layout de Lead, Produtos, Promotoras, Regiões, Status de Proposta e Origem de Venda.</li>
+<li><b>Oferta comercial</b>: Ofertas e Regras de elegibilidade, avaliadas pelo motor interno de Simulação.</li>
+<li><b>Operação comercial</b>: Leads em kanban, Clientes, Simulações, Propostas, Chat (Huggy), Configurações da Loja, Membros e Times.</li>
+<li><b>Desempenho</b>: Metas, Rankings (com Modo TV), Tabela de Multiplicadores, Dashboards e Relatórios.</li>
+<li><b>Financeiro da Lead</b>: preço por Origem, Créditos por Loja, Extrato, limite diário, adição de crédito e estorno.</li>
+<li><b>Geração de demanda</b>: Prospecção (com Lista de bloqueio) e Carteira Ativa.</li>
+</ul>
+<h2 id="3-2-o-que-n-o-entra">3.2. O que não entra</h2>
+<p>Por decisão consciente, o SmartCorbans <b>não inclui</b> nesta versão:</p>
+<ul>
+<li><b>Integrações externas de simulação</b>, como CLT via Jaéconsig e a consulta de dados de INSS via Consignado Rápido. Hoje só o motor interno está ativo (CRM · Simulações, <span class="badge rule-badge">RN-SIM-08</span>). Entram com o módulo de Integrações (§11).</li>
+<li><b>Landing Pages</b>, <b>Anúncios</b> (Meta, Google e TikTok) e o <b>hub de Integrações</b> do Marketing (§11).</li>
+<li><b>Campanhas</b> no sentido de disparos de mensagem em massa.</li>
+<li><b>Multi-tenant</b>: outros correspondentes contratando a plataforma, e o <b>Console da Plataforma</b> que os provisionaria.</li>
+<li><b>Autenticação multifator (MFA)</b> e <b>SSO corporativo</b>.</li>
+<li><b>Recuperação de senha, troca obrigatória de senha e e-mails do ciclo de acesso</b> (cadastro, convite, recuperação). A senha inicial é definida por quem cadastra (Admin · Usuários, <span class="badge rf-badge">RF-USR-03</span>).</li>
+<li><b>Boleto</b> na adição de crédito. Nesta versão, só Pix (CRM · Créditos, <span class="badge rf-badge">RF-CRD-03</span>).</li>
+<li><b>Aplicativo móvel nativo</b>. A aplicação é web e mobile-first (<span class="badge rnf-badge">RNF001</span>).</li>
+<li><b>Esteira bancária</b> de ponta a ponta (envio da Proposta aos bancos, averbação e assinatura digital). A Proposta registra o ciclo, mas não se integra aos bancos.</li>
+<li><b>Gestão financeira completa</b> (contas a pagar e receber, conciliação, comissionamento e repasse). O financeiro cobre o saldo de Créditos da Loja e o retorno do Marketing.</li>
+<li><b>Base legal, declarações e política de retenção de dados.</b> Saíram do escopo inicial por decisão do usuário (Marketing, <span class="badge rule-badge">RN-MKT-06</span>).</li>
+<li><b>Portal ou aplicativo do cliente final.</b></li>
+</ul>
+<h2 id="3-3-decis-es-estruturantes">3.3. Decisões estruturantes</h2>
+<p><b>Instância única; parceiros são Lojas.</b> O SmartCorbans atende apenas a Smartconsig. Os parceiros dela são Lojas, e o que os separa é o escopo de acesso, não instâncias distintas. A Loja da própria Smartconsig (tenant operador) é o destino de última instância da distribuição.</p>
+<p><b>Acesso por permissão, nunca por papel.</b> Permissões têm a forma <code>recurso:ação:escopo</code>. O <b>Cargo</b> é um conjunto nomeado de permissões, e cada usuário tem <b>um Cargo</b> mais <b>permissões adicionais</b> (que somam, nunca subtraem). O <b>Owner</b> do tenant é papel de sistema, com bypass total. O acesso a uma aplicação depende de ter ao menos uma permissão dela (Admin · Usuários, <span class="badge rule-badge">RN-USR-16</span>).</p>
+<p><b>Loja e Time organizam a operação.</b> A <b>Loja</b> é a unidade de venda: tem Região, Segmentos que opera, tipos de lead que recebe e saldo de Créditos. O <b>Time</b> pertence a uma Loja e escolhe um Segmento, o que lhe dá acesso ao Funil. Uma Loja nunca vê Leads, Propostas, Conversas ou Créditos de outra.</p>
+<p><b>Um Segmento, um Funil.</b> O Segmento é o público pagador atendido (por exemplo, INSS). Cada Segmento nasce com o seu Funil, que define Stages, Ações, Tags e o preço da lead.</p>
+<p><b>A Lead só se move por Ação.</b> Não há arrastar o card entre colunas: toda mudança de Stage é a execução de uma Ação do Funil.</p>
+<p><b>A Origem da lead define a cobrança.</b> São seis Origens (Campanha, Orgânica, Recontato, Prospecção, Carteira Ativa e Manual), definidas pelo sistema uma única vez. Só quatro têm linha de preço e cobram.</p>
+<p><b>Duas camadas de distribuição, por rodízio.</b> Primeiro entre Lojas elegíveis (opera o Segmento, tem a Origem ligada, tem saldo ou a flag "Pode receber lead sem saldo"), depois entre operadores elegíveis da Loja. O débito ocorre ao atribuir.</p>
+<p><b>A Regra define a condição; a Oferta define o valor.</b> A Oferta combina Promotora, Produto, Operação (Novo, Refinanciamento, Portabilidade, Portabilidade com Refinanciamento) e Banco, com taxa, prazo e comissão. As Regras são reutilizáveis, e o valor de cada requisito é definido na Oferta.</p>
+<p><b>Cliente é do tenant; a Loja só o acessa por associação.</b> O Cliente existe no tenant, pode existir sem Lead e sem Loja, e é identificado por CPF (preenchido depois, no caso do Marketing). A Loja o acessa quando uma Lead dele é distribuída a ela.</p>
+<p><b>Simulação sempre contextualizada, em três origens.</b> Manual, Automática via Lead (disparada pela Huggy) e Marketing (gravada na injeção). O cálculo é o mesmo, e a Simulação não consome Créditos. Fica no histórico do Cliente.</p>
+<p><b>A Proposta congela a Oferta e define o que conta.</b> O Pago grava a atribuição (Operador, Time, Cargo), calcula o Valor de meta (valor base × multiplicador) e gera o Contrato. As metas contam só o Pago.</p>
+<p><b>Exclusão suave.</b> Loja, Time e Usuário excluídos somem das listas, mas o histórico (Extrato, Leads, Propostas, Metas, Relatórios) continua apontando para eles.</p>
+<hr class="divider">
+<h1 id="4-plataforma-e-integra-es">4. Plataforma e integrações</h1>
+<h2 id="4-1-shell-compartilhado">4.1. Shell compartilhado</h2>
+<p>Sidebar, header, app switcher, notificações, toasts, tema, menu de conta e estados transversais (carregando, vazio, erro, sem acesso) são comuns às três aplicações. A navegação oculta o que o usuário não pode usar. As diretrizes de interface estão em <code>corban-ux-v0_2</code> e <code>corban-design-system-v0_5</code>.</p>
+<h2 id="4-2-acesso-e-autentica-o">4.2. Acesso e autenticação</h2>
+<p>O acesso é por e-mail e senha, sem cadastro público: os usuários são criados dentro do tenant por quem tem permissão. A identidade fica no <b>Keycloak</b>, o mesmo que a Smartconsig já usa hoje, agora acessado diretamente pelo SmartCorbans, sem a abstração FeijucaAuth. Usuários e senhas existentes continuam valendo.</p>
+<ul>
+<li><b>Senha inicial.</b> Quem cadastra o usuário define a senha e a comunica pelo canal que preferir. O usuário acessa de imediato, sem troca obrigatória no primeiro login, e pode trocar a própria senha quando quiser (Admin · Usuários, <span class="badge rf-badge">RF-USR-03</span>).</li>
+<li><b>Sem e-mails do ciclo de acesso.</b> Não há convite, recuperação de senha nem troca obrigatória nesta versão (§11).</li>
+<li><b>Sem SSO corporativo</b> nesta versão (§11).</li>
+<li>A sessão e a gestão de sessões ativas estão em Admin · Usuários.</li>
+</ul>
+<h2 id="4-3-sem-console-da-plataforma">4.3. Sem Console da Plataforma</h2>
+<p>O Console da Plataforma (provisionar, suspender e reativar tenants) existia por causa do multi-tenant. Com a instância única, <b>deixa de ser necessário</b>: a criação do Owner e a carga inicial são tarefas de implantação (§10), e as Lojas dos parceiros são criadas no Admin · Lojas. Se um dia o produto for oferecido a outros correspondentes, a decisão volta a ser tomada (§11).</p>
+<h2 id="4-4-integra-es-e-servi-os-externos">4.4. Integrações e serviços externos</h2>
+<div class="tablewrap"><table><thead><tr><th>Serviço</th><th>Função no produto</th><th>Situação</th></tr></thead><tbody><tr><td><b>Huggy</b></td><td>Plataforma de atendimento omnichannel. Origina Leads por campanha ou canal orgânico, espelha a conversa no Chat (as mensagens não são persistidas pelo SmartCorbans) e dispara a Simulação automática via Lead. Ações do Funil podem acionar um fluxo da Huggy, sem bloquear a Ação.</td><td>Ativa</td></tr><tr><td><b>AbacatePay</b></td><td>Provedor de pagamento: gera a cobrança e confirma o <b>Pix</b> na adição de crédito. Boleto fica para depois (§11).</td><td>Ativa</td></tr><tr><td><b>Keycloak</b></td><td>Provedor de identidade: login por e-mail e senha e sessão. É o mesmo usado hoje, sem a abstração FeijucaAuth.</td><td>Ativa (existente)</td></tr><tr><td><b>SSO corporativo</b></td><td>Login federado, via Keycloak.</td><td>Evolução (§11)</td></tr><tr><td><b>API do Banco Central</b></td><td>Lista oficial de bancos, usada em Ofertas, Regras e Propostas. Não há cadastro de Bancos no produto.</td><td>Ativa</td></tr><tr><td><b>ViaCEP</b></td><td>Consulta de endereço pelo CEP na ficha do Cliente (CRM · Clientes <span class="badge rule-badge">RN-CLI-07</span>). Falha na consulta não bloqueia o cadastro.</td><td>Ativa</td></tr><tr><td><b>Jaéconsig</b></td><td>Simulação CLT.</td><td>Evolução (§11)</td></tr><tr><td><b>Consignado Rápido</b></td><td>Consulta de dados do benefício (INSS).</td><td>Evolução (§11)</td></tr><tr><td><b>Meta, Google e TikTok Ads</b></td><td>Anúncios do Marketing.</td><td>Evolução (§11)</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="5-acesso-e-permiss-es">5. Acesso e permissões</h1>
+<ul>
+<li>A permissão tem a forma <b><code>recurso:ação:escopo</code></b>. O catálogo vive em cada aplicação (Admin v0.2 §2, CRM v0.1 §2, Marketing v0.8 §2).</li>
+<li>O <b>escopo</b> tem quatro níveis cumulativos: <code>self</code> (o que é do usuário), <code>team</code> (+ o Time), <code>store</code> (+ a Loja) e <code>all</code> (+ todas as Lojas, visão do tenant).</li>
+<li>O escopo <code>all</code> serve para <b>trabalhar</b> Leads e Propostas e é exclusivo do tenant operador. <b>Relatórios e Rankings do CRM nunca oferecem <code>all</code>.</b></li>
+<li>O <b>Gestor de Loja só concede o que possui, e só até <code>store</code></b>: seus Membros nascem na própria Loja, e só são listados Cargos sem escopo <code>all</code>.</li>
+<li>Ações que mexem em <b>dinheiro</b> (<code>add_credit</code>, <code>manage_pricing</code>, <code>manage_credits</code>, <code>refund</code>, <code>approve</code> no Marketing) e em <b>acesso</b> (<code>manage_access</code>, <code>manage_permissions</code>) têm permissão <b>separada</b> da edição comum.</li>
+<li>A mudança de Cargo ou de permissões <b>vale imediatamente</b>.</li>
+<li>Dashboards, relatórios e visibilidade são <b>orientados por permissão</b>. "Visão do dono" e "visão do gerente" são arranjos típicos, não perfis fixos.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-requisitos-n-o-funcionais">6. Requisitos não funcionais</h1>
+<p>São bloqueadores: o SmartCorbans não entra em uso com cliente real sem que estejam atendidos.</p>
+<p><b><span class="badge rnf-badge">RNF001</span> — Interface responsiva, mobile-first.</b> As três aplicações são desenhadas com o celular como caso base. Tabelas densas viram listas de cards, detalhes abrem em sheet (bottom-sheet no mobile) e a sidebar vira drawer (<code>corban-ux-v0_2</code>).</p>
+<p><b><span class="badge rnf-badge">RNF002</span> — Isolamento estrito entre Lojas.</b> Como os parceiros da Smartconsig são Lojas da mesma instância, uma Loja nunca acessa Leads, Propostas, Conversas, Créditos ou dados de Clientes de outra (CRM, <span class="badge rule-badge">RN-CRM-01</span> e <span class="badge rule-badge">RN-CRM-05</span>). O isolamento é validado por testes automatizados antes de cada release, com atenção a Relatórios, Rankings, exportações e ao Chat, onde um vazamento entre parceiros seria o risco principal.</p>
+<p><b><span class="badge rnf-badge">RNF003</span> — Proteção de dados pessoais.</b> O sistema trata dados pessoais e financeiros (CPF, contratos, condições de crédito). O acesso a dado sensível é controlado por permissão, e as exportações são auditadas (Relatórios, <span class="badge rule-badge">RN-REL-05</span>; <span class="badge rnf-badge">RNF005</span>). A base legal e a política de retenção estão fora do escopo inicial (§3.2).</p>
+<p><b><span class="badge rnf-badge">RNF004</span> — Degradação graciosa das integrações.</b> A indisponibilidade da Huggy ou do AbacatePay não derruba o restante do sistema. O usuário recebe mensagem clara do que está indisponível e, quando houver, um caminho alternativo (por exemplo, a adição manual de saldo pelo Admin com o AbacatePay fora). O <b>Keycloak</b> é a exceção: sem ele não há login, então sua disponibilidade é requisito de operação, não integração degradável.</p>
+<p><b><span class="badge rnf-badge">RNF005</span> — Auditoria de ações críticas.</b> Ações críticas registram uma trilha <b>imutável</b>: nenhum registro é alterado nem apagado.</p>
+<p><b>Critério.</b> É crítica a ação que muda <b>acesso</b>, <b>dinheiro</b> ou <b>regra comercial</b>, ou que <b>expõe ou remove dados pessoais</b>. O trabalho do dia a dia (Ações na Lead, Simulações, mensagens) não entra: já tem histórico no próprio registro (linha do tempo da Proposta, Extrato de Créditos, histórico do Cliente).</p>
+<div class="tablewrap"><table><thead><tr><th>Grupo</th><th>Ações auditadas</th><th>Módulos</th></tr></thead><tbody><tr><td><b>Acesso</b></td><td>Criar, editar, inativar, reativar e excluir usuário; mudar Cargo, Loja e Time; permissões adicionais; redefinir a senha de outro usuário; revogar sessões; criar, editar, mudar permissões, inativar e excluir Cargo</td><td>Admin · Usuários (<span class="badge rule-badge">RN-USR-17</span>), Cargos (<span class="badge rule-badge">RN-CRG-03</span>); CRM · Membros</td></tr><tr><td><b>Dinheiro</b></td><td>Adicionar saldo manual; estornar débito; ligar ou desligar "Pode receber lead sem saldo"; alterar o preço da lead; alterar o limite de gasto diário; editar a Tabela de Multiplicadores; trocar a Oferta de uma Proposta; aprovar, pausar, retomar ou cancelar injeção do Marketing</td><td>Admin · Lojas, Funis de Vendas; CRM · Créditos, Tabela de Multiplicadores, Propostas; Marketing · Prospecção, Carteira Ativa</td></tr><tr><td><b>Regra comercial</b></td><td>Criar, editar, inativar, reativar e excluir Oferta (inclui Regras associadas, valores, preço e comissão); o mesmo para Regra</td><td>Admin · Ofertas, Regras</td></tr><tr><td><b>Dados pessoais</b></td><td>Exportar Relatórios e Clientes; importar Lista; alterar a Lista de bloqueio</td><td>Admin e CRM · Relatórios (<span class="badge rule-badge">RN-REL-05</span>); CRM · Clientes; Marketing · Prospecção</td></tr><tr><td><b>Estrutura</b></td><td>Excluir Loja (com a cascata de Times e usuários)</td><td>Admin · Lojas</td></tr></tbody></table></div>
+<p><b>Conteúdo do registro.</b> Autor, data e hora, ação, item afetado (tipo e identificador), valores <b>antes e depois</b> dos campos alterados e a Loja envolvida, quando houver. Na exportação, também o tipo e os filtros (<span class="badge rule-badge">RN-REL-05</span>).</p>
+<p><b>Consulta.</b> Sem tela na v1: a trilha é gravada e consultada pelo suporte técnico. A tela de auditoria no Admin é evolução (§11). Esta é a regra única; os módulos apontam para ela.</p>
+<p><b><span class="badge rnf-badge">RNF006</span> — Desempenho do board kanban.</b> O funil permanece fluido com o volume real: como referência inicial, ao menos 1.000 Leads ativas por Funil sem degradação perceptível de navegação, filtro e Ações. [números a calibrar com o cliente]</p>
+<hr class="divider">
+<h1 id="7-regras-transversais-do-produto-rn-sc">7. Regras transversais do produto (RN-SC)</h1>
+<p>Regras que atravessam as três aplicações. Cada uma aponta para o documento de origem; <b>em caso de divergência, vale o módulo</b>.</p>
+<p><b>RN-SC-01 — O Admin define, o CRM e o Marketing consomem.</b> Funil, Ofertas, Regras, cadastros, Usuários e Lojas são mantidos no Admin. Os outros dois não os redefinem (Admin, <span class="badge rule-badge">RN-ADM-11</span>; CRM, §5; Marketing, §1). A exceção é a <b>Loja</b>, que edita um recorte de si mesma pelo CRM, escrevendo no mesmo registro (CRM, <span class="badge rule-badge">RN-CRM-13</span>).</p>
+<p><b>RN-SC-02 — O acesso é por permissão e o isolamento de Loja é absoluto.</b> Ver §5 (Admin, <span class="badge rule-badge">RN-ADM-01</span>; CRM, <span class="badge rule-badge">RN-CRM-01</span> e <span class="badge rule-badge">RN-CRM-12</span>).</p>
+<p><b>RN-SC-03 — Um motor, três pontos de uso.</b> A Simulação manual, a automática via Lead e a pré-análise do Marketing avaliam as mesmas Ofertas e Regras (CRM, <span class="badge rule-badge">RN-CRM-07</span>; Marketing, <span class="badge rule-badge">RN-MKT-02</span>).</p>
+<p><b>RN-SC-04 — A Origem da lead é definida pelo sistema, uma vez, e define a cobrança.</b> Campanha, Orgânica, Recontato, Prospecção, Carteira Ativa e Manual; só Campanha, Orgânica, Prospecção e Carteira Ativa cobram e têm linha de preço (CRM, <span class="badge rule-badge">RN-CRM-03</span>; Admin, <span class="badge rule-badge">RN-ADM-07</span>).</p>
+<p><b>RN-SC-05 — O saldo é debitado ao atribuir a Lead e o estorno é do Admin.</b> Nunca negativo, exceto na Loja com a flag "Pode receber lead sem saldo" (CRM, <span class="badge rule-badge">RN-CRM-10</span>; Admin, <span class="badge rule-badge">RN-ADM-08</span>).</p>
+<p><b>RN-SC-06 — O Pago é a única fonte de contagem.</b> Metas, Rankings, Relatórios e o Dashboard do Marketing leem o Pago, pela atribuição gravada nele (CRM, <span class="badge rule-badge">RN-CRM-08</span> e <span class="badge rule-badge">RN-CRM-09</span>).</p>
+<p><b>RN-SC-07 — O Cliente é do tenant, nasce de várias fontes e guarda o histórico de contratos.</b> O Marketing e o CRM criam Clientes; o CPF existente associa, não duplica (CRM, <span class="badge rule-badge">RN-CRM-05</span> e <span class="badge rule-badge">RN-CRM-06</span>; Marketing, <span class="badge rule-badge">RN-MKT-09</span>).</p>
+<p><b>RN-SC-08 — Excluir é exclusão suave e o histórico permanece</b> (Admin, <span class="badge rule-badge">RN-ADM-04</span>).</p>
+<p><b>RN-SC-09 — Nada é injetado pelo Marketing sem aprovação, e cada injeção revalida duplicidade e bloqueio</b> (Marketing, <span class="badge rule-badge">RN-MKT-04</span>, 05 e 07).</p>
+<hr class="divider">
+<h1 id="8-gloss-rio">8. Glossário</h1>
+<p><b>Correspondente bancário (corban).</b> Empresa que intermedeia produtos de crédito entre bancos e o consumidor. É o cliente da plataforma.</p>
+<p><b>Tenant.</b> A organização dona da instância: a Smartconsig. Há um único tenant.</p>
+<p><b>Owner.</b> Papel de sistema, único, com permissões plenas (bypass do catálogo).</p>
+<p><b>Cargo.</b> Conjunto nomeado de permissões, montado pelo tenant. Cada usuário tem um.</p>
+<p><b>Permissão.</b> Autorização no formato <code>recurso:ação:escopo</code>.</p>
+<p><b>Escopo.</b> Alcance de uma permissão: <code>self</code>, <code>team</code>, <code>store</code> ou <code>all</code>.</p>
+<p><b>Loja.</b> Unidade de venda: a própria Smartconsig (tenant operador) ou um parceiro dela. Tem Região, Segmentos, tipos de lead e saldo de Créditos.</p>
+<p><b>Time.</b> Grupo de Membros de uma Loja, vinculado a um Segmento.</p>
+<p><b>Membro / Usuário.</b> Pessoa com acesso ao sistema. Membro é o Usuário visto pelo CRM, dentro da Loja.</p>
+<p><b>Segmento.</b> Público pagador atendido (por exemplo, INSS). Cada Segmento tem um Funil.</p>
+<p><b>Funil de Vendas.</b> Pipeline de um Segmento, com Stages, Ações, Tags e preço da lead.</p>
+<p><b>Stage.</b> Etapa do Funil. O Tipo é o que o sistema entende; o nome é livre.</p>
+<p><b>Ação.</b> Operação que move a Lead entre Stages. É a única forma de movê-la.</p>
+<p><b>Lead.</b> Intenção de negócio em andamento no Funil de um Segmento.</p>
+<p><b>Origem da lead.</b> Como a Lead nasceu: Campanha, Orgânica, Recontato, Prospecção, Carteira Ativa ou Manual.</p>
+<p><b>Origem de Venda.</b> Rótulo de por onde a venda chegou, gerido no ponto de uso.</p>
+<p><b>Cliente.</b> Registro da pessoa no tenant, com histórico de contratos.</p>
+<p><b>Contrato.</b> Registro de uma Proposta Paga (ou importada pelo Marketing) no histórico do Cliente.</p>
+<p><b>Promotora.</b> Entidade pagadora da Oferta; carrega as Regiões.</p>
+<p><b>Produto.</b> Instrumento de crédito comercializado.</p>
+<p><b>Região.</b> Recorte geográfico que qualifica a Oferta visível a cada Loja.</p>
+<p><b>Operação.</b> Tipo da Oferta: Novo, Refinanciamento, Portabilidade ou Portabilidade com Refinanciamento. Catálogo fixo do sistema.</p>
+<p><b>Oferta.</b> Unidade comercial avaliada pelo motor: Promotora, Produto, Operação e Banco, com taxa, prazo, comissão e Regras.</p>
+<p><b>Regra.</b> Condição de elegibilidade reutilizável (Campo + Operador), sem valor; o valor é definido na Oferta.</p>
+<p><b>Simulação.</b> Cálculo e registro das condições de crédito para um Cliente ou Lead, em três origens: Manual, Automática via Lead e Marketing.</p>
+<p><b>Proposta.</b> Formalização de uma Lead, com uma Oferta congelada. Termina em Pago ou Cancelado.</p>
+<p><b>Valor de meta.</b> Valor base da Oferta multiplicado pelo multiplicador, gravado no Pago.</p>
+<p><b>Meta.</b> Objetivo de Valor ou de Quantidade, para Times e Membros, com Prazo.</p>
+<p><b>Créditos.</b> Saldo da Loja, debitado ao receber Lead com cobrança.</p>
+<p><b>Prospecção.</b> Módulo do Marketing que importa bases externas, pré-analisa e distribui Leads.</p>
+<p><b>Lista.</b> Base importada na Prospecção.</p>
+<p><b>Carteira Ativa.</b> Módulo do Marketing que varre a base de Clientes e injeta Leads de quem está elegível.</p>
+<p><b>Varredura.</b> Execução da Carteira Ativa, Única ou Recorrente.</p>
+<p><b>Lista de bloqueio.</b> CPFs e telefones que não podem receber injeção do Marketing.</p>
+<p><b>Huggy.</b> Plataforma omnichannel de atendimento usada pelo cliente.</p>
+<p><b>Keycloak.</b> Provedor de identidade do SmartCorbans (login e sessão).</p>
+<p><b>AbacatePay.</b> Provedor de pagamento da adição de crédito (Pix).</p>
+<hr class="divider">
+<h1 id="9-mapa-de-m-dulos">9. Mapa de módulos</h1>
+<p>O SmartCorbans tem <b>32 módulos</b> em três aplicações. A especificação de cada um está no documento indicado; o detalhe de telas, estados, permissões e microcopy está nos artefatos da Fase 2 de cada módulo.</p>
+<h2 id="9-1-admin-15">9.1. Admin (15)</h2>
+<p>Cargos · Usuários · Dashboard · Lojas · Funis de Vendas · Layout de Lead · Segmentos · Produtos · Promotoras · Regiões · Status de Proposta · Origem de Venda · Ofertas · Regras · Relatórios.</p>
+<p>Ver <code>corban-admin-produto-v0_2</code>, §1.</p>
+<h2 id="9-2-crm-14">9.2. CRM (14)</h2>
+<p>Dashboard · Leads · Simulações · Propostas · Clientes · Chat · Configurações · Rankings · Relatórios · Membros · Times · Tabela de Multiplicadores · Créditos · Metas (anexada ao Detalhe do Time e do Membro).</p>
+<p>Ver <code>corban-crm-produto-v0_1</code>, §1.</p>
+<h2 id="9-3-marketing-3">9.3. Marketing (3)</h2>
+<p>Prospecção · Carteira Ativa · Dashboard.</p>
+<p>Ver <code>corban-marketing-produto-v0_8</code>, §1.</p>
+<h2 id="9-4-fora-das-tr-s-aplica-es">9.4. Fora das três aplicações</h2>
+<p>Acesso e autenticação (§4.2).</p>
+<hr class="divider">
+<h1 id="10-pr--requisitos-de-lan-amento">10. Pré-requisitos de lançamento</h1>
+<p>Antes do primeiro cliente real usar o SmartCorbans em produção, estes itens, transversais e bloqueadores, devem estar completos:</p>
+<p><b>Integração com a Huggy.</b> Autorização do cliente e configuração da conta, para a entrada de Leads, o Chat e o gatilho da Simulação automática.</p>
+<p><b>AbacatePay.</b> Conta configurada para a adição de crédito por Pix.</p>
+<p><b>Estrutura inicial do tenant.</b> Cargos, Usuários, cadastros-base, Segmentos com Funis configurados, Regras, Ofertas, Lojas e Times da Smartconsig cadastrados e validados pelo cliente. Sem Ofertas completas, o motor não opera.</p>
+<p><b>Migração do sistema atual.</b> Migração completa da base de dados do sistema que a Smartconsig usa hoje (configuração base, Leads, Clientes, Usuários etc.), numa carga única. O mapeamento e a execução ficam num plano de migração próprio. Credenciais não migram: continuam no Keycloak.</p>
+<p><b>Keycloak.</b> O SmartCorbans autenticando direto no Keycloak atual, sem a abstração FeijucaAuth, validado em produção.</p>
+<p><b>Implantação da instância.</b> Criação do Owner da Smartconsig e das Lojas iniciais, sem intervenção manual em banco de dados além da implantação.</p>
+<p><b>Ambiente de produção validado.</b> Inclui a suíte automatizada de isolamento entre Lojas (<span class="badge rnf-badge">RNF002</span>) executada com sucesso.</p>
+<hr class="divider">
+<h1 id="11-notas-de-evolu-o-roadmap">11. Notas de evolução (roadmap)</h1>
+<p>Direção prevista, <b>sem compromisso de escopo</b>. Cada item vira um módulo com documento próprio quando entrar em especificação.</p>
+<ul>
+<li><b>IA para inteligência de negócio.</b> Uso de inteligência artificial sobre os dados do SmartCorbans (Leads, Propostas, Simulações, Clientes, Metas, Créditos) para apoiar decisões de negócio. Escopo, casos de uso e permissões ainda não definidos.</li>
+<li><b>Leilão CLT.</b> Evolução voltada ao público CLT, que hoje não tem simulação nem Segmento específico no produto. Mecânica, atores e relação com o módulo de Integrações (CLT via Jaéconsig) ainda não definidos.</li>
+<li><b>Módulo de Integrações (Admin).</b> Onde o tenant configura as conexões com sistemas externos. É o ponto de partida da simulação externa (CLT via Jaéconsig e consulta de dados de INSS via Consignado Rápido) e do hub técnico do Marketing (Admin, §6; CRM, §6).</li>
+<li><b>Marketing V2 — Landing Pages.</b> Páginas de conversão que criam Cliente e Lead, com Origem Campanha ou Orgânica.</li>
+<li><b>Marketing V3 — Integrações e Anúncios.</b> OAuth2 com Meta, Google e TikTok; painel de anúncios com UTM; o gasto de anúncios alimenta o bloco financeiro do Dashboard do Marketing, sem alterar o preço da lead (Marketing, §6).</li>
+<li><b>Lista de bloqueio fora do Marketing.</b> Estender o "não perturbe" a Leads manuais, Huggy e landing pages (Marketing, §6).</li>
+<li><b>Contabilização de metas fora do Pago</b>, por exemplo contando a atividade (entrada em Negociação) separadamente da conversão (CRM, §6).</li>
+<li><b>Dashboard configurável.</b> Cada usuário reordena ou oculta blocos (CRM, §6).</li>
+<li><b>Tela de auditoria no Admin</b>, com permissão própria, para consultar a trilha do <span class="badge rnf-badge">RNF005</span>.</li>
+<li><b>Autenticação multifator (MFA)</b> e <b>SSO corporativo</b> (via Keycloak).</li>
+<li><b>E-mails do ciclo de acesso:</b> convite de cadastro, recuperação de senha e troca obrigatória de senha no primeiro login.</li>
+<li><b>Boleto</b> na adição de crédito (AbacatePay).</li>
+<li><b>Multi-tenant e Console da Plataforma</b>, se a plataforma for oferecida a outros correspondentes.</li>
+<li><b>Esteira bancária e gestão financeira completa</b>, hoje fora do escopo (§3.2).</li>
+</ul>
+<hr class="divider">
+<h1 id="12-itens-abertos">12. Itens abertos</h1>
+<p>Só entram aqui decisões de produto.</p>
+<p>Nenhum item aberto. <i>(O último, a lista de ações críticas da auditoria, foi decidido na v2.5: <span class="badge rnf-badge">RNF005</span>.)</i></p>
+<p><i>(Pendente de confirmação em módulo: a validade de 7 dias da Lista, Marketing · Prospecção, <span class="badge rule-badge">RN-PRS-09</span>, marcada como [proposto].)</i></p>
+<hr class="divider">
+<h1 id="13-o-que-mudou-em-rela-o-v1-2">13. O que mudou em relação à v1.2</h1>
+<div class="tablewrap"><table><thead><tr><th>v1.2</th><th>Hoje</th></tr></thead><tbody><tr><td>Nome <b>Corban</b></td><td><b>SmartCorbans</b>. Os arquivos continuam com o prefixo <code>corban-</code> até a renomeação.</td></tr><tr><td><b>Multi-tenant</b>, com Console da Plataforma</td><td><b>Instância única</b> da Smartconsig; parceiros são <b>Lojas</b>; sem Console.</td></tr><tr><td>Um produto de 11 módulos</td><td><b>Três aplicações</b> (Admin, CRM e Marketing), 32 módulos.</td></tr><tr><td><b>Grupos</b> de permissões, com usuário em vários grupos</td><td><b>Cargos</b>: um por usuário, mais permissões adicionais.</td></tr><tr><td><b>Operação</b> como eixo (times, recursos, funil, metas)</td><td><b>Loja</b> e <b>Time</b>; <b>Segmento</b> com <b>Funil</b> próprio.</td></tr><tr><td>Oferta = banco + produto + convênio, com <b>modalidades</b> (empréstimo novo, cartão, compra de dívida, CLT)</td><td>Oferta = Promotora + Produto + <b>Operação</b> + Banco; <b>Região</b> via Promotora; sem CLT.</td></tr><tr><td>Regra com tipo bloqueante ou de aviso</td><td>Regra = Campo + Operador, <b>todos os requisitos precisam passar</b>; valor na Oferta.</td></tr><tr><td>Lead por Huggy, landing page ou manual; distribuição por operação</td><td><b>Seis Origens</b>, <b>duas camadas</b> de distribuição, cobrança por Origem.</td></tr><tr><td>Lead movida por arrastar</td><td><b>Só por Ação</b>.</td></tr><tr><td>Ganho e Perdido registrados na Lead</td><td><b>Proposta</b> (Pago e Cancelado), <b>Valor de meta</b> e <b>Contrato</b>.</td></tr><tr><td>Simulação CLT (Jaéconsig) e consulta INSS (Consignado Rápido)</td><td><b>Fora</b>; evolução com o módulo de Integrações.</td></tr><tr><td>Chat e digitação de proposta em modo demonstração</td><td><b>Chat</b> funcional (espelha a Huggy); a Proposta substitui a digitação.</td></tr><tr><td>Cliente com importação no CRM</td><td>Cliente criado pelo CRM e pelo Marketing; <b>importação via Prospecção</b>.</td></tr><tr><td>Sem Marketing</td><td><b>Prospecção</b> e <b>Carteira Ativa</b>.</td></tr><tr><td>Sem financeiro da Lead</td><td><b>Créditos</b>, preço da lead e estorno.</td></tr><tr><td>Dashboard e Relatórios únicos</td><td>Um por aplicação, por escopo.</td></tr><tr><td>LGPD reativa, base legal e retenção</td><td><b>Fora do escopo inicial.</b></td></tr><tr><td>Parte II com RF001–RF043 e RN001–RN069</td><td><b>Aposentada</b>. As regras vivem nos módulos; a numeração antiga não é reutilizada.</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="14-impactos-da-inst-ncia-nica-nos-documentos-das-aplica-es">14. Impactos da instância única nos documentos das aplicações</h1>
+<p><b>Aplicados em 10/10/2026.</b> Os documentos de módulo e o Documento de Produto do Admin já não citam o Console da Plataforma nem o isolamento entre tenants: o Owner nasce na implantação (Admin, §2; Usuários, <span class="badge rule-badge">RN-USR-03</span> e §8), o e-mail é único na instância (<span class="badge rule-badge">RN-USR-04</span>), os status iniciais vêm da implantação (Status de Proposta, <span class="badge rule-badge">RN-STP-10</span>) e o isolamento é entre Lojas (CRM · Leads, <span class="badge rule-badge">RN-LED-06</span>). O termo <b>tenant</b> continua, com o sentido de "a organização Smartconsig".</p>
+<hr class="divider">
+<p><i>Fim do documento. SmartCorbans — Especificação Geral v2.5. Três aplicações, 32 módulos, <span class="badge rnf-badge">RNF001</span>–<span class="badge rnf-badge">RNF006</span>, RN-SC-01 a RN-SC-09.</i></p>
+  </article>
+  <footer>
+    <div class="footer-links">
+      <a href="../index.html">← Início da Documentação</a>
+      <a href="index.html">Hub de Especificação</a>
+      <a href="../Architecture/C4/index.html">C4 Model</a>
+      <a href="../Architecture/ADR/index.html">ADRs</a>
+      <a href="../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Geral do Produto</div>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,1461 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SmartCorbans — Catálogo de Decisões de Arquitetura (ADRs)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.adr-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 320px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .adr-num { color: var(--brand); margin-right: 6px; }
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 32px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+.decision-callout {
+  background: var(--surface);
+  border-left: 4px solid var(--brand);
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.decision-callout h3 { margin-top: 4px; }
+
+.review-callout {
+  background: var(--surface);
+  border-left: 4px solid var(--accent);
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px 22px;
+    }
+    .metric-item { display: flex; flex-direction: column; gap: 4px; }
+    .metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+    .metric-value.brand { color: var(--brand); }
+    .metric-label { font-size: 12.5px; color: var(--muted); }
+
+    .search-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .search-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      padding: 10px 14px 10px 38px;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .search-input:focus { border-color: var(--brand); }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+    .filter-pill.active {
+      background: var(--brand);
+      color: var(--brand-ink);
+      border-color: var(--brand);
+      font-weight: 500;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .adr-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .adr-card:hover {
+      border-color: var(--brand);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .adr-card-num {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand);
+    }
+    .cat-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: var(--muted);
+    }
+    .status-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .status-pill.accepted { background: var(--green-soft); color: var(--green); }
+    .status-pill.superseded { background: var(--amber-soft); color: var(--amber); }
+
+    .card-title {
+      font-size: 16px;
+      line-height: 1.35;
+      margin: 0;
+      font-weight: 600;
+    }
+    .card-title a:hover { color: var(--brand); }
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    .card-bottom {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand);
+    }
+
+    .view-toggle {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--bg);
+      padding: 2px;
+      margin-left: auto;
+    }
+    .view-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .view-btn.active {
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--brand);
+      font-family: var(--mono);
+      font-size: 11px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .pill-btn:hover { border-color: var(--brand); }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <span class="current">Decisões de Arquitetura (ADRs)</span>
+    </div>
+    <div class="actions">
+      <a href="../../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Início da Doc
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow"><b>Governança Técnica</b> · Registro Histórico e Imutável</div>
+    <h1>Registro de Decisões de Arquitetura (ADR)</h1>
+    <p style="color:var(--muted);font-size:16px;margin:0;max-width:75ch">
+      Todas as decisões estruturais que sustentam a construção e operação do SmartCorbans. Cada decisão é imutável após aprovação, registrando motivação, alternativas rejeitadas e critérios formais de revisão.
+    </p>
+  </header>
+
+  <!-- Metrics -->
+  <div class="metrics-bar">
+    <div class="metric-item">
+      <span class="metric-value brand">25</span>
+      <span class="metric-label">Decisões Registradas</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value">100%</span>
+      <span class="metric-label">Aceitas / Em Vigor</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value">18 / 18</span>
+      <span class="metric-label">Premissas Fechadas</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value">0</span>
+      <span class="metric-label">Decisões Pendentes</span>
+    </div>
+  </div>
+
+  <!-- Search & Filter -->
+  <div class="search-bar-wrap">
+    <div class="search-input-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar por título, módulo, tecnologia (.NET, PostgreSQL, SignalR, Netlify)..." oninput="applyFilters()">
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div class="filter-pills">
+        <button class="filter-pill active" data-cat="all" onclick="setCategory('all', this)">Todas (25)</button>
+        <button class="filter-pill" data-cat="core" onclick="setCategory('core', this)">Backend &amp; Aplicação</button>
+        <button class="filter-pill" data-cat="data" onclick="setCategory('data', this)">Dados &amp; Banco</button>
+        <button class="filter-pill" data-cat="infra" onclick="setCategory('infra', this)">Infra &amp; Nuvem</button>
+        <button class="filter-pill" data-cat="frontend" onclick="setCategory('frontend', this)">Frontend &amp; Auth</button>
+      </div>
+      <div class="view-toggle">
+        <button id="btnCards" class="view-btn active" onclick="setView('cards')">Cards</button>
+        <button id="btnTable" class="view-btn" onclick="setView('table')">Tabela</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards View -->
+  <div id="cardsContainer" class="cards-grid">
+    
+        <div class="adr-card" data-cat="frontend" data-search="adr-0001 keycloak atual como provedor de identidade, sem a feijucaauth o smartcorbans usa o mesmo keycloak e a mesma base de identidade de hoje, falando com ele diretamente, sem a feijucaauth. c4 · contexto, containers, componentes da api (acesso, adaptadores externos), implantação; admin · usuários; especificação geral §4.2">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0001</span>
+            <span class="cat-pill">Frontend / Autenticação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0001-keycloak-sem-feijucaauth/index.html">Keycloak atual como provedor de identidade, sem a FeijucaAuth</a></h3>
+          <p class="card-desc">O SmartCorbans usa o mesmo Keycloak e a mesma base de identidade de hoje, falando com ele diretamente, sem a FeijucaAuth.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: D-01 e D-07 (`C4/01-contexto.md`) — ADR retroativa</span>
+            <a href="0001-keycloak-sem-feijucaauth/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="frontend" data-search="adr-0002 login pela api, com a tela própria do shell público a tela de login envia e-mail e senha à api, que autentica no keycloak e devolve os tokens. as aplicações web não falam com o keycloak. c4 · containers, componentes da api (endpoints, acesso), componentes do admin, crm e marketing (pacote auth); shell público">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0002</span>
+            <span class="cat-pill">Frontend / Autenticação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0002-login-pela-api/index.html">Login pela API, com a tela própria do Shell Público</a></h3>
+          <p class="card-desc">A tela de login envia e-mail e senha à API, que autentica no Keycloak e devolve os tokens. As aplicações web não falam com o Keycloak.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: D-09 (`C4/02-containers.md`) — ADR retroativa</span>
+            <a href="0002-login-pela-api/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="data" data-search="adr-0003 postgresql como banco de dados o banco é postgresql, num único servidor, com um schema por módulo. o smartcorbans não usa mongodb; o mongodb atual é só a origem da migração. c4 · containers, componentes da api (persistência, jobs), implantação">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0003</span>
+            <span class="cat-pill">Dados & Armazenamento</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0003-postgresql/index.html">PostgreSQL como banco de dados</a></h3>
+          <p class="card-desc">O banco é PostgreSQL, num único servidor, com um schema por módulo. O SmartCorbans não usa MongoDB; o MongoDB atual é só a origem da migração.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: D-10 (`C4/02-containers.md`) — ADR retroativa</span>
+            <a href="0003-postgresql/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="frontend" data-search="adr-0004 backend na azure, aplicações web na netlify api, worker e banco na azure; admin, crm e marketing na netlify. os serviços específicos da azure estão no diagrama de implantação, como premissas (p-12 a p-18). c4 · containers, implantação; api (cors)">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0004</span>
+            <span class="cat-pill">Frontend / Autenticação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0004-azure-e-netlify/index.html">Backend na Azure, aplicações web na Netlify</a></h3>
+          <p class="card-desc">API, Worker e banco na Azure; Admin, CRM e Marketing na Netlify. Os serviços específicos da Azure estão no diagrama de implantação, como premissas (P-12 a P-18).</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: D-11 (`C4/02-containers.md`) — ADR retroativa</span>
+            <a href="0004-azure-e-netlify/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0005 backend em .net 10, com clean architecture e cqrs api e worker em .net 10 (asp.net core e worker service), com clean architecture e cqrs. c4 · containers (api, worker), componentes da api; base para p-07, p-08 e p-09">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0005</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0005-dotnet-10/index.html">Backend em .NET 10, com Clean Architecture e CQRS</a></h3>
+          <p class="card-desc">API e Worker em .NET 10 (ASP.NET Core e Worker Service), com Clean Architecture e CQRS.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-01 (`C4/02-containers.md`)</span>
+            <a href="0005-dotnet-10/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0006 uma api em monolito modular uma única api, organizada como monolito modular: os 12 módulos rodam no mesmo processo e no mesmo deploy, separados por fronteiras explícitas no código. c4 · containers (api), componentes da api; base para p-03, p-07 e p-09">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0006</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0006-monolito-modular/index.html">Uma API em monolito modular</a></h3>
+          <p class="card-desc">Uma única API, organizada como monolito modular: os 12 módulos rodam no mesmo processo e no mesmo deploy, separados por fronteiras explícitas no código.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-02 (`C4/02-containers.md`)</span>
+            <a href="0006-monolito-modular/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0007 worker em processo separado, com o mesmo código de domínio um worker em processo separado da api, hospedando os mesmos módulos de domínio (adr-0006). c4 · containers (worker), componentes da api (jobs), implantação; base para p-04">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0007</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0007-worker-separado/index.html">Worker em processo separado, com o mesmo código de domínio</a></h3>
+          <p class="card-desc">Um Worker em processo separado da API, hospedando os mesmos módulos de domínio (ADR-0006).</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-03 (`C4/02-containers.md`)</span>
+            <a href="0007-worker-separado/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="data" data-search="adr-0008 fila de jobs no próprio postgresql, sem broker os jobs ficam numa tabela do próprio postgresql, sem broker de mensagens. c4 · containers (banco), componentes da api (jobs, persistência), implantação (worker)">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0008</span>
+            <span class="cat-pill">Dados & Armazenamento</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0008-fila-de-jobs-no-postgresql/index.html">Fila de jobs no próprio PostgreSQL, sem broker</a></h3>
+          <p class="card-desc">Os jobs ficam numa tabela do próprio PostgreSQL, sem broker de mensagens.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-04 (`C4/02-containers.md`)</span>
+            <a href="0008-fila-de-jobs-no-postgresql/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0009 api com réplica única, sem escalonamento automático a api roda com uma réplica fixa: mínimo 1, máximo 1, escalonamento automático desligado. c4 · implantação; adr-0010 (tempo real); qualquer estado mantido em memória pela api">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0009</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0009-api-replica-unica/index.html">API com réplica única, sem escalonamento automático</a></h3>
+          <p class="card-desc">A API roda com uma réplica fixa: mínimo 1, máximo 1, escalonamento automático desligado.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: revisão da seção de escala de `C4/04-implantacao.md` (substitui "2+ réplicas com afinidade de sessão")</span>
+            <a href="0009-api-replica-unica/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0010 tempo real com signalr na api, sem backplane tempo real por websocket com signalr, hospedado na própria api, sem backplane. c4 · containers, componentes da api (tempo real, atendimento), componentes do crm (tempo real), implantação">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0010</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita (escopo estendido pela ADR-0015)</span>
+          </div>
+          <h3 class="card-title"><a href="0010-tempo-real-signalr/index.html">Tempo real com SignalR na API, sem backplane</a></h3>
+          <p class="card-desc">Tempo real por WebSocket com SignalR, hospedado na própria API, sem backplane.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-05 (`C4/02-containers.md`)</span>
+            <a href="0010-tempo-real-signalr/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0011 webhooks recebidos pela própria api os webhooks entram por rotas públicas da própria api, sem serviço dedicado. c4 · containers, componentes da api (webhooks), implantação (entrada pública)">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0011</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0011-webhooks-na-api/index.html">Webhooks recebidos pela própria API</a></h3>
+          <p class="card-desc">Os webhooks entram por rotas públicas da própria API, sem serviço dedicado.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-06 (`C4/02-containers.md`)</span>
+            <a href="0011-webhooks-na-api/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="data" data-search="adr-0012 ef core com npgsql, um dbcontext por módulo ef core com o provedor npgsql, com um dbcontext por módulo, no projeto <módulo>.infrastructure. c4 · componentes da api (persistência, todos os módulos); testes de isolamento do rnf002">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0012</span>
+            <span class="cat-pill">Dados & Armazenamento</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0012-ef-core-dbcontext-por-modulo/index.html">EF Core com Npgsql, um DbContext por módulo</a></h3>
+          <p class="card-desc">EF Core com o provedor Npgsql, com um DbContext por módulo, no projeto <Módulo>.Infrastructure.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-07 (`C4/03-componentes-api.md`)</span>
+            <a href="0012-ef-core-dbcontext-por-modulo/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0013 cqrs e eventos de domínio com mediatr 12.x mediatr, fixado na linha 12.x, para comandos, consultas e eventos de domínio (notificações do mediatr), sempre no mesmo processo. c4 · componentes da api (todos os módulos, endpoints, regra 3 da §5)">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0013</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0013-mediatr-12/index.html">CQRS e eventos de domínio com MediatR 12.x</a></h3>
+          <p class="card-desc">MediatR, fixado na linha 12.x, para comandos, consultas e eventos de domínio (notificações do MediatR), sempre no mesmo processo.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-08 (`C4/03-componentes-api.md`), definida pelo usuário na revisão dos Componentes (substituindo o LiteBus)</span>
+            <a href="0013-mediatr-12/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0014 módulo como pasta, com um projeto .net por camada cada módulo é uma pasta da solução, com um projeto .net por camada: c4 · componentes da api (todos os módulos, regras de fronteira); estrutura da solução do backend">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0014</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0014-modulo-pasta-projeto-por-camada/index.html">Módulo como pasta, com um projeto .NET por camada</a></h3>
+          <p class="card-desc">Cada módulo é uma pasta da solução, com um projeto .NET por camada:</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-09 (`C4/03-componentes-api.md`), definida pelo usuário na revisão dos Componentes</span>
+            <a href="0014-modulo-pasta-projeto-por-camada/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0015 tempo real também no marketing, para notificações e andamento o marketing também se conecta ao hub de tempo real da api, que passa a atender o crm e o marketing. adr-0010 (escopo estendido); c4 · componentes do marketing e da api (tempo real); marketing · prospecção e carteira ativa">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0015</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0015-tempo-real-no-marketing/index.html">Tempo real também no Marketing, para notificações e andamento</a></h3>
+          <p class="card-desc">O Marketing também se conecta ao hub de tempo real da API, que passa a atender o CRM e o Marketing.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-11 (`C4/03-componentes-marketing.md`), **rejeitada**; decisão de produto de incluir notificações no Marketing na v1 (Marketing, Documento de Produto v0.9, RN-MKT-10)</span>
+            <a href="0015-tempo-real-no-marketing/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="frontend" data-search="adr-0016 um site na netlify por aplicação, em subdomínios três sites na netlify, um por aplicação, cada um num subdomínio próprio (admin.<domínio>, crm.<domínio>, marketing.<domínio>). c4 · implantação; api (cors); pipeline de deploy do front">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0016</span>
+            <span class="cat-pill">Frontend / Autenticação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0016-tres-sites-netlify/index.html">Um site na Netlify por aplicação, em subdomínios</a></h3>
+          <p class="card-desc">Três sites na Netlify, um por aplicação, cada um num subdomínio próprio (admin.<domínio>, crm.<domínio>, marketing.<domínio>).</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-12 (`C4/04-implantacao.md`)</span>
+            <a href="0016-tres-sites-netlify/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="infra" data-search="adr-0017 api, worker e migração no azure container apps azure container apps, num único ambiente (container apps environment) integrado a uma vnet. c4 · implantação; pipeline de deploy do backend">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0017</span>
+            <span class="cat-pill">Infraestrutura & Nuvem</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0017-azure-container-apps/index.html">API, Worker e migração no Azure Container Apps</a></h3>
+          <p class="card-desc">Azure Container Apps, num único ambiente (Container Apps Environment) integrado a uma VNet.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-13 (`C4/04-implantacao.md`)</span>
+            <a href="0017-azure-container-apps/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="data" data-search="adr-0018 azure database for postgresql flexible server, com acesso privado azure database for postgresql flexible server, com acesso privado pela vnet e sem ip público. c4 · implantação; acesso operacional ao banco">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0018</span>
+            <span class="cat-pill">Dados & Armazenamento</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0018-postgresql-flexible-server-privado/index.html">Azure Database for PostgreSQL Flexible Server, com acesso privado</a></h3>
+          <p class="card-desc">Azure Database for PostgreSQL Flexible Server, com acesso privado pela VNet e sem IP público.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-14 (`C4/04-implantacao.md`)</span>
+            <a href="0018-postgresql-flexible-server-privado/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="infra" data-search="adr-0019 segredos no key vault, lidos por managed identity; banco sem senha os segredos ficam no azure key vault e são lidos por managed identity; o banco é acessado sem senha, por autenticação microsoft entra com a mesma identidade. c4 · implantação; configuração da api, do worker e do job de migração; adr-0018">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0019</span>
+            <span class="cat-pill">Infraestrutura & Nuvem</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0019-key-vault-managed-identity/index.html">Segredos no Key Vault, lidos por Managed Identity; banco sem senha</a></h3>
+          <p class="card-desc">Os segredos ficam no Azure Key Vault e são lidos por Managed Identity; o banco é acessado sem senha, por autenticação Microsoft Entra com a mesma identidade.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-15 (`C4/04-implantacao.md`)</span>
+            <a href="0019-key-vault-managed-identity/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="infra" data-search="adr-0020 nat gateway com ip de saída fixo só quando exigido sem nat gateway no início. ele entra, na vnet que já existe, quando algum sistema externo exigir liberação por ip. c4 · implantação; integrações com keycloak, huggy, abacatepay e api do banco central">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0020</span>
+            <span class="cat-pill">Infraestrutura & Nuvem</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0020-nat-gateway-sob-demanda/index.html">NAT Gateway com IP de saída fixo só quando exigido</a></h3>
+          <p class="card-desc">Sem NAT Gateway no início. Ele entra, na VNet que já existe, quando algum sistema externo exigir liberação por IP.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-16 (`C4/04-implantacao.md`)</span>
+            <a href="0020-nat-gateway-sob-demanda/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="infra" data-search="adr-0021 recursos da azure na região brazil south todos os recursos da azure do smartcorbans ficam em brazil south, a mesma região do sistema atual. c4 · implantação; todos os recursos da azure (adr-0017, adr-0018, adr-0019)">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0021</span>
+            <span class="cat-pill">Infraestrutura & Nuvem</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0021-regiao-brazil-south/index.html">Recursos da Azure na região Brazil South</a></h3>
+          <p class="card-desc">Todos os recursos da Azure do SmartCorbans ficam em Brazil South, a mesma região do sistema atual.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-17 (`C4/04-implantacao.md`)</span>
+            <a href="0021-regiao-brazil-south/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="infra" data-search="adr-0022 homologação com a mesma forma de produção, descrita em código um ambiente de homologação com a mesma forma de produção, em resource group próprio, com recursos menores. c4 · implantação; pipeline de deploy; integrações (huggy, abacatepay, keycloak)">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0022</span>
+            <span class="cat-pill">Infraestrutura & Nuvem</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0022-homologacao-mesma-forma/index.html">Homologação com a mesma forma de produção, descrita em código</a></h3>
+          <p class="card-desc">Um ambiente de homologação com a mesma forma de produção, em resource group próprio, com recursos menores.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: P-18 (`C4/04-implantacao.md`)</span>
+            <a href="0022-homologacao-mesma-forma/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="data" data-search="adr-0023 sem chave estrangeira entre schemas de módulos diferentes entre schemas de módulos diferentes, a referência é só o identificador, sem chave estrangeira. dentro do mesmo módulo, chave estrangeira normal. modelo de dados de todos os módulos; adr-0006, adr-0012">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0023</span>
+            <span class="cat-pill">Dados & Armazenamento</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0023-sem-fk-entre-modulos/index.html">Sem chave estrangeira entre schemas de módulos diferentes</a></h3>
+          <p class="card-desc">Entre schemas de módulos diferentes, a referência é só o identificador, sem chave estrangeira. Dentro do mesmo módulo, chave estrangeira normal.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: preparação do modelo de dados</span>
+            <a href="0023-sem-fk-entre-modulos/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="data" data-search="adr-0024 arquivos no azure blob storage privado, entregues por url assinada os arquivos ficam num azure storage account (blob storage) privado, em brazil south. c4 · containers e implantação; componentes da api (persistência); modelo de dados de estrutura, clientes, propostas e marketing">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0024</span>
+            <span class="cat-pill">Dados & Armazenamento</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0024-armazenamento-de-arquivos-blob/index.html">Arquivos no Azure Blob Storage privado, entregues por URL assinada</a></h3>
+          <p class="card-desc">Os arquivos ficam num Azure Storage Account (Blob Storage) privado, em Brazil South.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: Modelo de dados · Estrutura (`Dados/01-estrutura.md`, §6)</span>
+            <a href="0024-armazenamento-de-arquivos-blob/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="adr-card" data-cat="core" data-search="adr-0025 tempo real nas três aplicações e sino único por usuário o sino é único por usuário, igual nas três aplicações, e as três se conectam ao hub de tempo real. adr-0010 e adr-0015 (escopo estendido); c4 · containers, componentes da api e do admin; shell privado §6; modelo de dados de notificações">
+          <div class="card-top">
+            <span class="adr-card-num">ADR-0025</span>
+            <span class="cat-pill">Backend & Aplicação</span>
+            <span class="status-pill accepted">Aceita</span>
+          </div>
+          <h3 class="card-title"><a href="0025-tempo-real-e-sino-nas-tres-aplicacoes/index.html">Tempo real nas três aplicações e sino único por usuário</a></h3>
+          <p class="card-desc">O sino é único por usuário, igual nas três aplicações, e as três se conectam ao hub de tempo real.</p>
+          <div class="card-bottom">
+            <span class="card-meta">Origem: Modelo de dados · Apoio (`Dados/12-apoio.md`), revisão de usabilidade das notificações</span>
+            <a href="0025-tempo-real-e-sino-nas-tres-aplicacoes/index.html" class="card-link">
+              <span>Ler Decisão</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+  </div>
+
+  <!-- Table View -->
+  <div id="tableContainer" class="tablewrap" style="display:none">
+    <table>
+      <thead>
+        <tr>
+          <th>ADR</th>
+          <th>Título da Decisão</th>
+          <th>Categoria</th>
+          <th>Status</th>
+          <th>Origem</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr data-cat="frontend" data-search="adr-0001 keycloak atual como provedor de identidade, sem a feijucaauth c4 · contexto, containers, componentes da api (acesso, adaptadores externos), implantação; admin · usuários; especificação geral §4.2">
+          <td class="ref"><code>ADR-0001</code></td>
+          <td><a href="0001-keycloak-sem-feijucaauth/index.html"><b>Keycloak atual como provedor de identidade, sem a FeijucaAuth</b></a></td>
+          <td><span class="cat-pill">Frontend / Autenticação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">D-01 e D-07 (`C4/01-contexto.md`) — ADR retroativa</td>
+          <td class="ref"><a href="0001-keycloak-sem-feijucaauth/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="frontend" data-search="adr-0002 login pela api, com a tela própria do shell público c4 · containers, componentes da api (endpoints, acesso), componentes do admin, crm e marketing (pacote auth); shell público">
+          <td class="ref"><code>ADR-0002</code></td>
+          <td><a href="0002-login-pela-api/index.html"><b>Login pela API, com a tela própria do Shell Público</b></a></td>
+          <td><span class="cat-pill">Frontend / Autenticação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">D-09 (`C4/02-containers.md`) — ADR retroativa</td>
+          <td class="ref"><a href="0002-login-pela-api/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="data" data-search="adr-0003 postgresql como banco de dados c4 · containers, componentes da api (persistência, jobs), implantação">
+          <td class="ref"><code>ADR-0003</code></td>
+          <td><a href="0003-postgresql/index.html"><b>PostgreSQL como banco de dados</b></a></td>
+          <td><span class="cat-pill">Dados & Armazenamento</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">D-10 (`C4/02-containers.md`) — ADR retroativa</td>
+          <td class="ref"><a href="0003-postgresql/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="frontend" data-search="adr-0004 backend na azure, aplicações web na netlify c4 · containers, implantação; api (cors)">
+          <td class="ref"><code>ADR-0004</code></td>
+          <td><a href="0004-azure-e-netlify/index.html"><b>Backend na Azure, aplicações web na Netlify</b></a></td>
+          <td><span class="cat-pill">Frontend / Autenticação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">D-11 (`C4/02-containers.md`) — ADR retroativa</td>
+          <td class="ref"><a href="0004-azure-e-netlify/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0005 backend em .net 10, com clean architecture e cqrs c4 · containers (api, worker), componentes da api; base para p-07, p-08 e p-09">
+          <td class="ref"><code>ADR-0005</code></td>
+          <td><a href="0005-dotnet-10/index.html"><b>Backend em .NET 10, com Clean Architecture e CQRS</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-01 (`C4/02-containers.md`)</td>
+          <td class="ref"><a href="0005-dotnet-10/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0006 uma api em monolito modular c4 · containers (api), componentes da api; base para p-03, p-07 e p-09">
+          <td class="ref"><code>ADR-0006</code></td>
+          <td><a href="0006-monolito-modular/index.html"><b>Uma API em monolito modular</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-02 (`C4/02-containers.md`)</td>
+          <td class="ref"><a href="0006-monolito-modular/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0007 worker em processo separado, com o mesmo código de domínio c4 · containers (worker), componentes da api (jobs), implantação; base para p-04">
+          <td class="ref"><code>ADR-0007</code></td>
+          <td><a href="0007-worker-separado/index.html"><b>Worker em processo separado, com o mesmo código de domínio</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-03 (`C4/02-containers.md`)</td>
+          <td class="ref"><a href="0007-worker-separado/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="data" data-search="adr-0008 fila de jobs no próprio postgresql, sem broker c4 · containers (banco), componentes da api (jobs, persistência), implantação (worker)">
+          <td class="ref"><code>ADR-0008</code></td>
+          <td><a href="0008-fila-de-jobs-no-postgresql/index.html"><b>Fila de jobs no próprio PostgreSQL, sem broker</b></a></td>
+          <td><span class="cat-pill">Dados & Armazenamento</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-04 (`C4/02-containers.md`)</td>
+          <td class="ref"><a href="0008-fila-de-jobs-no-postgresql/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0009 api com réplica única, sem escalonamento automático c4 · implantação; adr-0010 (tempo real); qualquer estado mantido em memória pela api">
+          <td class="ref"><code>ADR-0009</code></td>
+          <td><a href="0009-api-replica-unica/index.html"><b>API com réplica única, sem escalonamento automático</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">revisão da seção de escala de `C4/04-implantacao.md` (substitui "2+ réplicas com afinidade de sessão")</td>
+          <td class="ref"><a href="0009-api-replica-unica/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0010 tempo real com signalr na api, sem backplane c4 · containers, componentes da api (tempo real, atendimento), componentes do crm (tempo real), implantação">
+          <td class="ref"><code>ADR-0010</code></td>
+          <td><a href="0010-tempo-real-signalr/index.html"><b>Tempo real com SignalR na API, sem backplane</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita (escopo estendido pela ADR-0015)</span></td>
+          <td class="ref">P-05 (`C4/02-containers.md`)</td>
+          <td class="ref"><a href="0010-tempo-real-signalr/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0011 webhooks recebidos pela própria api c4 · containers, componentes da api (webhooks), implantação (entrada pública)">
+          <td class="ref"><code>ADR-0011</code></td>
+          <td><a href="0011-webhooks-na-api/index.html"><b>Webhooks recebidos pela própria API</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-06 (`C4/02-containers.md`)</td>
+          <td class="ref"><a href="0011-webhooks-na-api/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="data" data-search="adr-0012 ef core com npgsql, um dbcontext por módulo c4 · componentes da api (persistência, todos os módulos); testes de isolamento do rnf002">
+          <td class="ref"><code>ADR-0012</code></td>
+          <td><a href="0012-ef-core-dbcontext-por-modulo/index.html"><b>EF Core com Npgsql, um DbContext por módulo</b></a></td>
+          <td><span class="cat-pill">Dados & Armazenamento</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-07 (`C4/03-componentes-api.md`)</td>
+          <td class="ref"><a href="0012-ef-core-dbcontext-por-modulo/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0013 cqrs e eventos de domínio com mediatr 12.x c4 · componentes da api (todos os módulos, endpoints, regra 3 da §5)">
+          <td class="ref"><code>ADR-0013</code></td>
+          <td><a href="0013-mediatr-12/index.html"><b>CQRS e eventos de domínio com MediatR 12.x</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-08 (`C4/03-componentes-api.md`), definida pelo usuário na revisão dos Componentes (substituindo o LiteBus)</td>
+          <td class="ref"><a href="0013-mediatr-12/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0014 módulo como pasta, com um projeto .net por camada c4 · componentes da api (todos os módulos, regras de fronteira); estrutura da solução do backend">
+          <td class="ref"><code>ADR-0014</code></td>
+          <td><a href="0014-modulo-pasta-projeto-por-camada/index.html"><b>Módulo como pasta, com um projeto .NET por camada</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-09 (`C4/03-componentes-api.md`), definida pelo usuário na revisão dos Componentes</td>
+          <td class="ref"><a href="0014-modulo-pasta-projeto-por-camada/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0015 tempo real também no marketing, para notificações e andamento adr-0010 (escopo estendido); c4 · componentes do marketing e da api (tempo real); marketing · prospecção e carteira ativa">
+          <td class="ref"><code>ADR-0015</code></td>
+          <td><a href="0015-tempo-real-no-marketing/index.html"><b>Tempo real também no Marketing, para notificações e andamento</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-11 (`C4/03-componentes-marketing.md`), **rejeitada**; decisão de produto de incluir notificações no Marketing na v1 (Marketing, Documento de Produto v0.9, RN-MKT-10)</td>
+          <td class="ref"><a href="0015-tempo-real-no-marketing/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="frontend" data-search="adr-0016 um site na netlify por aplicação, em subdomínios c4 · implantação; api (cors); pipeline de deploy do front">
+          <td class="ref"><code>ADR-0016</code></td>
+          <td><a href="0016-tres-sites-netlify/index.html"><b>Um site na Netlify por aplicação, em subdomínios</b></a></td>
+          <td><span class="cat-pill">Frontend / Autenticação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-12 (`C4/04-implantacao.md`)</td>
+          <td class="ref"><a href="0016-tres-sites-netlify/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="infra" data-search="adr-0017 api, worker e migração no azure container apps c4 · implantação; pipeline de deploy do backend">
+          <td class="ref"><code>ADR-0017</code></td>
+          <td><a href="0017-azure-container-apps/index.html"><b>API, Worker e migração no Azure Container Apps</b></a></td>
+          <td><span class="cat-pill">Infraestrutura & Nuvem</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-13 (`C4/04-implantacao.md`)</td>
+          <td class="ref"><a href="0017-azure-container-apps/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="data" data-search="adr-0018 azure database for postgresql flexible server, com acesso privado c4 · implantação; acesso operacional ao banco">
+          <td class="ref"><code>ADR-0018</code></td>
+          <td><a href="0018-postgresql-flexible-server-privado/index.html"><b>Azure Database for PostgreSQL Flexible Server, com acesso privado</b></a></td>
+          <td><span class="cat-pill">Dados & Armazenamento</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-14 (`C4/04-implantacao.md`)</td>
+          <td class="ref"><a href="0018-postgresql-flexible-server-privado/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="infra" data-search="adr-0019 segredos no key vault, lidos por managed identity; banco sem senha c4 · implantação; configuração da api, do worker e do job de migração; adr-0018">
+          <td class="ref"><code>ADR-0019</code></td>
+          <td><a href="0019-key-vault-managed-identity/index.html"><b>Segredos no Key Vault, lidos por Managed Identity; banco sem senha</b></a></td>
+          <td><span class="cat-pill">Infraestrutura & Nuvem</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-15 (`C4/04-implantacao.md`)</td>
+          <td class="ref"><a href="0019-key-vault-managed-identity/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="infra" data-search="adr-0020 nat gateway com ip de saída fixo só quando exigido c4 · implantação; integrações com keycloak, huggy, abacatepay e api do banco central">
+          <td class="ref"><code>ADR-0020</code></td>
+          <td><a href="0020-nat-gateway-sob-demanda/index.html"><b>NAT Gateway com IP de saída fixo só quando exigido</b></a></td>
+          <td><span class="cat-pill">Infraestrutura & Nuvem</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-16 (`C4/04-implantacao.md`)</td>
+          <td class="ref"><a href="0020-nat-gateway-sob-demanda/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="infra" data-search="adr-0021 recursos da azure na região brazil south c4 · implantação; todos os recursos da azure (adr-0017, adr-0018, adr-0019)">
+          <td class="ref"><code>ADR-0021</code></td>
+          <td><a href="0021-regiao-brazil-south/index.html"><b>Recursos da Azure na região Brazil South</b></a></td>
+          <td><span class="cat-pill">Infraestrutura & Nuvem</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-17 (`C4/04-implantacao.md`)</td>
+          <td class="ref"><a href="0021-regiao-brazil-south/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="infra" data-search="adr-0022 homologação com a mesma forma de produção, descrita em código c4 · implantação; pipeline de deploy; integrações (huggy, abacatepay, keycloak)">
+          <td class="ref"><code>ADR-0022</code></td>
+          <td><a href="0022-homologacao-mesma-forma/index.html"><b>Homologação com a mesma forma de produção, descrita em código</b></a></td>
+          <td><span class="cat-pill">Infraestrutura & Nuvem</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">P-18 (`C4/04-implantacao.md`)</td>
+          <td class="ref"><a href="0022-homologacao-mesma-forma/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="data" data-search="adr-0023 sem chave estrangeira entre schemas de módulos diferentes modelo de dados de todos os módulos; adr-0006, adr-0012">
+          <td class="ref"><code>ADR-0023</code></td>
+          <td><a href="0023-sem-fk-entre-modulos/index.html"><b>Sem chave estrangeira entre schemas de módulos diferentes</b></a></td>
+          <td><span class="cat-pill">Dados & Armazenamento</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">preparação do modelo de dados</td>
+          <td class="ref"><a href="0023-sem-fk-entre-modulos/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="data" data-search="adr-0024 arquivos no azure blob storage privado, entregues por url assinada c4 · containers e implantação; componentes da api (persistência); modelo de dados de estrutura, clientes, propostas e marketing">
+          <td class="ref"><code>ADR-0024</code></td>
+          <td><a href="0024-armazenamento-de-arquivos-blob/index.html"><b>Arquivos no Azure Blob Storage privado, entregues por URL assinada</b></a></td>
+          <td><span class="cat-pill">Dados & Armazenamento</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">Modelo de dados · Estrutura (`Dados/01-estrutura.md`, §6)</td>
+          <td class="ref"><a href="0024-armazenamento-de-arquivos-blob/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-cat="core" data-search="adr-0025 tempo real nas três aplicações e sino único por usuário adr-0010 e adr-0015 (escopo estendido); c4 · containers, componentes da api e do admin; shell privado §6; modelo de dados de notificações">
+          <td class="ref"><code>ADR-0025</code></td>
+          <td><a href="0025-tempo-real-e-sino-nas-tres-aplicacoes/index.html"><b>Tempo real nas três aplicações e sino único por usuário</b></a></td>
+          <td><span class="cat-pill">Backend & Aplicação</span></td>
+          <td><span class="status-pill accepted">Aceita</span></td>
+          <td class="ref">Modelo de dados · Apoio (`Dados/12-apoio.md`), revisão de usabilidade das notificações</td>
+          <td class="ref"><a href="0025-tempo-real-e-sino-nas-tres-aplicacoes/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../index.html">← Início da Documentação</a>
+      <a href="../C4/index.html">Hub C4 Model</a>
+      <a href="../Dados/index.html">Modelo de Dados</a>
+      <a href="README.md" target="_blank">Ver README.md Original</a>
+    </div>
+    <div>SmartCorbans · Arquitetura de Software · Decisões de Arquitetura</div>
+  </footer>
+</div>
+
+<script>
+  let activeCategory = 'all';
+  let activeView = 'cards';
+
+  function setCategory(cat, btn) {
+    activeCategory = cat;
+    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function setView(view) {
+    activeView = view;
+    const cardsEl = document.getElementById('cardsContainer');
+    const tableEl = document.getElementById('tableContainer');
+    const btnC = document.getElementById('btnCards');
+    const btnT = document.getElementById('btnTable');
+
+    if (view === 'cards') {
+      cardsEl.style.display = 'grid';
+      tableEl.style.display = 'none';
+      btnC.classList.add('active');
+      btnT.classList.remove('active');
+    } else {
+      cardsEl.style.display = 'none';
+      tableEl.style.display = 'block';
+      btnC.classList.remove('active');
+      btnT.classList.add('active');
+    }
+  }
+
+  function applyFilters() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.adr-card');
+    const rows = document.querySelectorAll('#tableContainer tbody tr');
+
+    cards.forEach(c => {
+      const cat = c.getAttribute('data-cat');
+      const search = c.getAttribute('data-search');
+      const matchCat = (activeCategory === 'all' || cat === activeCategory);
+      const matchSearch = (!query || search.includes(query));
+      c.style.display = (matchCat && matchSearch) ? 'flex' : 'none';
+    });
+
+    rows.forEach(r => {
+      const cat = r.getAttribute('data-cat');
+      const search = r.getAttribute('data-search');
+      const matchCat = (activeCategory === 'all' || cat === activeCategory);
+      const matchSearch = (!query || search.includes(query));
+      r.style.display = (matchCat && matchSearch) ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>

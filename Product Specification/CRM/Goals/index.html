@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Metas · CRM — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">CRM</a>
+      <span class="sep">/</span>
+      <span class="current">Metas</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do CRM
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Dashboard/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Dashboard</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Chat/index.html" >Chat</option><option value="../Clients/index.html" >Clientes</option><option value="../Credits/index.html" >Créditos</option><option value="../Dashboard/index.html" >Dashboard</option><option value="../Goals/index.html" selected>Metas</option><option value="../Leads/index.html" >Leads</option><option value="../Members/index.html" >Membros</option><option value="../MultiplierTable/index.html" >Tabelas Multiplicadoras</option><option value="../Proposals/index.html" >Propostas</option><option value="../Rankings/index.html" >Rankings</option><option value="../Reports/index.html" >Relatórios</option><option value="../Settings/index.html" >Configurações</option><option value="../Simulations/index.html" >Simulações</option><option value="../Teams/index.html" >Times</option></select>
+    <a href="../Leads/index.html" class="pager-btn">Leads <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · CRM · Geral
+    </div>
+    <h1>Metas <span class="app-badge crm">CRM</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">CRM · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.8 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-crm-metas">Corban CRM · Metas</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</p>
+<p><b>Versão:</b> 0.8</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.8</td><td><b>Levantamento do CRM, decisões do usuário.</b> (1) <b>A atribuição é a gravada no Pago</b> (Operador, Time e Cargo naquele momento): <b>sai o filtro dinâmico da v0.7</b>, e promoção, inativação ou troca de Time <b>não retiram</b> vendas já fechadas, nem do Time nem do Membro, para não penalizar o Time perto do fim do Prazo nem afetar comissões (<span class="badge rule-badge">RN-MET-03</span>, <span class="badge rule-badge">RN-MET-11</span>). (2) A Meta de Valor soma o <b>Valor de meta</b>; a de Quantidade, 1 por Proposta (a spec nunca dizia). (3) <b>A saída de um Membro não aumenta as Metas dos demais</b> (RN-MET-08b). (4) Inativar um Membro encerra as Metas individuais dele (<span class="badge rule-badge">RN-MET-10</span>); <b>nova <span class="badge rule-badge">RN-MET-12</span>:</b> excluir um Time encerra as Metas dele. (5) <b>Novo estado Futura</b> (Início no futuro) e o segundo caminho para Encerrada (§6). Remove os "a redigir" e reordena o consolidado e este histórico.</td></tr><tr><td>0.7</td><td><b>"Cargos elegíveis" vira campo independente de "Distribuir entre Membros".</b> Antes só existia como parâmetro do rateio; agora toda Meta de Time pode ter um filtro de Cargo, que passa a restringir <b>quem conta</b> para a Produção/Quantidade da própria Meta de Time — não só quem recebe Meta individual. Motivação do usuário: evitar que alguém promovido (ex.: vendedor virando gerente) continue contando para uma meta de vendas da qual não participa mais. Quando Distribuir é ligado, reaproveita o mesmo filtro — não pede Cargo duas vezes. Filtro é dinâmico (Cargo atual, não o de quando a Proposta foi paga), mesmo princípio já usado em <span class="badge rule-badge">RN-MET-08</span> — decisão registrada, não pedida explicitamente. <span class="badge rule-badge">RN-MET-02</span>, <span class="badge rule-badge">RN-MET-03</span> e <span class="badge rule-badge">RN-MET-06</span> revisadas; <span class="badge rule-badge">RN-MET-11</span> nova.</td></tr><tr><td>0.6</td><td>Confirma <span class="badge rule-badge">RN-MET-08</span>(c) — quem entra depois da distribuição ganha Meta individual nova, mesma simetria de quem sai. Deixa de ser inferência, é regra fechada. Sem mais pendências.</td></tr><tr><td>0.5</td><td>Fecha os dois itens abertos da v0.4: <b>(1)</b> mudança na composição do Time (saída, entrada, troca de Cargo) também recalcula — o valor faltante de quem sai é redistribuído entre os demais, mesma fórmula de <span class="badge rule-badge">RN-MET-07</span> com a contagem atual; por simetria (inferência, não confirmada), quem passa a ser elegível depois ganha Meta individual nova nesse momento. <b>(2)</b> Meta individual de quem deixa de ser elegível é <b>encerrada</b>, nunca excluída — permanece vinculada à Meta de origem e ao Membro. <span class="badge rule-badge">RN-MET-08</span> ampliada; <span class="badge rule-badge">RN-MET-10</span> nova.</td></tr><tr><td>0.4</td><td><b>Nova capacidade: distribuição automática da Meta de Time entre os Membros.</b> Opcional, escolhida na criação da Meta de Time — gera uma Meta individual por Membro elegível (filtrável por Cargo, ex.: excluir gerentes do rateio de meta de vendas), cada uma com <code>valor = arredondar_para_cima(valor_global / nº_membros_elegíveis)</code> — mesmo valor pra todos, soma pode superar o global, nunca fica abaixo. Editar o valor-alvo da Meta de Time <b>recalcula</b> as individuais geradas. Nelas, além do Tipo, também ficam travados <b>Data de Início</b> e <b>Valor-alvo</b> — este último porque é sempre derivado, nunca editável manualmente. <span class="badge rule-badge">RN-MET-06</span> a 09 novas.</td></tr><tr><td>0.3</td><td>Três confirmações do usuário: <b>(1) "Prazo" implica Início e Fim</b> — Início volta a ser campo explícito, não implícito (correção do que eu tinha assumido na v0.2); <b>(2)</b> uma Proposta Paga conta para todas as Metas Vigentes compatíveis simultaneamente — confirmado; <b>(3)</b> Tipo é travado após a criação — confirmado, inclusive porque define se o valor-alvo é numérico (Quantidade) ou monetário (Valor). Fecha os dois itens abertos da v0.2.</td></tr><tr><td>0.2</td><td><b>Correção de fundo: Tipo deixa de ser slot fixo por destino.</b> Antes, cada Time/Membro tinha no máximo uma Meta de Valor e uma de Quantidade — vigentes ao mesmo tempo. Agora Meta é uma entidade de verdade, com Título e Descrição próprios; um destino pode ter <b>várias Metas simultâneas</b>, inclusive do mesmo Tipo (ex.: meta do mês e meta do trimestre, ambas Vigentes). Campo "Início da contabilização" sai como campo explícito — passa a ser implícito, a data de criação da Meta. <span class="badge rule-badge">RN-MET-01</span>, 02, 03 e 04 revisadas.</td></tr><tr><td>0.1</td><td>Versão inicial. Substitui o Módulo 3 (parte de metas) da Especificação v1.2 — níveis mudam de Operação/Time/Operador para <b>Time/Membro</b> (Operação não existe mais como unidade organizacional); configuração passa da mão do tenant para a própria <b>Loja</b>.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidade, campos, estados, requisitos funcionais (RF-MET) e regras de negócio (RN-MET) próprios.</p>
+<blockquote><p><b>Sem destino de topo próprio.</b> Meta não tem tela de listagem centralizada — vive anexada à tela de <b>Time</b> e à tela de <b>Membro</b>, cada um vendo a própria meta e o próprio histórico. A visão comparativa entre vários Times/Membros de uma vez é responsabilidade do módulo <b>Rankings</b>, que consome os dados daqui.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Permitir que a Loja configure metas de Valor e de Quantidade para seus Times e Membros, com contabilização baseada em Propostas Pagas, preservando histórico por período.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de Loja</b> — configura metas para Times e Membros da própria Loja.</li>
+<li><b>Membro</b> — consulta a própria meta e o próprio desempenho.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-meta">3.1. Meta</h2>
+<p>Uma Meta pertence a <b>um</b> destino — Time <b>ou</b> Membro, nunca os dois ao mesmo tempo — e a <b>um</b> Tipo.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Destino</td><td>Sim</td><td>Time ou Membro (<span class="badge rule-badge">RN-MET-01</span>). Implícito pelo contexto — a tela de onde a Meta é criada.</td></tr><tr><td>Título</td><td>Sim</td><td>Identifica a Meta (ex.: "Meta de março", "Campanha de portabilidade").</td></tr><tr><td>Descrição</td><td>Não</td><td>Texto livre, contexto adicional.</td></tr><tr><td>Tipo</td><td>Sim, travado após a criação</td><td><b>Valor</b> (R$) ou <b>Quantidade</b> (nº de Propostas Pagas) — <span class="badge rule-badge">RN-MET-02</span>. Classifica a Meta e define a natureza do Valor-alvo (monetário ou numérico) — <span class="badge rule-badge">RN-MET-05</span>. Não limita quantas Metas de um Tipo um destino pode ter ao mesmo tempo.</td></tr><tr><td>Valor-alvo</td><td>Sim</td><td>O número a bater — em R$ para Tipo Valor, em contagem para Tipo Quantidade. <b>Travado quando a Meta é individual distribuída</b> (<span class="badge rule-badge">RN-MET-07</span>) — sempre derivado, nunca editável manualmente.</td></tr><tr><td><b>Prazo</b> (Início + Fim)</td><td>Sim</td><td>Duas datas/horas — início e fim do período em que Propostas contam para esta Meta (<span class="badge rule-badge">RN-MET-03</span>, <span class="badge rule-badge">RN-MET-04</span>). Não é contador aberto. <b>Início travado quando a Meta é individual distribuída</b> (<span class="badge rule-badge">RN-MET-07</span>), além do Tipo — mantém sincronia temporal com a Meta de Time de origem.</td></tr><tr><td>Distribuir entre Membros</td><td>Sim, só em Metas de <b>Time</b></td><td><code>Boolean</code> — <span class="badge rule-badge">RN-MET-06</span>. Decidido na criação, não pode ser ativado depois (<span class="badge rule-badge">RN-MET-06</span>).</td></tr><tr><td>Cargos elegíveis</td><td>Não, só em Metas de <b>Time</b></td><td><b>Independente de "Distribuir"</b> (<span class="badge rule-badge">RN-MET-11</span>) — filtra quais Cargos dos Membros do Time contam para o Valor de meta/Quantidade desta Meta de Time (pelo Cargo no momento do Pago, <span class="badge rule-badge">RN-MET-03</span>). Sem preenchimento, todo o Time conta (padrão retrocompatível). Quando "Distribuir" está ligado, o rateio usa este mesmo filtro — não há um segundo campo de Cargo para o rateio.</td></tr><tr><td>Meta de origem</td><td>Calculado</td><td>Só em Metas <b>individuais geradas por distribuição</b> — referência à Meta de Time que a gerou (<span class="badge rule-badge">RN-MET-06</span>). Ausente em Metas criadas normalmente.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-MET-01</span> — Meta é por Time ou por Membro, e os dois níveis são independentes.</b> Não há soma nem dependência entre o nível Time e o nível Membro — mesmo espírito de RN025 da v1.2 ("níveis independentes"), agora só com dois níveis em vez de três.</p>
+<p><b><span class="badge rule-badge">RN-MET-11</span> — "Cargos elegíveis" é campo próprio da Meta de Time, independente de "Distribuir entre Membros".</b> <i>(Revisão: antes só existia como parâmetro do rateio — <span class="badge rule-badge">RN-MET-06</span>.)</i> Qualquer Meta de Time pode ter um filtro de Cargos, usado para restringir <b>quem conta</b> (pelo Cargo que o Operador tinha no momento do Pago, <span class="badge rule-badge">RN-MET-03</span>) para o Valor de meta/Quantidade da própria Meta — útil mesmo sem nunca gerar Metas individuais (ex.: medir só a Produção dos Vendedores do Time, sem distribuir nada). Quando "Distribuir" é ligado numa Meta que já tem Cargos elegíveis definidos, o rateio usa o mesmo filtro; se "Distribuir" é ligado sem filtro definido, todo o Time participa do rateio.</p>
+<p><b><span class="badge rule-badge">RN-MET-02</span> — Um destino pode ter várias Metas simultâneas, inclusive do mesmo Tipo.</b> <i>(Revisão: a versão anterior tratava Valor e Quantidade como no máximo uma Meta vigente cada, por destino — dois "slots" fixos. Não é assim: Meta é uma entidade com identidade própria (Título, Descrição), e nada limita quantas existem ao mesmo tempo para o mesmo destino.)</i> Um Time (ou Membro) pode ter, por exemplo, uma Meta de Valor do mês e outra de Valor do trimestre, ambas Vigentes — Tipo classifica, não restringe quantidade.</p>
+<p><b><span class="badge rule-badge">RN-MET-03</span> — Contabilização começa em Pago, e vale a atribuição gravada no Pago.</b> Uma Proposta só conta para uma Meta no momento em que chega a um Status de tipo Pago. Para a Meta de Tipo <b>Valor</b>, conta o <b>Valor de meta</b> (valor base × multiplicador, <span class="badge rule-badge">RN-PRP-05</span>); para a de Tipo <b>Quantidade</b>, conta <b>1</b> por Proposta. <b>Conta para toda Meta Vigente do destino e Tipo compatíveis com a Proposta, simultaneamente</b> — se há duas Metas de Valor Vigentes para o mesmo Time, a mesma Proposta soma nas duas. O campo Início define <b>a partir de quando no tempo</b> a Meta passa a contar. <b>A atribuição é a gravada no Pago</b> (Propostas, <span class="badge rule-badge">RN-PRP-05</span>): o Operador, o <b>Time</b> e o <b>Cargo</b> dele naquele momento (os Atores não contam, <span class="badge rule-badge">RN-PRP-16</span>). Em Meta de Time com Cargos elegíveis (<span class="badge rule-badge">RN-MET-11</span>), só conta a Proposta cujo Operador tinha, <b>no momento do Pago</b>, um Cargo elegível. <b>Promoção, inativação ou troca de Time depois não retiram vendas já fechadas</b>, nem do Time nem do Membro: a Meta continua registrada no cadastro do usuário. <i>(Decisão do usuário, levantamento do CRM: reverte o filtro dinâmico da v0.7, para não penalizar o Time perto do fim do Prazo nem afetar o pagamento de comissões.)</i></p>
+<p><b><span class="badge rule-badge">RN-MET-05</span> — Tipo define a natureza do Valor-alvo, e por isso trava após a criação.</b> Tipo Valor exige valor-alvo monetário (R$); Tipo Quantidade exige valor-alvo numérico (contagem de Propostas Pagas). Mudar o Tipo depois de criada reinterpretaria retroativamente o que o valor-alvo (e o que já foi contabilizado) significam — por isso o campo é travado assim que a Meta é criada.</p>
+<blockquote><p><b>Nota de evolução.</b> Será avaliada a possibilidade de configurar a meta para contabilizar a partir de um Status ou Stage diferente de Pago — por exemplo, contar atividade (entrada em Negociação) separadamente de conversão. Não implementado nesta versão; <span class="badge rule-badge">RN-PRP-05</span> (Proposta) e <span class="badge rule-badge">RN-MET-03</span> permanecem como a única fonte de contagem.</p></blockquote>
+<p><b><span class="badge rule-badge">RN-MET-06</span> — Distribuição automática entre Membros é opcional, decidida na criação da Meta de Time, e gera Metas individuais vinculadas.</b> Ao criar uma Meta de <b>Time</b> com "Distribuir entre Membros" ligado, o rateio usa os <b>Cargos elegíveis</b> já definidos para a Meta (<span class="badge rule-badge">RN-MET-11</span>) — campo único, não pedido de novo aqui; sem Cargos elegíveis definidos, todo o Time participa. O sistema gera, na hora, uma Meta de Membro para cada Membro do Time elegível — mesmo Título da Meta de Time (não "Título — Nome", confirmado), mesmo Tipo, mesmo Início e Fim, e Valor-alvo calculado por <span class="badge rule-badge">RN-MET-07</span>. Cada uma guarda referência à Meta de Time de origem. <b>A opção não pode ser ativada depois, numa Meta já criada sem ela</b> — é decisão do momento da criação; os Cargos elegíveis, porém, podem ser editados depois (<span class="badge rule-badge">RN-MET-11</span>), recalculando tudo (<span class="badge rule-badge">RN-MET-08</span>).</p>
+<p><b><span class="badge rule-badge">RN-MET-07</span> — Valor individual é o valor global arredondado para cima, igual para todos, sem sobra distribuída.</b> <code>valor individual = arredondar_para_cima(valor-alvo da Meta de Time ÷ nº de Membros elegíveis)</code> — o mesmo valor para cada Membro elegível. Como consequência do arredondamento uniforme, <b>a soma dos valores individuais pode superar o valor-alvo da Meta de Time</b> — nunca fica abaixo. Diferente do padrão "resto vai pro último", aqui não há resto: todos recebem exatamente o mesmo número.</p>
+<p><b><span class="badge rule-badge">RN-MET-08</span> — Editar o valor-alvo da Meta de Time, ou mudar quem está elegível, recalcula as Metas individuais vinculadas.</b> Dispara o recálculo (fórmula de <span class="badge rule-badge">RN-MET-07</span>, com a contagem de elegíveis <b>no momento</b>) em duas situações — (a) e (c) —, e a (b) só encerra a Meta de quem saiu: (a) o gestor altera o valor-alvo da Meta de Time; (b) um Membro com Meta individual Vigente deixa de ser elegível (sai do Time, ou muda para um Cargo fora do filtro) — as Metas dos demais <b>não aumentam</b> (decisão do usuário: a saída de um Membro não penaliza quem fica; a soma das individuais pode ficar abaixo do global); (c) um Membro passa a ser elegível depois da distribuição já feita (entra no Time com um Cargo do filtro, ou muda para um) — ganha uma Meta individual nova nesse momento, e o recálculo reduz a parte dos demais — confirmado, mesma simetria do caso (b). Em nenhum caso o gestor precisa mexer manualmente em cada Meta individual.</p>
+<p><b><span class="badge rule-badge">RN-MET-10</span> — Meta individual de Membro que deixa de ser elegível é encerrada, nunca excluída.</b> Quando um Membro deixa de ser elegível (RN-MET-08b) — por sair do Time, mudar para um Cargo fora do filtro <b>ou ser inativado</b> —, a Meta individual dele muda para <b>Encerrada</b> imediatamente — mesmo sem ter chegado ao Fim — e permanece <b>vinculada à Meta de Time de origem e ao Membro</b>, consultável no histórico dele. Segunda forma de chegar a Encerrada, além da passagem do Fim (<span class="badge rule-badge">RN-MET-04</span>).</p>
+<p><b><span class="badge rule-badge">RN-MET-09</span> — Meta individual distribuída trava Tipo, Início e Valor-alvo; o resto continua editável.</b> Além do travamento de Tipo já existente (<span class="badge rule-badge">RN-MET-05</span>), uma Meta gerada por distribuição também trava <b>Início</b> (sincronia com a Meta de Time de origem) e <b>Valor-alvo</b> (sempre derivado, nunca editável manualmente — <span class="badge rule-badge">RN-MET-07</span>/08). Título, Descrição e Fim continuam editáveis normalmente.</p>
+<p><b><span class="badge rule-badge">RN-MET-04</span> — Meta tem Prazo definido (Início e Fim), e gera histórico.</b> Diferente de um contador contínuo, toda Meta conta só dentro da janela Início–Fim — ao encerrar (passado o Fim), o registro daquele período fica preservado (Título, Descrição, Tipo, valor-alvo, o que foi de fato atingido, Início, Fim), e uma nova Meta é criada quando fizer sentido (não é renovação automática — cada Meta é um registro independente). Consultar o desempenho de um Time/Membro é, portanto, consultar a lista de Metas daquele destino — vigentes e encerradas.</p>
+<p><b><span class="badge rule-badge">RN-MET-12</span> — Excluir um Time encerra as Metas dele, que ficam no histórico.</b> O Time excluído é soft-delete (Lojas, <span class="badge rule-badge">RN-LOJ-05</span>): suas Metas passam a <b>Encerradas</b> e continuam consultáveis, com a marca "(excluído)"; as vendas atribuídas ao Time no Pago continuam apontando para ele. <i>(Decisão do usuário, levantamento do CRM.)</i></p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-met-01-configura-o-de-meta"><span class="badge rf-badge">RF-MET-01</span> — Configuração de meta</h2>
+<p><b>Como</b> gestor de Loja, <b>eu quero</b> definir metas de Valor e/ou Quantidade para um Time ou Membro <b>para</b> acompanhar o desempenho contra um objetivo claro.</p>
+<p><b>Comportamento esperado:</b> a partir da tela do Time ou do Membro, o gestor cria uma nova Meta — Título, Descrição (opcional), Tipo, valor-alvo, Início e Fim. Numa Meta de Time, pode definir <b>Cargos elegíveis</b> (<span class="badge rule-badge">RN-MET-11</span>, independente de distribuir) e, opcionalmente, ligar "Distribuir entre Membros" (<span class="badge rule-badge">RN-MET-06</span>), que reaproveita o mesmo filtro — a criação já gera as Metas individuais vinculadas, se ligado. Nenhuma tela própria de listagem geral (módulo §1) — a lista vive anexada ao destino.</p>
+<h2 id="rf-met-02-acompanhamento"><span class="badge rf-badge">RF-MET-02</span> — Acompanhamento</h2>
+<p><b>Como</b> gestor de Loja ou Membro, <b>eu quero</b> ver o progresso da meta vigente e o histórico de períodos anteriores <b>para</b> entender a evolução do desempenho.</p>
+<p><b>Comportamento esperado:</b> na tela do Time/Membro, lista de Metas daquele destino — Vigentes com indicador de progresso (atingido vs. alvo), Encerradas como histórico (<span class="badge rule-badge">RN-MET-04</span>), com filtro por Tipo e por status.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-MET-01</span></b> — Meta é por Time ou por Membro; níveis independentes.</li>
+<li><b><span class="badge rule-badge">RN-MET-02</span></b> — Um destino pode ter várias Metas simultâneas, inclusive do mesmo Tipo — Tipo classifica, não restringe.</li>
+<li><b><span class="badge rule-badge">RN-MET-03</span></b> — Contabilização só a partir do Pago, pela atribuição gravada no Pago (Operador, Time, Cargo); promoção, inativação ou troca de Time não retiram vendas fechadas; conta para toda Meta Vigente compatível.</li>
+<li><b><span class="badge rule-badge">RN-MET-04</span></b> — Meta tem Prazo definido (Início e Fim); gera histórico ao encerrar.</li>
+<li><b><span class="badge rule-badge">RN-MET-05</span></b> — Tipo define a natureza do Valor-alvo (monetário/numérico) e trava após a criação — confirmado.</li>
+<li><b><span class="badge rule-badge">RN-MET-06</span></b> — Distribuição entre Membros é opcional, só na criação de Meta de Time, reaproveita o filtro de Cargos elegíveis.</li>
+<li><b><span class="badge rule-badge">RN-MET-07</span></b> — Valor individual: valor global arredondado pra cima, igual pra todos — soma pode superar o global, nunca fica abaixo.</li>
+<li><b><span class="badge rule-badge">RN-MET-08</span></b> — Editar o valor-alvo da Meta de Time, ou a entrada de um Membro elegível, recalcula as individuais; a saída de um Membro não aumenta as dos demais.</li>
+<li><b><span class="badge rule-badge">RN-MET-09</span></b> — Meta individual distribuída trava Tipo, Início e Valor-alvo; Título/Descrição/Fim seguem editáveis.</li>
+<li><b><span class="badge rule-badge">RN-MET-10</span></b> — Meta individual de Membro que deixa de ser elegível ou é inativado é encerrada (nunca excluída), permanece vinculada.</li>
+<li><b><span class="badge rule-badge">RN-MET-11</span></b> — Cargos elegíveis é campo independente de Distribuir; filtra quem conta para a Produção/Quantidade da própria Meta de Time.</li>
+<li><b><span class="badge rule-badge">RN-MET-12</span></b> — Excluir um Time encerra as Metas dele, que ficam no histórico.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Meta:</b></p>
+<ul>
+<li><b>Futura</b> — o Início ainda não chegou; não conta Propostas ainda e é editável (menos o Tipo).</li>
+<li><b>Vigente</b> — dentro do intervalo Início–Fim.</li>
+<li><b>Encerrada</b> — passou do Fim; ou o Membro deixou de ser elegível ou foi inativado (<span class="badge rule-badge">RN-MET-10</span>); ou o Time foi excluído (<span class="badge rule-badge">RN-MET-12</span>). Vira histórico, não editável, e <b>continua no cadastro</b>.</li>
+</ul>
+<p>Transições: futura → vigente (automática, pela data do Início); vigente → encerrada (pela data do Fim, ou por <span class="badge rule-badge">RN-MET-10</span> e <span class="badge rule-badge">RN-MET-12</span>); não há reabertura.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a visão comparativa entre Times/Membros (módulo Rankings), o cálculo do valor de cada Proposta Paga (módulo de Propostas, <span class="badge rule-badge">RN-PRP-05</span>), nem tela de listagem própria (módulo §1).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Propostas</b> (CRM) — o evento de chegar a Pago, o Valor de meta e a atribuição (Operador, Time, Cargo) gravados no Pago (<span class="badge rule-badge">RN-PRP-05</span>).</li>
+<li><b>Times, Membros</b> (CRM) — os destinos possíveis de uma Meta.</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Rankings</b> (CRM) — dados de progresso de Meta, para comparação entre destinos.</li>
+<li><b>Dashboard, Relatórios</b> (CRM) — indicadores de atingimento.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Metas v0.8 — módulo da aplicação CRM.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-crm-metas-matriz-de-permiss-es">Corban CRM · Metas — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM · Metas (módulo v0.3)</p>
+<p><b>Versão:</b> 0.3</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.3</td><td>Acompanha a correção de campos do módulo (Início/Fim, Tipo travado) — sem mudança na matriz em si.</td></tr><tr><td>0.2</td><td>Acompanha a reescrita do módulo (Meta vira entidade com Título/Descrição, lista em vez de duas sub-seções) — sem mudança na matriz em si.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre o recurso <code>goals</code>. Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>view</code></td><td><code>self</code>, <code>team</code>, <code>store</code></td></tr><tr><td><code>manage</code></td><td><code>team</code>, <code>store</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-notas-sobre-as-a-es">2. Notas sobre as ações</h2>
+<p><b><code>view</code> tem <code>self</code></b> — diferente da maioria dos recursos anexados deste porte, faz sentido aqui: todo Membro consulta a própria meta, mesmo sem nenhuma permissão de gestão. <code>self</code> = a Meta do próprio usuário (como Membro) e a do Time a que ele pertence, se houver.</p>
+<p><b><code>manage</code> não tem <code>self</code>.</b> Configurar a meta de alguém — mesmo a própria, como Membro — é ação de gestão (<code>team</code> no mínimo). Ninguém define a própria meta sozinho.</p>
+<p><b>Sem escopo <code>all</code>.</b> Segue o mesmo critério de Membros, Times e Tabelas Multiplicadoras: sem visão/gestão cross-Loja no CRM.</p>
+<p><b>Uma permissão só cobre os dois Tipos</b> (Valor e Quantidade) — não há <code>goals:manage_value</code> separado de <code>goals:manage_quantity</code>. Continua valendo mesmo com Meta agora sendo uma lista de itens, não dois slots fixos: <code>manage</code> cobre criar e editar qualquer Meta, de qualquer Tipo.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Metas v0.3.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do CRM</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · CRM</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

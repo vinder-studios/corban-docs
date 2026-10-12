@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Layout de Lead (Card e Sheet) · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Layout de Lead (Card e Sheet)</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Dashboard/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Dashboard</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" selected>Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../Offers/index.html" class="pager-btn">Ofertas <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Vendas — 6ª aba do módulo Funis de Vendas
+    </div>
+    <h1>Layout de Lead (Card e Sheet) <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Vendas — 6ª aba do módulo Funis de Vendas</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.8 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin · Funis de Vendas (módulo v0.15)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Wireframe Delta</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-layout-de-lead-card-e-sheet">Corban Admin · Layout de Lead (Card e Sheet)</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Vendas — 6ª aba do módulo Funis de Vendas</p>
+<p><b>Documento pai:</b> Corban Admin · Funis de Vendas (módulo v0.15)</p>
+<p><b>Versão:</b> 0.8</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Fecha 3 dos 4 itens abertos: botão "Ações" <b>executa</b> Fluxo (Sheet de execução, <span class="badge rule-badge">RN-LAY-10</span>) — revoga parte de <span class="badge rule-badge">RN-FNL-04</span> (Funis de Vendas v0.10); combobox de operador confirmado respeitando <span class="badge rule-badge">RN-LED-04</span>; bloco Histórico confirmado obrigatório. Refina o bloco "Dados do servidor" com campo condicional (Estado ou Prefeitura, conforme o Órgão). Item 4 (campos de "Informações do contrato", Slot 3 do Card) segue aberto — a resposta recebida era sobre outro bloco. Introduz Server-Driven UI para o Card da Lead (board) e o Sheet de Detalhe — configurados pelo tenant, por Funil, a partir de um catálogo fechado de blocos.</td></tr><tr><td>0.3</td><td>Fecha o item 4 (último item aberto): Slot 3 do Card ("Informações do contrato") não é um bloco único — são <b>três variantes</b>, uma por Segmento (Servidor Público, INSS, CLT), das quais o tenant escolhe uma por Funil. A variante de Servidor Público reaproveita o mesmo bloco "Dados do servidor" já definido para o Sheet (<span class="badge rule-badge">RN-LAY-11</span>). Módulo sem pendências.</td></tr><tr><td>0.4</td><td><i>(Registro reconstruído na revisão da v0.5: o histórico original não o registrou.)</i> Substitui "Fluxo" por "Ação" na <span class="badge rule-badge">RN-LAY-10</span> e no botão "Ações" (Funis de Vendas v0.11: cinco tipos fixos de Ação).</td></tr><tr><td>0.5</td><td><b>Padrões definidos</b>: o Slot 3 nasce como "Informações do beneficiário" (a mais genérica das três variantes) e o Sheet nasce com os oito blocos obrigatórios na ordem da tabela, sem opcionais (<span class="badge rule-badge">RN-LAY-03</span>). <b>A Origem da lead passa a aparecer</b>: badge no Slot 4, que vira "Origem e tags", e primeiro campo de "Dados de Marketing" (<span class="badge rule-badge">RN-LAY-07</span>). <b><span class="badge rule-badge">RN-LAY-10</span> reduzida a um ponteiro para Leads</b> (<span class="badge rule-badge">RN-LED-11</span>): a tabela de Ações por Stage que havia aqui divergia da de Leads e incluía Formalização, onde o operador não executa Ações (<span class="badge rule-badge">RN-LED-10</span>). Corrige "sete" para <b>oito</b> blocos obrigatórios (consolidado e <span class="badge rf-badge">RF-LAY-02</span>), o título da §3.6 ("fluxos" → botão "Ações"), o pai (Funis v0.11 → v0.15) e a menção a "duas dúvidas em aberto", quando o §9 está vazio. Reordena esta tabela.</td></tr><tr><td>0.6</td><td><b>A Origem de Venda ganha lugar no Sheet</b>: campo editável do bloco Dados de Marketing, que antes não existia em nenhum bloco (o Combobox "na ficha da Lead" de Leads não tinha onde viver). A <span class="badge rule-badge">RN-LAY-07</span> deixa de manter a Origem de Venda "separada deste bloco". Decisão do usuário, seguindo a recomendação do levantamento do Admin. <b>O wireframe externo precisa acompanhar.</b></td></tr><tr><td>0.8</td><td><b>Origem dos dados dos blocos de perfil e das Notas:</b> vêm do Cliente (Clientes v0.13, <span class="badge rule-badge">RN-CLI-14</span> e <span class="badge rule-badge">RN-CLI-15</span>).</td></tr><tr><td>0.7</td><td><b>Acompanha o Marketing (Leads v0.11, <span class="badge rule-badge">RN-LED-16</span>).</b> (1) O <b>Valor</b> do Card (Slot 2) e do Header do Sheet é o <b>valor potencial</b> da Lead, que nas Leads do Marketing é calculado pelo sistema e somente leitura. (2) O bloco <b>Ofertas</b> passa a mostrar também o <b>resumo das Ofertas elegíveis</b> da pré-análise, com os <b>requisitos não avaliados</b> (nova <span class="badge rule-badge">RN-LAY-13</span>). (3) O bloco <b>Dados de Marketing</b> ganha a <b>Lista ou Varredura de origem</b> (só leitura, só o nome), e a Origem de Venda já pode vir preenchida (copiada da Lista ou Varredura). Decisão do usuário</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-LAY) e regras de negócio (RN-LAY) próprios. Vive como <b>6ª aba</b> da tela de Configuração do Funil (módulo de Funis de Vendas) — um layout por Funil, não um layout global do tenant.</p>
+<blockquote><p><b>Por que módulo próprio, e não só "mais uma aba descrita inline" em Funis de Vendas.</b> O catálogo de blocos e a mecânica de slots fixos (Card) e lista ordenável (Sheet) têm densidade própria — mesmo critério já usado para separar Regras de Ofertas.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Permitir que o tenant configure, por Funil, a composição do Card da Lead (board kanban) e do Sheet de Detalhe — escolhendo entre um catálogo fechado de blocos pré-construídos, sem bind livre a campos arbitrários.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor comercial</b> — configura o layout, por Funil.</li>
+<li><b>Operador, Gestor de Loja</b> — consomem o resultado (Card e Sheet) no CRM, sem editar o layout.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-princ-pio-geral">3.1. Princípio geral</h2>
+<p><b><span class="badge rule-badge">RN-LAY-01</span> — Grade fixa, conteúdo configurável.</b> Tanto o Card quanto o Sheet têm uma estrutura estrutural fixa (posições, seções, header) que o tenant <b>não</b> altera. O que é configurável é <b>qual bloco do catálogo ocupa cada posição configurável</b> — nunca a grade em si, nunca bind livre a um campo qualquer.</p>
+<p><b><span class="badge rule-badge">RN-LAY-02</span> — Escopo é por Funil.</b> Cada Funil (Segmento) tem seu próprio layout de Card e de Sheet — dois Segmentos podem exibir composições completamente diferentes, já que os dados de contrato variam por público.</p>
+<h2 id="3-2-layout-do-card">3.2. Layout do Card</h2>
+<p>Grade fixa, com seis <b>slots configuráveis</b> (um bloco cada) e um Footer <b>totalmente fixo</b>, sem slot:</p>
+<div class="tablewrap"><table><thead><tr><th>Região</th><th>Slot</th><th>Bloco padrão (<span class="badge rule-badge">RN-LAY-03</span>)</th></tr></thead><tbody><tr><td>Header, coluna direita</td><td>1</td><td>Identificação — Nome, CPF, Data da última movimentação</td></tr><tr><td>Header, coluna esquerda</td><td>2</td><td>Valor e Status — o Valor é o <b>valor potencial</b> da Lead (<span class="badge rule-badge">RN-LAY-13</span>)</td></tr><tr><td>Body, Seção 1, coluna 1</td><td>3</td><td>Informações do contrato — <b>três variantes por Segmento</b> (<span class="badge rule-badge">RN-LAY-12</span>); padrão: <b>Informações do beneficiário</b></td></tr><tr><td>Body, Seção 1, coluna 2</td><td>4</td><td>Origem e tags — badge da <b>Origem da lead</b> (<span class="badge rule-badge">RN-FNL-06</span>) seguido das Tags (badges)</td></tr><tr><td>Body, Seção 2, linha 1</td><td>5</td><td>Seleção de operador (combobox) — <b>restrito aos elegíveis por <span class="badge rule-badge">RN-LED-04</span></b>, confirmado</td></tr><tr><td>Body, Seção 2, linha 2</td><td>6</td><td>Última mensagem recebida sem resposta</td></tr><tr><td>Footer</td><td>— (fixo, sem slot)</td><td>Botão "Ações" (executa Ação, <span class="badge rule-badge">RN-LAY-10</span>) + Botão "Chat"</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-LAY-03</span> — Estrutura descrita é o default de fábrica.</b> Todo Funil novo nasce com os seis slots preenchidos exatamente como na tabela acima — o tenant pode trocar o bloco de cada slot pelo catálogo (§3.4), mas nunca remover um slot nem adicionar um novo. No Slot 3, que tem três variantes (<span class="badge rule-badge">RN-LAY-12</span>), o padrão é <b>Informações do beneficiário</b>, a mais genérica (Órgão e Matrícula): o sistema não tem como saber o público do Segmento, cujo nome é livre, e o gestor troca a variante quando precisar. O <b>Sheet</b> nasce com os <b>oito blocos obrigatórios, na ordem da tabela da <span class="badge rule-badge">RN-LAY-05</span></b>, sem blocos opcionais. <i>(Decisão do usuário; a variante padrão é escolha desta revisão.)</i></p>
+<p><b><span class="badge rule-badge">RN-LAY-04</span> — Footer não é configurável.</b> Os dois botões (Ações, Chat) existem em todo Card, sempre, sem exceção — não fazem parte do catálogo nem de nenhum slot.</p>
+<h2 id="3-3-layout-do-sheet">3.3. Layout do Sheet</h2>
+<p>Header <b>fixo, sem slot</b> (Nome + Sobrenome + ID à esquerda, Valor potencial à direita) + Body como <b>lista ordenável de blocos</b> (accordions) — adicionar, remover e reordenar livremente, respeitando os obrigatórios.</p>
+<p><b><span class="badge rule-badge">RN-LAY-05</span> — Blocos obrigatórios não podem ser removidos.</b> Oito blocos são obrigatórios em todo Sheet, não removíveis pelo tenant:</p>
+<div class="tablewrap"><table><thead><tr><th>Bloco obrigatório</th><th>Conteúdo</th></tr></thead><tbody><tr><td>Dados pessoais</td><td>Nome completo, CPF, Telefone</td></tr><tr><td>Dados financeiros</td><td>Rendimentos, margem</td></tr><tr><td>Ofertas</td><td>Ofertas em consideração na negociação, com indicação de qual foi selecionada (<span class="badge rule-badge">RN-PRP-07</span>, módulo de Propostas). Nas Leads do Marketing, mostra também o <b>resumo das Ofertas elegíveis</b> da pré-análise (<span class="badge rule-badge">RN-LAY-13</span>)</td></tr><tr><td>Documentos do Cliente</td><td>Documentos associados ao Cliente na base — aparecem em toda negociação dele (<span class="badge rule-badge">RN-LAY-06</span>)</td></tr><tr><td>Documentos da Proposta</td><td>Documentos específicos desta negociação — não aparecem em outras (<span class="badge rule-badge">RN-LAY-06</span>)</td></tr><tr><td>Dados de Marketing</td><td><b>Origem da lead</b> (só leitura), <b>Lista ou Varredura de origem</b> (só leitura, só o nome; nas Leads de Prospecção e Carteira Ativa), <b>Origem de Venda</b> (editável, Combobox criável; nas Leads do Marketing já vem preenchida, se a Lista ou Varredura tinha), fonte, campanha, conteúdo — da Lead que abriu o Sheet, não do Cliente (<span class="badge rule-badge">RN-LAY-07</span>)</td></tr><tr><td>Dados adicionais</td><td>Id do contato, Id do chat</td></tr><tr><td>Histórico</td><td>Ação executada, data, quem executou — obrigatório, confirmado</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-LAY-06</span> — Documentos dividem-se por dono: Cliente ou Proposta.</b> Um documento anexado ao <b>Cliente</b> aparece em todas as negociações dele, presentes e futuras. Um documento anexado à <b>Proposta</b> é exclusivo daquela negociação. Dois blocos separados, nunca um só — mistura os dois seria perder essa distinção.</p>
+<p><b><span class="badge rule-badge">RN-LAY-07</span> — "Dados de Marketing" é da Lead, não do Cliente.</b> Diferente da maioria dos blocos (que mostram o histórico agregado do Cliente através de todas as suas Leads), este mostra fonte/campanha/conteúdo <b>especificamente da Lead que abriu este Sheet</b> — uma campanha não é propriedade permanente da pessoa. <i>(Não confundir com três coisas de nome parecido — <span class="badge rule-badge">RN-FNL-06</span>: a Tag de categoria Origem, mantida separada deste bloco por ora; a <b>Origem da lead</b>, que <b>entra</b> neste bloco como primeiro campo, só de leitura, por ser dado da própria Lead definido pelo sistema (<span class="badge rule-badge">RN-LED-12</span>); e a <b>Origem de Venda</b>, que também <b>entra</b> neste bloco, como o <b>único campo editável</b> dele (Combobox criável, módulo de Origem de Venda); "Dados de Marketing" pode vir a substituir as Tags de Origem no futuro, quando a captura automática desses dados estiver confiável — nota de evolução, não implementado agora.)</i></p>
+<p><b><span class="badge rule-badge">RN-LAY-13</span> — As Leads do Marketing mostram o valor potencial e o resumo das Ofertas, em modo de referência.</b> Os dados vêm da pré-análise do Marketing e são gravados na injeção, somente leitura (Leads, <span class="badge rule-badge">RN-LED-16</span>):</p>
+<ul>
+<li><b>Valor potencial.</b> É o <b>Valor</b> do Slot 2 do Card e do Header do Sheet. Na Lead manual é o valor digitado pelo operador; na Lead do Marketing é o maior valor pré-aprovado entre as Ofertas elegíveis, rotulado como <b>estimativa</b>, e não como valor de Proposta.</li>
+<li><b>Resumo das Ofertas elegíveis.</b> Fica no bloco <b>Ofertas</b> do Sheet, numa área <b>"Pré-análise do Marketing"</b>, separada das Ofertas da Simulação. Lista as Ofertas elegíveis e, destacados, os <b>requisitos não avaliados</b> (campos que a base não trouxe), com a orientação de confirmá-los na primeira Simulação. Traz o aviso de que <b>não garante aprovação nem condição</b> (Marketing, <span class="badge rule-badge">RN-MKT-08</span>). Não é Simulação e permanece visível depois que o operador faz a primeira.</li>
+<li><b>Lista ou Varredura de origem.</b> Mostra só o <b>nome</b>, sem link: a Loja não acessa o Marketing, que é da gestão do tenant.</li>
+<li>Esses itens aparecem só nas Leads de Origem Prospecção ou Carteira Ativa; nas demais, a área "Pré-análise do Marketing" não é exibida.</li>
+</ul>
+<p><i>(Decisão do usuário, levantamento do Marketing.)</i></p>
+<p><b>Blocos opcionais</b> (removíveis, fora dos oito acima): Dados do servidor, Dados Trabalhistas (admissão, tempo empregado, matrícula, elegibilidade), Dados da Empresa (nome, CNPJ, idade, nº funcionários, CNAE + descrição), Notas. Os dados de Dados financeiros, Dados do servidor, Dados Trabalhistas e Dados da Empresa vêm do <b>perfil do Cliente</b> (Clientes, <span class="badge rule-badge">RN-CLI-14</span>).</p>
+<p><b><span class="badge rule-badge">RN-LAY-11</span> — Dados do servidor tem campo condicional.</b> O bloco exibe <b>Órgão</b> sempre, e um segundo campo que depende do tipo de Órgão: <b>Estado</b> para Órgãos federais ou estaduais; <b>Prefeitura</b> para Órgãos municipais. Nunca os dois ao mesmo tempo — é um ou outro, conforme o tipo.</p>
+<p><b><span class="badge rule-badge">RN-LAY-08</span> — Notas é uma lista de links, cada um abrindo um Dialog.</b> O accordion Notas lista as anotações do Cliente (Clientes, <span class="badge rule-badge">RN-CLI-15</span>), com a opção de registrar uma nova; clicar num link abre Dialog com o texto completo e a data da anotação — não expande inline.</p>
+<p><b><span class="badge rule-badge">RN-LAY-09</span> — Todo trigger de accordion segue o mesmo padrão visual.</b> Ícone + rótulo à esquerda, seta indicadora à direita — consistente em todos os blocos, obrigatórios ou não.</p>
+<h2 id="3-4-cat-logo-de-blocos">3.4. Catálogo de blocos</h2>
+<p>Fechado — o tenant escolhe entre blocos pré-construídos, nunca define um novo campo nem faz bind livre. Cada bloco já sabe de onde tirar seu próprio dado (Lead, Cliente ou Proposta, conforme o caso).</p>
+<h2 id="3-5-slot-3-do-card-tr-s-variantes-de-informa-es-do-contrato">3.5. Slot 3 do Card — três variantes de "Informações do contrato"</h2>
+<p><b><span class="badge rule-badge">RN-LAY-12</span> — O bloco do Slot 3 varia por Segmento; o tenant escolhe uma das três variantes por Funil.</b> Diferente dos demais slots (um bloco fixo cada), o Slot 3 oferece três opções, cada uma pensada para um dos públicos que o Corban atende:</p>
+<div class="tablewrap"><table><thead><tr><th>Variante</th><th>Campos</th><th>Segmento típico</th></tr></thead><tbody><tr><td><b>Informações do servidor</b></td><td>Órgão + Estado ou Prefeitura (condicional, conforme o tipo de Órgão)</td><td>Servidor Público</td></tr><tr><td><b>Informações do beneficiário</b></td><td>Órgão, Matrícula</td><td>INSS</td></tr><tr><td><b>Informações do Trabalhador</b></td><td>Empresa, Tempo de contrato</td><td>CLT</td></tr></tbody></table></div>
+<p><b>"Informações do servidor" é o mesmo bloco de "Dados do servidor" (Sheet, <span class="badge rule-badge">RN-LAY-11</span>), reaproveitado aqui</b> — mesma definição, dois lugares de uso (Card e Sheet), sem duplicar a regra do campo condicional.</p>
+<h2 id="3-6-bot-o-a-es">3.6. Botão "Ações"</h2>
+<p><b><span class="badge rule-badge">RN-LAY-10</span> — O botão "Ações", no Footer do Card, abre o Sheet de execução de Ações, definido em Leads.</b> O Sheet de execução é <b>tela própria do módulo de Leads</b> (<span class="badge rule-badge">RN-LED-11</span>), que também define, num só lugar, quais Ações aparecem para cada Stage da Lead. Este módulo só garante que o botão existe em todo Card (<span class="badge rule-badge">RN-LAY-04</span>). As instâncias das Ações são configuradas em Funis de Vendas (<span class="badge rule-badge">RN-FNL-19</span>). <i>(Reduzida na v0.5: a versão anterior repetia aqui a tabela de Ações por Stage, que divergia da de Leads — incluía Formalização, onde o operador já não executa Ações, <span class="badge rule-badge">RN-LED-10</span>.)</i></p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-lay-01-configura-o-do-card-6-aba-do-funil"><span class="badge rf-badge">RF-LAY-01</span> — Configuração do Card (6ª aba do Funil)</h2>
+<p><b>Como</b> gestor comercial, <b>eu quero</b> escolher qual bloco ocupa cada slot do Card <b>para</b> que o board mostre a informação mais relevante para o meu Segmento.</p>
+<p><b>Comportamento esperado:</b> seis seletores, um por slot (<span class="badge rule-badge">RN-LAY-03</span>), cada um oferecendo os blocos do catálogo compatíveis com aquela posição. Footer não aparece como editável (<span class="badge rule-badge">RN-LAY-04</span>).</p>
+<h2 id="rf-lay-02-configura-o-do-sheet"><span class="badge rf-badge">RF-LAY-02</span> — Configuração do Sheet</h2>
+<p><b>Como</b> gestor comercial, <b>eu quero</b> montar a composição do Sheet de Detalhe, adicionando/removendo/reordenando blocos <b>para</b> priorizar a informação que meu time mais usa.</p>
+<p><b>Comportamento esperado:</b> lista ordenável de blocos, com os oito obrigatórios (<span class="badge rule-badge">RN-LAY-05</span>) sempre presentes e não removíveis, e os demais do catálogo disponíveis para adicionar.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-LAY-01</span></b> — Grade fixa; só o conteúdo dos slots é configurável.</li>
+<li><b><span class="badge rule-badge">RN-LAY-02</span></b> — Escopo por Funil, não global.</li>
+<li><b><span class="badge rule-badge">RN-LAY-03</span></b> — Estrutura descrita é o default de fábrica do Card; Slot 3 nasce como "Informações do beneficiário", e o Sheet nasce com os oito obrigatórios.</li>
+<li><b><span class="badge rule-badge">RN-LAY-04</span></b> — Footer do Card não é configurável.</li>
+<li><b><span class="badge rule-badge">RN-LAY-05</span></b> — Oito blocos obrigatórios no Sheet, não removíveis.</li>
+<li><b><span class="badge rule-badge">RN-LAY-06</span></b> — Documentos dividem-se por dono: Cliente ou Proposta.</li>
+<li><b><span class="badge rule-badge">RN-LAY-07</span></b> — Dados de Marketing é da Lead, não do Cliente; inclui a Origem da lead e a Lista ou Varredura de origem (só leitura) e a Origem de Venda (único campo editável do bloco).</li>
+<li><b><span class="badge rule-badge">RN-LAY-08</span></b> — Notas é lista de links, cada um abrindo Dialog.</li>
+<li><b><span class="badge rule-badge">RN-LAY-09</span></b> — Trigger de accordion segue padrão visual único.</li>
+<li><b><span class="badge rule-badge">RN-LAY-10</span></b> — Botão "Ações" abre o Sheet de execução, definido em Leads (<span class="badge rule-badge">RN-LED-11</span>).</li>
+<li><b><span class="badge rule-badge">RN-LAY-11</span></b> — Dados do servidor tem campo condicional (Estado ou Prefeitura, conforme o Órgão).</li>
+<li><b><span class="badge rule-badge">RN-LAY-12</span></b> — Slot 3 do Card tem três variantes por Segmento; tenant escolhe uma por Funil.</li>
+<li><b><span class="badge rule-badge">RN-LAY-13</span></b> — As Leads do Marketing mostram o valor potencial (Slot 2 e Header) e o resumo das Ofertas (bloco Ofertas), em modo de referência, somente leitura.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Sem estados de publicação — a configuração de layout existe desde a criação do Funil (com o default, <span class="badge rule-badge">RN-LAY-03</span>) e é sempre editável.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: o conteúdo interno de cada bloco em detalhe fino (fica para a Descrição de Telas, quando este módulo chegar à Fase 2), bind livre a campos arbitrários (deliberadamente fora de escopo — catálogo fechado), nem a execução do que os blocos exibem (cada um consome dado já modelado em outro módulo — Leads, Clientes, Propostas, Chat).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Funis de Vendas</b> — é a 6ª aba daquele módulo; um layout por Funil.</li>
+<li><b>Leads, Clientes, Propostas, Chat</b> — cada bloco do catálogo consome dado de um desses módulos.</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Leads (CRM)</b> — a composição do Card, renderizada no board.</li>
+<li><b>Clientes / Propostas (CRM)</b> — a composição do Sheet, renderizada a partir do card da Lead.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Layout de Lead (Card e Sheet) v0.8 — módulo da aplicação Admin, 6ª aba de Funis de Vendas.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-layout-de-lead-mudan-as-para-o-wireframe-v0-4-v0-6">Corban Admin · Layout de Lead — Mudanças para o wireframe (v0.4 → v0.6)</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Documento fonte:</b> Corban Admin · Layout de Lead (módulo v0.6). <b>Em caso de divergência, vale o módulo.</b></p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>O Layout de Lead não tem Fase 2 (Descrição, Mapa, Microcopy...): o wireframe é externo e parte direto do módulo. Este documento lista <b>só o que mudou</b> entre a v0.4 e a v0.6, para quem mantém o wireframe saber o que redesenhar. Cada linha aponta a regra do módulo onde está a definição completa. Se o wireframe atual foi feito sobre uma versão anterior à v0.4, confira também as linhas marcadas como "esclarecimento".</p>
+<hr class="divider">
+<h2 id="1-o-que-muda-no-card">1. O que muda no Card</h2>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Onde</th><th>Antes (v0.4)</th><th>Agora (v0.6)</th><th>Regra</th></tr></thead><tbody><tr><td>1</td><td><b>Slot 3</b>, bloco padrão de um Funil novo</td><td>Dizia "três variantes por Segmento", sem dizer qual nasce selecionada</td><td>Nasce como <b>"Informações do beneficiário"</b> (Órgão, Matrícula). O gestor troca a variante depois. As três variantes continuam as mesmas (servidor, beneficiário, trabalhador)</td><td><span class="badge rule-badge">RN-LAY-03</span>, <span class="badge rule-badge">RN-LAY-12</span></td></tr><tr><td>2</td><td><b>Slot 4</b>, bloco padrão</td><td>"Tags (badges)"</td><td><b>"Origem e tags"</b>: primeiro o <b>badge da Origem da lead</b>, depois as Tags (badges). Valores da Origem da lead: Campanha, Orgânica, Recontato, Prospecção, Carteira Ativa, Manual</td><td><span class="badge rule-badge">RN-LAY-03</span>, <span class="badge rule-badge">RN-LED-12</span>, <span class="badge rule-badge">RN-FNL-06</span></td></tr><tr><td>3</td><td><b>Footer</b>, botão "Ações"</td><td>O módulo trazia aqui uma tabela de Ações por Stage (incluía Formalização)</td><td>O botão continua em todo Card, sempre. <b>Nada se desenha no Layout</b> sobre as Ações por Stage: o Sheet de execução é do módulo de <b>Leads</b> (<span class="badge rule-badge">RN-LED-11</span>), que define quais Ações aparecem para cada Stage</td><td><span class="badge rule-badge">RN-LAY-10</span>, <span class="badge rule-badge">RN-LAY-04</span></td></tr></tbody></table></div>
+<p>Slots 1, 2, 5 e 6 e o botão "Chat" <b>não mudaram</b>.</p>
+<h2 id="2-o-que-muda-no-sheet">2. O que muda no Sheet</h2>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Onde</th><th>Antes (v0.4)</th><th>Agora (v0.6)</th><th>Regra</th></tr></thead><tbody><tr><td>4</td><td><b>Composição padrão</b> de um Funil novo</td><td>Não era definida</td><td>Nasce com os <b>oito blocos obrigatórios, nesta ordem</b>: Dados pessoais, Dados financeiros, Ofertas, Documentos do Cliente, Documentos da Proposta, Dados de Marketing, Dados adicionais, Histórico. <b>Sem blocos opcionais</b>; o gestor adiciona depois</td><td><span class="badge rule-badge">RN-LAY-03</span>, <span class="badge rule-badge">RN-LAY-05</span></td></tr><tr><td>5</td><td><b>Quantidade de blocos obrigatórios</b> (esclarecimento)</td><td>Alguns textos diziam "sete"</td><td>São <b>oito</b>, e nenhum é removível</td><td><span class="badge rule-badge">RN-LAY-05</span></td></tr><tr><td>6</td><td>Bloco <b>Dados de Marketing</b></td><td>Fonte, campanha, conteúdo</td><td><b>Origem da lead</b> (só leitura) como primeiro campo; <b>Origem de Venda</b> (<b>editável</b>, único campo editável do bloco); depois fonte, campanha e conteúdo. O bloco continua sendo da <b>Lead que abriu o Sheet</b>, e não do Cliente</td><td><span class="badge rule-badge">RN-LAY-05</span>, <span class="badge rule-badge">RN-LAY-07</span></td></tr></tbody></table></div>
+<h3 id="como-desenhar-o-campo-origem-de-venda-item-6">Como desenhar o campo Origem de Venda (item 6)</h3>
+<p>O comportamento completo está em <code>corban-admin-origem-venda-comportamento</code> (e no módulo de Origem de Venda). O que o wireframe precisa mostrar:</p>
+<ul>
+<li><b>Combobox</b>, seleção única, <b>opcional</b>: placeholder "Selecione a origem"; pode ficar em branco, e quem selecionou pode limpar.</li>
+<li><b>Criável</b>: quando a busca não acha nada, aparece "Criar nova: [termo]".</li>
+<li><b>Excluir</b> uma Origem é uma ação em cada item da lista, com confirmação por <b>digitação do nome</b>; só aparece para quem tem <code>sale_origins:delete</code> com escopo <code>all</code>.</li>
+<li><b>Criar</b> exige <code>sale_origins:create</code> (<code>all</code> ou <code>store</code>); <b>consultar</b> não exige permissão.</li>
+<li>Uma Lead cuja Origem foi excluída mostra o texto com a marca <b>"(origem excluída)"</b>.</li>
+</ul>
+<h2 id="3-o-que-n-o-mudou">3. O que NÃO mudou</h2>
+<ul>
+<li>A grade do Card (seis slots, header, body em duas seções, footer) e a do Sheet (header fixo com Nome, Sobrenome, ID e Valor; body em lista ordenável de blocos).</li>
+<li>Os blocos opcionais: Dados do servidor, Dados Trabalhistas, Dados da Empresa e Notas (e a regra do campo condicional Estado/Prefeitura, <span class="badge rule-badge">RN-LAY-11</span>).</li>
+<li>A divisão dos documentos por dono, em dois blocos (Cliente e Proposta, <span class="badge rule-badge">RN-LAY-06</span>).</li>
+<li>O padrão visual dos accordions (<span class="badge rule-badge">RN-LAY-09</span>) e as Notas como lista de links que abrem Dialog (<span class="badge rule-badge">RN-LAY-08</span>).</li>
+<li>O escopo por Funil (<span class="badge rule-badge">RN-LAY-02</span>): cada Segmento tem o seu layout.</li>
+</ul>
+<h2 id="4-onde-conferir-fora-deste-m-dulo">4. Onde conferir fora deste módulo</h2>
+<ul>
+<li><b>Sheet de execução de Ações:</b> módulo de Leads (CRM), <span class="badge rule-badge">RN-LED-11</span>.</li>
+<li><b>Origem de Venda e Origem da lead:</b> módulos de Origem de Venda (Admin) e de Leads (CRM, <span class="badge rule-badge">RN-LED-12</span>).</li>
+<li><b>Quais Segmentos e Funis existem:</b> módulo de Funis de Vendas; o Layout é a 6ª aba do Funil.</li>
+</ul>
+<hr class="divider">
+<p><i>Fim do documento. Mudanças para o wireframe do Layout de Lead v0.1 — companheiro do módulo v0.6.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

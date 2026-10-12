@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dashboard · Marketing — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Marketing</a>
+      <span class="sep">/</span>
+      <span class="current">Dashboard</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Marketing
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../ActiveClientBase/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Carteira Ativa</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../ActiveClientBase/index.html" >Carteira Ativa</option><option value="../Dashboard/index.html" selected>Dashboard</option><option value="../Prospection/index.html" >Prospecção</option></select>
+    <a href="../Prospection/index.html" class="pager-btn">Prospecção <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Marketing · Geral
+    </div>
+    <h1>Dashboard <span class="app-badge marketing">Marketing</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Marketing · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.3 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Marketing — Documento de Produto</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-marketing-dashboard">Corban Marketing · Dashboard</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Marketing</p>
+<p><b>Documento pai:</b> Corban Marketing — Documento de Produto</p>
+<p><b>Versão:</b> 0.3</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.3</td><td><b>As permissões do Dashboard passam a ter nome</b> (Matriz de Permissões do Dashboard v0.1). Cada bloco depende do <code>view</code> da fonte (<code>prospecting_lists:view</code>, <code>sweeps:view</code>), e o bloco financeiro depende de <code>marketing_finance:view</code>. <span class="badge rule-badge">RN-DMB-03</span> e 04 e o <span class="badge rf-badge">RF-DMB-01</span> acompanham</td></tr><tr><td>0.2</td><td><b>Levantamento do Marketing, decisões do usuário.</b> (1) <b>A amarração com o CRM passa a ser a Origem da lead mais a referência imutável à Lista ou Varredura</b>, e não mais a Tag de categoria "Origem" (<span class="badge rule-badge">RN-DMB-01</span>). (2) <b>"Campanha de Varredura" vira "Varredura".</b> (3) <b>Valor potencial</b> passa a vir do campo que viaja com a Lead (<span class="badge rule-badge">RN-MKT-08</span>), e o <b>custo</b> vem do Custo da base da Lista, campos que antes não existiam. (4) <b>Novo bloco financeiro</b>, sob permissão própria: <b>Receita de leads</b> (o que as Lojas pagam pelas Leads injetadas), Custo da base e Resultado da base (<span class="badge rule-badge">RN-DMB-04</span> e 05). (5) O que antes se chamava "Receita Gerada" passa a <b>Produção gerada</b>, para não colidir com a Receita de leads. (6) O Dashboard <b>agrega</b>; o resultado detalhado de cada Varredura vive em Carteira Ativa (<span class="badge rf-badge">RF-CRA-02</span>). (7) Novo filtro por Origem de Venda; leitura em português do Brasil.</td></tr><tr><td>0.1</td><td>Versão inicial. Indicadores dos motores de Prospecção e Carteira Ativa; preparada para Inbound e Ads.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: blocos visuais, requisitos funcionais (RF-DMB) e regras de negócio (RN-DMB) próprios.</p>
+<blockquote><p><b>O centro de comando da Geração de Demanda.</b> Este módulo não gere entidades próprias: é um agregador de leitura. Cruza o volume que o Marketing injeta com o desfecho comercial que acontece no CRM (Propostas Pagas) e com o que as Lojas pagam pelas Leads, e permite medir a eficácia das bases e das varreduras.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Dar ao Gestor de Marketing uma visão única do volume e da qualidade das Leads geradas pela Prospecção e pela Carteira Ativa, da conversão delas até o pagamento e, para quem tem permissão, do retorno financeiro.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de Marketing (tenant)</b> — consome os blocos para avaliar suas Listas e Varreduras.</li>
+<li><b>Owner / gestão financeira do tenant</b> — vê também o bloco financeiro.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-blocos-de-indicadores">3. Blocos de indicadores</h1>
+<h2 id="3-1-vis-o-geral-de-aquisi-o">3.1. Visão geral de aquisição</h2>
+<ul>
+<li><b>Leads geradas:</b> soma das Leads injetadas pela Prospecção e pela Carteira Ativa no período.</li>
+<li><b>Valor potencial injetado:</b> soma do <b>valor potencial</b> das Leads injetadas (<span class="badge rule-badge">RN-MKT-08</span>).</li>
+</ul>
+<h2 id="3-2-prospec-o">3.2. Prospecção</h2>
+<ul>
+<li><b>Funil de higienização:</b> linhas importadas ➔ inválidas e bloqueadas ➔ descartadas na pré-análise ➔ qualificadas ➔ injetadas.</li>
+<li><b>Taxa de aproveitamento:</b> % das linhas importadas que virou Lead.</li>
+<li><b>Ranking de Listas:</b> Listas que mais geraram Propostas Pagas no CRM (com Leads, Pagas e, para quem tem permissão financeira, custo por Lead e por Proposta Paga).</li>
+</ul>
+<h2 id="3-3-carteira-ativa">3.3. Carteira Ativa</h2>
+<ul>
+<li><b>Base varrida × oportunidades:</b> Clientes analisados ➔ elegíveis ➔ recusados (não perturbe, carência, Lead ativa, Proposta em andamento) ➔ Leads injetadas.</li>
+<li><b>Ranking de Varreduras:</b> as Varreduras que mais geram valor potencial e Propostas Pagas.</li>
+</ul>
+<h2 id="3-4-convers-o-final-conex-o-com-o-crm">3.4. Conversão final (conexão com o CRM)</h2>
+<ul>
+<li><b>Status das Leads geradas:</b> distribuição atual (Novo, Negociação, Formalização, Pago, Cancelado) das Leads de Prospecção e Carteira Ativa.</li>
+<li><b>Produção gerada:</b> valor de produção (R$) das Propostas Pagas das Leads de Prospecção e Carteira Ativa.</li>
+</ul>
+<h2 id="3-5-financeiro-permiss-o-pr-pria">3.5. Financeiro <i>(permissão própria)</i></h2>
+<ul>
+<li><b>Receita de leads:</b> quanto as Lojas pagaram (créditos debitados) pelas Leads injetadas no período.</li>
+<li><b>Custo da base:</b> soma do Custo da base das Listas do período (Prospecção, §3.1).</li>
+<li><b>Resultado da base:</b> Receita de leads − Custo da base, por Lista.</li>
+</ul>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-dmb-01-exibir-o-dashboard"><span class="badge rf-badge">RF-DMB-01</span> — Exibir o Dashboard</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> ver os indicadores ao entrar na aplicação <b>para</b> ter o pulso da geração de demanda.</p>
+<p><b>Comportamento esperado:</b> A tela inicial do Marketing carrega os blocos do §3 que as permissões do usuário habilitam. Sem permissão de visualização em nenhuma fonte (Listas ou Varreduras), mostra o estado "sem acesso". Sem nenhuma Lista ou Varredura ainda, o estado vazio leva à primeira importação ou Varredura.</p>
+<h2 id="rf-dmb-02-filtros-globais"><span class="badge rf-badge">RF-DMB-02</span> — Filtros globais</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> filtrar o Dashboard por período, Segmento e Origem de Venda <b>para</b> isolar uma análise (ex.: "como foi a geração para INSS neste mês?").</p>
+<p><b>Comportamento esperado:</b> Barra superior com <b>Período</b> (padrão: mês atual), <b>Segmento</b> (Segmentos ativos do Admin) e <b>Origem de Venda</b> (opcional). Todos os blocos recalculam ao mudar um filtro.</p>
+<h2 id="rf-dmb-03-detalhar-a-lista-ou-a-varredura"><span class="badge rf-badge">RF-DMB-03</span> — Detalhar a Lista ou a Varredura</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> abrir uma Lista ou Varredura a partir do ranking <b>para</b> ver o resultado e os motivos de descarte.</p>
+<p><b>Comportamento esperado:</b> Os itens dos rankings levam ao detalhe da Lista (Prospecção, <span class="badge rf-badge">RF-PRS-03</span>) ou ao Resultado da Varredura (Carteira Ativa, <span class="badge rf-badge">RF-CRA-02</span>).</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-DMB-01</span> — Amarração pela Origem da lead e pela referência.</b> A ligação entre as Leads do Marketing e os resultados do CRM (Propostas Pagas, produção) é a <b>Origem da lead (Prospecção ou Carteira Ativa)</b> mais a <b>referência à Lista ou Varredura</b>, gravadas no momento da injeção (<span class="badge rule-badge">RN-MKT-01</span>). Ambas são definidas pelo sistema e <b>não mudam</b>.</li>
+<li><b><span class="badge rule-badge">RN-DMB-02</span> — O período é o da injeção.</b> O filtro considera a data em que a Lead foi injetada, e não a do pagamento. Uma Lead gerada em outubro e paga em novembro conta como conversão de outubro.</li>
+<li><b><span class="badge rule-badge">RN-DMB-03</span> — Acesso por permissão.</b> Cada bloco aparece conforme a permissão de visualização da fonte (<code>prospecting_lists:view</code> para Listas, <code>sweeps:view</code> para Varreduras), como detalha a Matriz de Permissões. O Dashboard não filtra por Loja, porque o Marketing atua acima das Lojas, e não exige permissão no CRM para ler os resultados agregados de Leads, Propostas e Créditos.</li>
+<li><b><span class="badge rule-badge">RN-DMB-04</span> — O bloco financeiro é permissão própria.</b> Receita de leads, Custo da base, Resultado e os custos do ranking só aparecem para quem tem <code>marketing_finance:view</code>, além da visualização da fonte.</li>
+<li><b><span class="badge rule-badge">RN-DMB-05</span> — Como se calculam os valores.</b> <b>Receita de leads</b> é a soma do preço debitado nas Leads de Marketing (Créditos, Extrato); Lead que não cobrou (Leads, <span class="badge rule-badge">RN-LED-02</span>, rodízio sem cobrança) conta zero. <b>Custo por Lead</b> = Custo da base ÷ Leads injetadas da Lista, e <b>custo por Proposta Paga</b> = Custo da base ÷ Propostas Pagas da Lista. Lista sem Custo da base fica fora do cálculo de custo e do Resultado, e o Dashboard avisa quantas ficaram de fora. Varredura não tem custo de base.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Sem ciclo de vida de entidade. Os blocos leem, em tempo real, Listas e Varreduras (Marketing), Leads e Propostas (CRM) e Créditos (CRM).</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: editar Listas ou Varreduras (o módulo apenas leva até elas); o controle de saldo das Lojas (Créditos); e o custo de anúncios (Google Ads, Meta), que só entra com os módulos de Inbound e Ads. Não inclui exportação nem comparação com períodos anteriores nesta versão.</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Prospecção e Carteira Ativa (Marketing)</b> — volume, descartes, recusas, valor potencial e custo.</li>
+<li><b>Leads e Propostas (CRM)</b> — status, Propostas Pagas e produção das Leads geradas.</li>
+<li><b>Créditos (CRM)</b> — o que as Lojas pagaram pelas Leads.</li>
+<li><b>Segmentos e Origem de Venda (Admin)</b> — filtros.</li>
+</ul>
+<p><b>Expõe para:</b> nada. É um módulo de leitura terminal.</p>
+<hr class="divider">
+<p><i>Fim do documento. Dashboard v0.3 — módulo da aplicação Marketing.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-marketing-dashboard-matriz-de-permiss-es">Corban Marketing · Dashboard — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Marketing</p>
+<p><b>Documento pai:</b> Corban Marketing · Dashboard (módulo v0.3)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial. Define os recursos do Marketing no catálogo de permissões, que o Documento de Produto do Marketing listava como "a consolidar".</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p><b>Este módulo introduz um único recurso no catálogo: <code>marketing_finance</code>.</b> O Dashboard é uma tela agregadora, e cada bloco condiciona sua exibição à permissão de <code>view</code> da fonte, definida em outro módulo do Marketing. Mesmo padrão do Dashboard do Admin.</p>
+<p><b>Aplicação do recurso: Marketing.</b> Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<div class="tablewrap"><table><thead><tr><th>Bloco</th><th>Permissão consultada</th></tr></thead><tbody><tr><td>3.1 Visão geral de aquisição</td><td><code>prospecting_lists:view</code> <b>ou</b> <code>sweeps:view</code> (soma só as fontes que o usuário vê)</td></tr><tr><td>3.2 Prospecção</td><td><code>prospecting_lists:view</code></td></tr><tr><td>3.3 Carteira Ativa</td><td><code>sweeps:view</code></td></tr><tr><td>3.4 Conversão final</td><td><code>prospecting_lists:view</code> <b>ou</b> <code>sweeps:view</code> (só as Leads das fontes que o usuário vê)</td></tr><tr><td>3.5 Financeiro, e custos do ranking</td><td><code>marketing_finance:view</code> <b>e</b> <code>view</code> da fonte (<code>prospecting_lists:view</code> para Custo da base e Resultado; as duas para a Receita de leads total)</td></tr><tr><td>Link do ranking para o detalhe (<span class="badge rf-badge">RF-DMB-03</span>)</td><td><code>view</code> do destino: <code>prospecting_lists:view</code> ou <code>sweeps:view</code></td></tr></tbody></table></div>
+<p>Quem não tem <code>view</code> de nenhuma fonte vê o estado "sem acesso" (<span class="badge rf-badge">RF-DMB-01</span>).</p>
+<p>A própria rota <code>dashboard</code> <b>não exige permissão para abrir</b>: é a tela inicial do Marketing, e quem entra na aplicação já tem alguma permissão nela (Usuários, <span class="badge rule-badge">RN-USR-16</span>).</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th><th>O que cobre</th></tr></thead><tbody><tr><td><code>marketing_finance</code></td><td><code>view</code></td><td><code>all</code></td><td>Ver Receita de leads, Custo da base, Resultado da base e os custos por Lead e por Proposta Paga (<span class="badge rule-badge">RN-DMB-04</span>)</td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-por-que-marketing-finance-separado">2. Por que <code>marketing_finance</code> é separado</h2>
+<p>O bloco financeiro mostra <b>o que as Lojas pagaram</b> e <b>o que o tenant gastou nas bases</b>. É dado financeiro sensível, mesmo critério do Gráfico de Preço de Lead do Admin, que exige <code>funnels:manage_pricing</code>. Um Cargo com <code>prospecting_lists:view</code> e sem <code>marketing_finance:view</code> vê o volume e a conversão, mas não os valores em R$ de receita e custo.</p>
+<p><b>Só o escopo <code>all</code></b>, porque o Dashboard não filtra por Loja (<span class="badge rule-badge">RN-DMB-03</span>).</p>
+<p><b>O Dashboard não exige permissão no CRM.</b> Ele lê resultados agregados de Leads, Propostas e Créditos sem dar acesso a esses módulos.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz. Owner/Tenant tem bypass total do catálogo de permissões (Usuários, <span class="badge rule-badge">RN-USR-03</span>).</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Dashboard v0.1, companheira do módulo v0.3.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Marketing</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Marketing</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

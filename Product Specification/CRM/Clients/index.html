@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Clientes · CRM — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">CRM</a>
+      <span class="sep">/</span>
+      <span class="current">Clientes</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do CRM
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Chat/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Chat</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Chat/index.html" >Chat</option><option value="../Clients/index.html" selected>Clientes</option><option value="../Credits/index.html" >Créditos</option><option value="../Dashboard/index.html" >Dashboard</option><option value="../Goals/index.html" >Metas</option><option value="../Leads/index.html" >Leads</option><option value="../Members/index.html" >Membros</option><option value="../MultiplierTable/index.html" >Tabelas Multiplicadoras</option><option value="../Proposals/index.html" >Propostas</option><option value="../Rankings/index.html" >Rankings</option><option value="../Reports/index.html" >Relatórios</option><option value="../Settings/index.html" >Configurações</option><option value="../Simulations/index.html" >Simulações</option><option value="../Teams/index.html" >Times</option></select>
+    <a href="../Credits/index.html" class="pager-btn">Créditos <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · CRM · Geral
+    </div>
+    <h1>Clientes <span class="app-badge crm">CRM</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">CRM · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.13 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-crm-clientes">Corban CRM · Clientes</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</p>
+<p><b>Versão:</b> 0.13</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.13</td><td><b>Perfil do Cliente e Notas</b> (§3.5, §3.6, <span class="badge rule-badge">RN-CLI-14</span> e <span class="badge rule-badge">RN-CLI-15</span>): os dados que o Layout de Lead exibe (financeiros, do servidor, trabalhistas, da empresa) e as Notas passam a ter dono, o Cliente. Lacunas achadas no modelo de dados; decisão do usuário.</td></tr><tr><td>0.12</td><td><b>Documentos do Cliente valem entre Lojas</b> (<span class="badge rf-badge">RF-CLI-04</span>): qualquer pessoa com acesso ao Cliente, de qualquer Loja associada, vê todos os Documentos dele; os Documentos da Proposta seguem restritos à Proposta. Decisão do usuário, no modelo de dados.</td></tr><tr><td>0.11</td><td><b>Pendências confirmadas pelo usuário:</b> duplicidade sem CPF por Nome + Telefone exatos, sem fusão (<span class="badge rule-badge">RN-CLI-12</span>); campos do Contrato (<span class="badge rule-badge">RN-CLI-13</span>), sem tela de consulta do histórico. Itens 2 e 3 resolvidos.</td></tr><tr><td>0.10</td><td>Sai o item aberto sobre o histórico anterior à v0.9 (§9, item 4), por ser detalhe de migração. A aba Simulações passa a incluir as de origem Marketing da Lead (Simulações v0.12).</td></tr><tr><td>0.9</td><td><b>Decisões do usuário (Marketing).</b> (1) <b>CPF deixa de ser obrigatório</b> no Cliente (§3.1): o Marketing cria Clientes só com Nome e Telefone, e o CPF é preenchido depois, uma única vez (nova <span class="badge rule-badge">RN-CLI-11</span>, <span class="badge rf-badge">RF-CLI-07</span>). (2) <b>Duplicidade sem CPF</b> (nova <span class="badge rule-badge">RN-CLI-12</span>). (3) <b>O Cliente passa a ter um histórico de contratos</b> (nova §3.3, <span class="badge rule-badge">RN-CLI-13</span>), que alimenta a Carteira Ativa; é de uso interno, sem tela nesta versão. (4) A <b>Carga de base</b> foi removida do Marketing: as menções são trocadas pela importação da Lista de Prospecção. <span class="badge rule-badge">RN-CLI-03</span>, <span class="badge rule-badge">RN-CLI-04</span>, <span class="badge rule-badge">RN-CLI-05</span> e <span class="badge rf-badge">RF-CLI-02</span> acompanham.</td></tr><tr><td>0.8</td><td><b>E-mail deixa de ser obrigatório</b> no Cliente (§3.1), porque o Cliente nasce de uma Lead só com Nome, CPF e Telefone e a Carga de base do Marketing pode não trazê-lo. Fecha o item aberto do §9. A Proposta continua pedindo e-mail no formulário dela. Decisão do usuário.</td></tr><tr><td>0.7</td><td><b>Levantamento do Marketing, decisão do usuário: o Cliente é do tenant, não da Loja.</b> (1) <b>Sai a importação de Clientes pela Loja</b>: <span class="badge rf-badge">RF-CLI-02</span>, <span class="badge rule-badge">RN-CLI-05</span> e a permissão <code>clients:import:store</code> deixam de existir; a importação em lote passa a ser exclusiva do Marketing (<b>Carga de base</b>), no nível do tenant, e o Cliente carregado <b>nasce sem Loja associada</b>. (2) A associação a uma Loja passa a nascer <b>só pela distribuição de uma Lead</b> (<span class="badge rule-badge">RN-CLI-04</span>). (3) Os estados vazios e os limites deixam de oferecer "Importar". Os números <span class="badge rf-badge">RF-CLI-02</span> e <span class="badge rule-badge">RN-CLI-05</span> ficam reservados, para não quebrar referências.</td></tr><tr><td>0.6</td><td><b>Levantamento do CRM, decisões do usuário.</b> (1) <b>Novo <span class="badge rf-badge">RF-CLI-07</span>: editar dados do cliente</b>, por qualquer Loja associada, valendo para todas, com o <b>CPF não editável</b>. (2) <b>Nova <span class="badge rule-badge">RN-CLI-10</span>: o Cliente é do tenant, a Loja só acessa</b>; excluir ou inativar a Loja não afeta o Cliente. (3) <b>A busca e o preenchimento por CPF só valem para Clientes já associados à Loja</b>, e criar Simulação ou Proposta não concede acesso (<span class="badge rule-badge">RN-CLI-04</span>). (4) A <span class="badge rule-badge">RN-CLI-09</span>, que só existia no consolidado, ganha o parágrafo no corpo. (5) Os avisos de abertura deixam de contar a história da rodada e passam a descrever o Marketing como é (Prospecção e Carteira Ativa).</td></tr><tr><td>0.5</td><td><b>Ficha do Cliente vira Página com 7 abas</b> (Dados gerais · Benefícios · Documentos · Simulações · Leads associadas · Conversas · Propostas) — motivado pelo volume, mesmo critério já aplicado a Time e Membro. Três capacidades novas, nunca modeladas aqui: <b>Documentos do Cliente</b> (<span class="badge rf-badge">RF-CLI-04</span>, mesmo padrão de Documentos da Proposta), <b>Conversas</b> (<span class="badge rf-badge">RF-CLI-05</span>, lista de Chat por Cliente) e <b>Propostas</b> (<span class="badge rf-badge">RF-CLI-06</span>, lista por Cliente). Conversas e Propostas escopadas à Loja de quem consulta, mesmo critério de <span class="badge rule-badge">RN-CLI-04</span>.</td></tr><tr><td>0.4</td><td>Adiciona <b>Endereço</b> (com integração ViaCEP), <b>E-mail</b> (obrigatório) e <b>Benefícios</b> (múltiplas contas bancárias/matrículas por Cliente) — motivado pela especificação do Card de Proposta.</td></tr><tr><td>0.3</td><td>Remove a referência a <span class="badge rf-badge">RF-SIM-03</span> (simulação automática via importação) — <b>não existe mais no módulo de Simulações</b>, era escopo indevido do CRM; a ideia pertence à aplicação Marketing (item aberto §9.1, já registrado). Importação pela Loja (<span class="badge rf-badge">RF-CLI-02</span>) não dispara mais nenhuma simulação automática.</td></tr><tr><td>0.2</td><td>Fecha o item aberto sobre a Simulação automática: são <b>dois eventos sequenciais e distintos</b> da Huggy, não um só — a criação do Cliente (dados básicos) sempre acontece primeiro; o gatilho de Simulação (dados adicionais) vem depois, num segundo momento do fluxo.</td></tr><tr><td>0.1</td><td>Versão inicial. Retomado após ter sido pulado — Simulações (<span class="badge rf-badge">RF-SIM-03</span>) e Chat já dependiam deste módulo. Substitui e adapta o Módulo 7 da Especificação v1.2 ao modelo de Lojas parceiras.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidade, campos, estados, requisitos funcionais (RF-CLI) e regras de negócio (RN-CLI) próprios.</p>
+<blockquote><p><b>Lead e Cliente são entidades distintas:</b> a Lead não "vira" Cliente — ela <b>possui</b> um Cliente, associação que pode nascer em momentos diferentes conforme a origem (<span class="badge rule-badge">RN-CLI-01</span>). Uma Lead pode existir por um tempo <b>sem</b> Cliente associado.</p></blockquote>
+<blockquote><p><b>Marketing é a terceira aplicação do produto</b> (Shell Privado: "Admin, CRM e Marketing"). Ela injeta leads (Origens <b>Prospecção</b> e <b>Carteira Ativa</b>, Leads <span class="badge rule-badge">RN-LED-12</span>), e a Carteira Ativa mina a base de Clientes do tenant. A <b>importação em lote de Clientes</b> (na Lista de Prospecção) e a injeção de Leads pertencem ao Marketing e não existem neste módulo.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Manter a ficha consolidada de Clientes — criados automaticamente a partir de Leads que reúnem dados suficientes, ou criados pelo Marketing na importação de uma Lista (sem Loja e, às vezes, sem CPF) — com controle de acesso por associação a Loja. A ficha reúne, numa única página, tudo que outros módulos já associam ao Cliente (Documentos, Simulações, Leads, Conversas, Propostas), sem redefinir o conteúdo de cada um.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Operador, Gestor de Loja</b> — consultam e editam Clientes dentro do escopo da própria Loja. A importação em lote não é feita aqui.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-cliente">3.1. Cliente</h2>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome completo</td><td>Sim</td><td>—</td></tr><tr><td>CPF</td><td>Não</td><td><b>Único no tenant</b> quando preenchido (herdado de RN052 da v1.2). O Cliente do Marketing pode nascer sem ele; é preenchido depois, uma só vez (<span class="badge rule-badge">RN-CLI-11</span>).</td></tr><tr><td>Telefone</td><td>Sim</td><td>—</td></tr><tr><td>E-mail</td><td>Não</td><td>Opcional no Cliente (v0.8). A Proposta pede o e-mail no próprio formulário (Propostas).</td></tr><tr><td>Endereço</td><td>Não</td><td>CEP, Logradouro, Número, Complemento, Bairro, Cidade, Estado — CEP integrado à API <b>ViaCEP</b> para autopreenchimento dos demais (<span class="badge rule-badge">RN-CLI-07</span>).</td></tr><tr><td>Benefícios</td><td>Não</td><td>Zero ou mais — Matrícula, Banco, Tipo de Conta, Agência, Conta (<span class="badge rule-badge">RN-CLI-08</span>).</td></tr><tr><td>Loja(s) associada(s)</td><td>—</td><td>Zero, uma ou mais — <span class="badge rule-badge">RN-CLI-04</span>. Controla quem enxerga o Cliente.</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-CLI-01</span> — Cliente nasce automaticamente quando a Lead reúne os três dados mínimos.</b> Assim que uma Lead tem Nome completo + CPF + Telefone — por qualquer canal (chatbot da Huggy pedindo os dados, landing page com esses campos, ou cadastro manual) —, o Cliente é criado automaticamente e associado à Lead. Até esse momento, a Lead existe <b>sem</b> Cliente associado — é estado transitório normal, não erro.</p>
+<p><b><span class="badge rule-badge">RN-CLI-06</span> — Criação do Cliente sempre precede o gatilho de Simulação automática.</b> São dois eventos distintos e sequenciais da Huggy, não o mesmo: primeiro o fluxo coleta os dados básicos (Nome, CPF, Telefone) e o Cliente é criado (<span class="badge rule-badge">RN-CLI-01</span>); só depois, em outro ponto do mesmo fluxo, os dados adicionais necessários à Simulação (valor/parcela, prazo — RF019 da v1.2) são coletados, dispatchando o gatilho de <span class="badge rf-badge">RF-SIM-02</span> (módulo de Simulações). A Simulação automática, portanto, <b>nunca dispara para uma Lead sem Cliente</b> — a ordem é sempre Cadastro → Simulação, garantida pela sequência do próprio fluxo, não verificada pelo Corban.</p>
+<p><b><span class="badge rule-badge">RN-CLI-02</span> — CPF já existente associa, não duplica.</b> Se uma Lead reúne um CPF que já corresponde a um Cliente, ela se associa ao Cliente existente — nunca cria um segundo registro. Mesma pessoa pode ter várias Leads ao longo do tempo, todas ligadas à mesma ficha (herdado de RN052 da v1.2).</p>
+<p><b><span class="badge rule-badge">RN-CLI-03</span> — Cliente pode existir sem nenhuma Lead.</b> Nasce da importação de uma Lista do Marketing, sem Loja associada, e só passa a ter Leads quando uma Lead dele for injetada e distribuída.</p>
+<p><b><span class="badge rule-badge">RN-CLI-04</span> — Cliente é tenant-wide; acesso é por associação a Loja.</b> O registro do Cliente (CPF, nome, dados) é único no tenant, mas uma Loja só enxerga (na Lista, na busca, na ficha) os Clientes <b>associados a ela</b>. A associação nasce <b>num só momento</b>: quando uma Lead daquele Cliente é <b>distribuída</b> a uma Loja (módulo de Leads, <span class="badge rule-badge">RN-LED-02</span>/03) — a Loja que recebeu a Lead passa a ter acesso ao Cliente correspondente. <b>A Loja não importa Clientes</b>: a importação em lote é do Marketing (Lista de Prospecção) e cria Clientes do tenant, sem Loja.</p>
+<p>Um Cliente pode estar associado a <b>mais de uma Loja</b> ao longo do tempo — cada associação é independente, e cada Loja só vê o que aconteceu do seu lado (suas próprias Leads/Simulações/Propostas com aquele Cliente), não o histórico de outra Loja. <b>Não há uma terceira via de associação:</b> criar uma Simulação ou uma Proposta para um CPF que só outras Lojas conhecem <b>não</b> associa a Loja ao Cliente e <b>não</b> revela dado dele — o preenchimento e a busca por CPF só valem para Clientes já associados à Loja (<span class="badge rule-badge">RN-SIM-05</span>, <span class="badge rf-badge">RF-PRP-03</span>).</p>
+<p><b><span class="badge rule-badge">RN-CLI-09</span> — Conversas e Propostas, na ficha, são escopadas à Loja de quem consulta.</b> Mesmo critério de <span class="badge rule-badge">RN-CLI-04</span>: nunca cross-Loja (<span class="badge rf-badge">RF-CLI-05</span>, <span class="badge rf-badge">RF-CLI-06</span>).</p>
+<p><b><span class="badge rule-badge">RN-CLI-10</span> — O Cliente é do tenant; a Loja só acessa.</b> O registro do Cliente pertence ao tenant, e as Lojas apenas o acessam por associação (<span class="badge rule-badge">RN-CLI-04</span>). Excluir ou inativar uma Loja <b>não afeta o Cliente</b>, que continua no tenant e visível a quem tem visão <code>all</code>. <i>(Decisão do usuário, levantamento do CRM.)</i></p>
+<h2 id="3-2-endere-o-e-benef-cios">3.2. Endereço e Benefícios</h2>
+<p><b><span class="badge rule-badge">RN-CLI-07</span> — CEP autopreenche os demais campos de endereço, via ViaCEP.</b> O operador informa o CEP; o sistema busca e preenche Logradouro, Bairro, Cidade e Estado automaticamente — Número e Complemento continuam manuais. Falha na consulta (a integração externa fora do ar, <span class="badge rnf-badge">RNF004</span> da v1.2) não bloqueia: o operador preenche manualmente.</p>
+<p><b><span class="badge rule-badge">RN-CLI-08</span> — Benefícios são múltiplos, cada um com sua própria conta.</b> Um Cliente pode ter mais de um Benefício cadastrado (ex.: aposentadoria + pensão) — cada um com Matrícula, Banco, Tipo de Conta, Agência e Conta próprios.</p>
+<h2 id="3-3-cpf-opcional-e-hist-rico-de-contratos">3.3. CPF opcional e histórico de contratos</h2>
+<p><b><span class="badge rule-badge">RN-CLI-11</span> — O CPF é opcional e é preenchido depois.</b> Um Cliente criado pelo Marketing pode ter só <b>Nome e Telefone</b>. O CPF é preenchido por quem edita o Cliente (<span class="badge rf-badge">RF-CLI-07</span>) ou ao informar o CPF numa Simulação ou Proposta, e <b>só uma vez</b>: depois de preenchido, não muda. Se o CPF informado já pertence a outro Cliente, o sistema <b>recusa</b> e avisa que o CPF já está cadastrado, <b>sem revelar dados</b> do outro Cliente (<span class="badge rule-badge">RN-CLI-04</span>); não há fusão de Clientes nesta versão. Simulação e Proposta continuam exigindo o CPF (<span class="badge rule-badge">RN-SIM-05</span>, <span class="badge rf-badge">RF-PRP-03</span>). <i>(Decisão do usuário.)</i></p>
+<p><b><span class="badge rule-badge">RN-CLI-12</span> — Duplicidade sem CPF.</b> Com CPF, vale a <span class="badge rule-badge">RN-CLI-02</span>. Sem CPF, o Cliente existente é reaproveitado quando <b>Nome completo e Telefone</b> coincidem exatamente; do contrário, nasce um novo.</p>
+<p><b><span class="badge rule-badge">RN-CLI-13</span> — Histórico de contratos.</b> O Cliente guarda um <b>histórico de Contratos</b>, usado pela Carteira Ativa para saber quando uma nova operação pode se abrir. É de <b>uso interno do tenant</b>: as Lojas não o veem, e esta versão não tem tela para consultá-lo. Cada Contrato é um registro com:</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Notas</th></tr></thead><tbody><tr><td>Cliente</td><td>O dono do Contrato.</td></tr><tr><td>Segmento</td><td>O da Proposta (via Lead) ou o Segmento alvo da Lista que o importou.</td></tr><tr><td>Operação</td><td>Uma das 4 do catálogo.</td></tr><tr><td>Banco</td><td>Quando conhecido.</td></tr><tr><td>Valor, Parcela, Prazo (meses)</td><td>Parcela e Prazo são os dados que o motor precisa; sem eles, o Contrato fica "sem dados para análise" na Carteira Ativa.</td></tr><tr><td>Data de pagamento ao cliente</td><td>Base do tempo decorrido; o prazo restante é calculado a partir dela.</td></tr><tr><td>Origem do registro</td><td><b>Proposta Paga</b> (criado quando a Proposta chega a Pago, Propostas <span class="badge rule-badge">RN-PRP-18</span>, e acompanha as edições dela) ou <b>Importado</b> (gravado a partir das colunas de contrato da Lista, Prospecção <span class="badge rule-badge">RN-PRS-15</span>).</td></tr></tbody></table></div>
+<p>(Campos confirmados pelo usuário.)</p>
+<h2 id="3-4-importa-o-em-lote">3.4. Importação em lote</h2>
+<p>*<i><span class="badge rule-badge">RN-CLI-05</span> — </i>(removida na v0.7; número reservado).<i><b> A importação pela Loja deixou de existir. Clientes em lote chegam pela </b>Lista de Prospecção<b> do Marketing (Prospecção, <span class="badge rule-badge">RN-PRS-16</span>), nascem </b>sem Loja</i>* e só passam a ser vistos por uma Loja quando uma Lead deles é distribuída a ela (<span class="badge rule-badge">RN-CLI-04</span>).</p>
+<h2 id="3-5-perfil-do-cliente">3.5. Perfil do Cliente</h2>
+<p><b><span class="badge rule-badge">RN-CLI-14</span> — Os dados de perfil são do Cliente.</b> Rendimentos, margem, data de nascimento, sexo, Órgão (com a esfera e o Estado ou Prefeitura), data de admissão e os dados da empresa empregadora (nome, CNPJ, data de fundação, nº de funcionários, CNAE) descrevem a pessoa, não a negociação: ficam no Cliente e aparecem em toda Lead dele, nos blocos do Layout de Lead (Dados financeiros, Dados do servidor, Dados trabalhistas, Dados da empresa, Slot 3 do Card). A Matrícula vem dos Benefícios (<span class="badge rule-badge">RN-CLI-08</span>). São preenchidos pela Huggy, pelo operador (edição da ficha), pela Simulação (dados informados nela) e pelas colunas mapeadas da Lista de Prospecção, e vale o último valor informado. São também os campos que as Regras avaliam (Regras, catálogo de campos). <i>(Decisão do usuário.)</i></p>
+<h2 id="3-6-notas">3.6. Notas</h2>
+<p><b><span class="badge rule-badge">RN-CLI-15</span> — Notas são do Cliente.</b> O operador registra anotações em texto no Sheet da Lead (bloco Notas, <span class="badge rule-badge">RN-LAY-08</span>); cada nota guarda autor e data, aparece em toda Lead do Cliente e é visível a qualquer pessoa com acesso a ele, de qualquer Loja associada, como os Documentos do Cliente (<span class="badge rf-badge">RF-CLI-04</span>). A nota não é editada; quem a criou pode excluí-la. <i>(Decisão do usuário.)</i></p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-cli-01-ficha-do-cliente"><span class="badge rf-badge">RF-CLI-01</span> — Ficha do cliente</h2>
+<p>Herdado de RF031 da v1.2, reorganizado em 7 abas — escopado às Lojas que o usuário alcança:</p>
+<div class="tablewrap"><table><thead><tr><th>Aba</th><th>Conteúdo</th><th>Fonte</th></tr></thead><tbody><tr><td>Dados gerais</td><td>Nome, CPF, Telefone, E-mail, Endereço</td><td>Este módulo</td></tr><tr><td>Benefícios</td><td>Matrícula, Banco, Tipo de Conta, Agência, Conta (<span class="badge rule-badge">RN-CLI-08</span>)</td><td>Este módulo</td></tr><tr><td>Documentos</td><td>Upload/download/exclusão (<span class="badge rf-badge">RF-CLI-04</span>)</td><td>Este módulo</td></tr><tr><td>Simulações</td><td>Histórico, com atalho para Nova simulação pré-preenchida com este Cliente; inclui as de origem Marketing das Leads da Loja</td><td>Módulo de Simulações — não redefinido aqui</td></tr><tr><td>Leads associadas</td><td>Ativas e concluídas</td><td>Módulo de Leads — não redefinido aqui</td></tr><tr><td>Conversas</td><td>Histórico de Chat (<span class="badge rf-badge">RF-CLI-05</span>)</td><td>Módulo de Chat — não redefinido aqui</td></tr><tr><td>Propostas</td><td>Lista por Cliente (<span class="badge rf-badge">RF-CLI-06</span>)</td><td>Módulo de Propostas — não redefinido aqui</td></tr></tbody></table></div>
+<h2 id="rf-cli-04-documentos-do-cliente"><span class="badge rf-badge">RF-CLI-04</span> — Documentos do Cliente</h2>
+<p><b>Como</b> operador, <b>eu quero</b> anexar documentos à ficha do Cliente <b>para</b> ter esse material disponível em qualquer negociação com ele.</p>
+<p><b>Comportamento esperado:</b> mesmo padrão já usado em Documentos da Proposta (<span class="badge rf-badge">RF-PRP-07</span>, módulo de Propostas) — filepicker com drag-and-drop, tabela com Descrição, Data de envio, Operador, ações Baixar e Excluir. <b>Diferente de Documentos da Proposta</b> (exclusivos de uma negociação — <span class="badge rule-badge">RN-PRP-11</span>): um documento aqui aparece em <b>todas</b> as negociações do Cliente, distinção já registrada em Layout de Lead (<span class="badge rule-badge">RN-LAY-06</span>) e Propostas (<span class="badge rule-badge">RN-PRP-11</span>), agora com RF próprio neste módulo. <b>Quem vê:</b> qualquer pessoa com acesso ao Cliente, de qualquer Loja associada a ele (<span class="badge rule-badge">RN-CLI-04</span>), vê todos os Documentos do Cliente, inclusive os enviados por outra Loja. É a exceção à regra de cada Loja só ver o seu lado (<span class="badge rule-badge">RN-CLI-09</span>), porque o documento é da pessoa, não da negociação. <i>(Decisão do usuário.)</i></p>
+<h2 id="rf-cli-05-aba-conversas"><span class="badge rf-badge">RF-CLI-05</span> — Aba Conversas</h2>
+<p><b>Como</b> operador ou gestor, <b>eu quero</b> ver o histórico de conversas do Cliente <b>para</b> ter contexto de atendimento sem precisar abrir cada Lead separadamente.</p>
+<p><b>Comportamento esperado:</b> lista das Conversas (módulo de Chat) de todas as Leads deste Cliente <b>dentro da Loja de quem consulta</b> — mesmo critério de escopo de <span class="badge rule-badge">RN-CLI-04</span>, nunca cross-Loja. Cada item abre o Painel de Conversa correspondente (<span class="badge rf-badge">RF-CHT-03</span>).</p>
+<h2 id="rf-cli-06-aba-propostas"><span class="badge rf-badge">RF-CLI-06</span> — Aba Propostas</h2>
+<p><b>Como</b> operador ou gestor, <b>eu quero</b> ver todas as Propostas do Cliente <b>para</b> ter visão completa do relacionamento comercial com ele.</p>
+<p><b>Comportamento esperado:</b> lista de Propostas (módulo de Propostas) vinculadas a este Cliente — via Lead ou diretamente (<span class="badge rule-badge">RN-PRP-01</span>, Lead é opcional em Proposta) — <b>dentro da Loja de quem consulta</b>, mesmo critério de <span class="badge rule-badge">RN-CLI-04</span>. Cada item abre o Card de Proposta correspondente.</p>
+<h2 id="rf-cli-07-editar-dados-do-cliente"><span class="badge rf-badge">RF-CLI-07</span> — Editar dados do cliente</h2>
+<p><b>Como</b> operador ou gestor de uma Loja associada, <b>eu quero</b> editar os dados do Cliente <b>para</b> mantê-los corretos.</p>
+<p><b>Comportamento esperado:</b> Nome completo, Telefone, E-mail, Endereço (com ViaCEP, <span class="badge rule-badge">RN-CLI-07</span>) e Benefícios (<span class="badge rule-badge">RN-CLI-08</span>) são editáveis a partir da ficha, por quem tem a permissão de edição no escopo certo. Como o Cliente é do tenant (<span class="badge rule-badge">RN-CLI-10</span>), <b>a edição vale para todas as Lojas associadas</b>. O <b>CPF</b> só pode ser preenchido quando está vazio, <b>uma única vez</b>; depois disso <b>não é editável</b>, porque é a identidade do Cliente e é único (<span class="badge rule-badge">RN-CLI-02</span>, <span class="badge rule-badge">RN-CLI-11</span>). <i>(Decisão do usuário, levantamento do CRM.)</i></p>
+<h2 id="rf-cli-02-removido-na-v0-7-n-mero-reservado"><span class="badge rf-badge">RF-CLI-02</span> — <i>(removido na v0.7; número reservado)</i></h2>
+<p>A importação de clientes pela Loja deixou de existir: o Cliente é do tenant, e a importação em lote é a <b>Lista de Prospecção</b> do Marketing (Prospecção, <span class="badge rf-badge">RF-PRS-01</span>).</p>
+<h2 id="rf-cli-03-exporta-o-de-clientes"><span class="badge rf-badge">RF-CLI-03</span> — Exportação de clientes</h2>
+<p>Herdado de RF033 da v1.2, sem mudança de princípio — escopado aos Clientes que a Loja enxerga.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-CLI-01</span></b> — Cliente nasce automaticamente ao reunir Nome + CPF + Telefone na Lead.</li>
+<li><b><span class="badge rule-badge">RN-CLI-02</span></b> — CPF já existente associa, não duplica.</li>
+<li><b><span class="badge rule-badge">RN-CLI-03</span></b> — Cliente pode existir sem nenhuma Lead (criado pela Lista do Marketing).</li>
+<li><b><span class="badge rule-badge">RN-CLI-04</span></b> — Cliente é tenant-wide; acesso por associação a Loja (nascida só da distribuição de Lead), podendo ter mais de uma.</li>
+<li><b><span class="badge rule-badge">RN-CLI-05</span></b> — <i>(removida; número reservado)</i>.</li>
+<li><b><span class="badge rule-badge">RN-CLI-06</span></b> — Criação do Cliente sempre precede o gatilho de Simulação automática — dois eventos sequenciais da Huggy, nunca o mesmo.</li>
+<li><b><span class="badge rule-badge">RN-CLI-07</span></b> — CEP autopreenche endereço via ViaCEP.</li>
+<li><b><span class="badge rule-badge">RN-CLI-08</span></b> — Benefícios são múltiplos, cada um com sua própria conta.</li>
+<li><b><span class="badge rule-badge">RN-CLI-09</span></b> — Conversas e Propostas, na ficha, são escopadas à Loja de quem consulta — mesmo critério de <span class="badge rule-badge">RN-CLI-04</span>, nunca cross-Loja.</li>
+<li><b><span class="badge rule-badge">RN-CLI-10</span></b> — O Cliente é do tenant; a Loja só acessa. Excluir ou inativar a Loja não afeta o Cliente.</li>
+<li><b><span class="badge rule-badge">RN-CLI-11</span></b> — O CPF é opcional e preenchido depois, uma só vez; é único no tenant.</li>
+<li><b><span class="badge rule-badge">RN-CLI-12</span></b> — Sem CPF, a duplicidade é por Nome + Telefone exatos.</li>
+<li><b><span class="badge rule-badge">RN-CLI-13</span></b> — O Cliente tem um histórico de contratos, de uso interno, que alimenta a Carteira Ativa.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Cliente não tem estados de publicação — existe ou não existe, uma vez criado permanece (sem inativação/exclusão modelada nesta versão — herdado do silêncio da v1.2 a respeito).</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a <b>importação em lote</b> de Clientes (Marketing, Lista de Prospecção), a injeção de Leads por pré-análise (Marketing), a distribuição de Leads em si (módulo de Leads), nem simulações/propostas (módulos próprios — este só referencia).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Leads</b> (CRM) — o evento de reunir dados mínimos (<span class="badge rule-badge">RN-CLI-01</span>), o de distribuição a uma Loja (<span class="badge rule-badge">RN-CLI-04</span>), e a lista de Leads associadas (aba Leads associadas).</li>
+<li><b>Simulações</b> (CRM) — histórico exibido na aba Simulações; o atalho de Nova simulação (já definido no módulo de Simulações, "acesso contextual" via ficha do Cliente).</li>
+<li><b>Chat</b> (CRM) — as Conversas exibidas na aba Conversas (<span class="badge rf-badge">RF-CLI-05</span>).</li>
+<li><b>Propostas</b> (CRM) — as Propostas exibidas na aba Propostas (<span class="badge rf-badge">RF-CLI-06</span>) e a geração do Contrato quando a Proposta chega a Pago (<span class="badge rule-badge">RN-CLI-13</span>).</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Simulações</b> (CRM) — associação automática por CPF quando uma Simulação avulsa (Página de Simulação) referencia um Cliente já cadastrado.</li>
+<li><b>Propostas</b> (CRM) — o Cliente de origem, via Lead ou direto.</li>
+<li><b>Layout de Lead</b> (Admin) — Documentos do Cliente (<span class="badge rf-badge">RF-CLI-04</span>), distintos de Documentos da Proposta (<span class="badge rule-badge">RN-LAY-06</span>).</li>
+<li><b>Marketing</b> — a Prospecção cria Clientes (e Contratos importados); a Carteira Ativa minera o <b>histórico de contratos</b> do tenant para gerar leads com Origem Carteira Ativa (Leads, <span class="badge rule-badge">RN-LED-12</span>).</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<ol>
+<li><i>(Resolvido na v0.8.)</i> <b>E-mail:</b> opcional no Cliente; a Proposta o exige no formulário dela.</li>
+<li><i>(Resolvido na v0.11.)</i> <b>Duplicidade sem CPF:</b> Nome + Telefone exatos, sem fusão de Clientes.</li>
+<li><i>(Resolvido na v0.11.)</i> <b>Campos do Contrato</b> confirmados (<span class="badge rule-badge">RN-CLI-13</span>). O histórico segue de uso interno, sem tela.</li>
+<li><i>(Removido na v0.10: migração do histórico é detalhe de implementação.)</i></li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Clientes v0.13 — módulo da aplicação CRM.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-crm-clientes-matriz-de-permiss-es">Corban CRM · Clientes — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM · Clientes (módulo v0.5)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre dois recursos: <code>clients</code> (ficha) e <code>clients_documents</code> (sub-recurso, mesmo padrão já usado em <code>proposals_documents</code>). Formato: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<h3 id="recurso-clients">Recurso <code>clients</code></h3>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>view</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>edit</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>import</code></td><td><code>store</code></td></tr><tr><td><code>export</code></td><td><code>store</code>, <code>all</code></td></tr></tbody></table></div>
+<h3 id="sub-recurso-clients-documents">Sub-recurso <code>clients_documents</code></h3>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>view</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>manager</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-notas-sobre-as-a-es">2. Notas sobre as ações</h2>
+<p><b><code>self</code> para Cliente significa "Clientes alcançados por Leads atribuídas ao usuário"</b> — mesmo critério já usado em Leads, Chat, Simulações e Propostas. Cliente não tem "responsável" próprio; o alcance vem sempre de Lead ou de associação direta à Loja (<span class="badge rule-badge">RN-CLI-04</span>).</p>
+<p><b>Sem <code>create</code>.</b> Cliente não nasce de um formulário "Novo Cliente" — nasce automaticamente de uma Lead (<span class="badge rule-badge">RN-CLI-01</span>) ou de Importação (<span class="badge rf-badge">RF-CLI-02</span>, permissão própria <code>import</code>). Não há ação de criação manual avulsa neste módulo.</p>
+<p><b><code>import</code> e <code>export</code> só em <code>store</code>/<code>all</code>.</b> Mexer com a base inteira de uma vez — trazer ou tirar dados — é ação de maior impacto que editar um registro; <code>export</code> em particular tem implicação de LGPD (<span class="badge rnf-badge">RNF003</span> da v1.2, herdada), por isso nem oferece <code>self</code>/<code>team</code>.</p>
+<p><b><code>clients_documents</code> segue exatamente o padrão já fixado em <code>proposals_documents</code></b> — <code>view</code> separado de <code>manager</code>, ambos com os quatro escopos.</p>
+<p><b>As abas Simulações, Leads associadas, Conversas e Propostas não têm permissão própria neste recurso</b> — são gatejadas pelas permissões dos módulos de origem (<code>simulations:view</code>, <code>leads:view</code>, <code>chats:view</code>, <code>proposals:view</code>, respectivamente), não redefinidas aqui.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Clientes v0.1.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do CRM</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · CRM</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

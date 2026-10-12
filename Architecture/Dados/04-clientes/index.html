@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Clientes & Contatos · Schema `clients` — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: isDark ? 'dark' : 'neutral',
+      securityLevel: 'loose',
+      fontFamily: '"IBM Plex Sans", sans-serif'
+    });
+    updateThemeLabel();
+  });
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  function toggleMermaidCode(id) {
+    const diagram = document.getElementById('diagram-' + id);
+    const code = document.getElementById('code-' + id);
+    const btn = document.getElementById('toggle-btn-' + id);
+    if (code.style.display === 'block') {
+      code.style.display = 'none';
+      diagram.style.display = 'block';
+      btn.textContent = 'Ver Código Mermaid';
+    } else {
+      code.style.display = 'block';
+      diagram.style.display = 'none';
+      btn.textContent = 'Ver Diagrama Renderizado';
+    }
+  }
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 340px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .schema-badge {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--brand);
+  background: var(--chip);
+  border: 1px solid var(--chip-border);
+  padding: 3px 10px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 28px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+/* Diagram box */
+.diagram-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: auto;
+}
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 10px;
+}
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.diagram-toggle-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.diagram-toggle-btn:hover { color: var(--ink); border-color: var(--edge); }
+
+.mermaid-code-view {
+  display: none;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+.badge-key {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+  margin-right: 3px;
+  vertical-align: baseline;
+}
+
+/* Schema table specific column sizing */
+table.schema-table th:nth-child(1),
+table.schema-table td:nth-child(1) {
+  white-space: nowrap;
+  font-weight: 500;
+  width: 220px;
+  min-width: 170px;
+}
+table.schema-table th:nth-child(2),
+table.schema-table td:nth-child(2) {
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  width: 140px;
+  min-width: 110px;
+}
+table.schema-table th:nth-child(3),
+table.schema-table td:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+  width: 70px;
+}
+table.schema-table th:nth-child(4),
+table.schema-table td:nth-child(4) {
+  min-width: 320px;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Persistência</a>
+      <span class="sep">/</span>
+      <span class="current">Clientes & Contatos</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Todos os Schemas
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../03-catalogo/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Catálogo Comercial</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../01-estrutura/index.html" >01-estrutura — Estrutura Organizacional</option><option value="../02-funis/index.html" >02-funis — Funis & Etapas</option><option value="../03-catalogo/index.html" >03-catalogo — Catálogo Comercial</option><option value="../04-clientes/index.html" selected>04-clientes — Clientes & Contatos</option><option value="../05-leads/index.html" >05-leads — Leads & Distribuição</option><option value="../06-creditos/index.html" >06-creditos — Créditos & Financeiro</option><option value="../07-simulacao/index.html" >07-simulacao — Motor de Simulação</option><option value="../08-propostas/index.html" >08-propostas — Propostas Comerciais</option><option value="../09-atendimento/index.html" >09-atendimento — Atendimento & Chat</option><option value="../10-marketing/index.html" >10-marketing — Marketing & Prospecção</option><option value="../11-desempenho/index.html" >11-desempenho — Desempenho & Metas</option><option value="../12-apoio/index.html" >12-apoio — Apoio & Infraestrutura</option><option value="../01-acesso/index.html" >01-acesso — Acesso & Permissões</option></select>
+    <a href="../05-leads/index.html" class="pager-btn">Leads & Distribuição <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Modelo de Dados Lógico</b> · Operação & Vendas
+    </div>
+    <h1>Clientes & Contatos <span class="schema-badge">schema: clients</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge accepted">Validado</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Schema PostgreSQL</span>
+      <span class="meta-value"><code>clients</code></span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.3 · 11/10/2026</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documentos de Referência</span>
+      <span class="meta-value">CRM · Clientes v0.13; Relacionamentos do CRM v0.2 e do Marketing v0.2; <a href="../../ADR/0023-sem-fk-entre-modulos/index.html" class="inline-link"><b>ADR-0023</b></a>, <a href="../../ADR/0024-armazenamento-de-arquivos-blob/index.html" class="inline-link"><b>ADR-0024</b></a></span>
+    </div>
+  </div>
+
+  <!-- Body Content -->
+  <article>
+    <h2>Histórico de revisões</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Versão</th>
+<th>Mudanças</th>
+</tr></thead><tbody>
+<tr>
+<td>0.3</td>
+<td>Novas tabelas <code>client_profile</code> (perfil, RN-CLI-14) e <code>client_note</code> (Notas, RN-CLI-15): lacunas achadas na modelagem de Leads, aprovadas pelo usuário.</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>Documento do Cliente visível a <b>qualquer um com acesso ao Cliente</b> (todas as Lojas associadas); sai o <code>store_id</code> do documento. Tipo de conta confirmado. Decisões do usuário.</td>
+</tr>
+<tr>
+<td>0.1</td>
+<td>Primeira versão.</td>
+</tr>
+</tbody></table></div>
+<h2>1. O que o módulo guarda</h2>
+<p>O Cliente do tenant, com endereço, Benefícios, Documentos, a associação com as Lojas que o acessam e o histórico de Contratos. Leads, Simulações e Propostas apontam para o Cliente por <code>client_id</code>.</p>
+<h2>2. Diagrama</h2>
+
+                <div class="diagram-container">
+                  <div class="diagram-header">
+                    <span class="diagram-title">Diagrama Entidade-Relacionamento (ER)</span>
+                    <button id="toggle-btn-04-clientes-1" class="diagram-toggle-btn" onclick="toggleMermaidCode('04-clientes-1')">Ver Código Mermaid</button>
+                  </div>
+                  <div id="diagram-04-clientes-1" class="mermaid">
+erDiagram
+  client ||--o{ client_store : "accessed by"
+  client ||--o{ client_benefit : "has"
+  client ||--o{ client_document : "has"
+  client ||--o{ contract : "history"
+  client ||--o| client_profile : "profile"
+  client ||--o{ client_note : "notes"
+
+  client {
+    uuid id PK
+    text full_name
+    text cpf "UK parcial"
+    text phone
+    text email
+    text zip_code
+    text street
+    text number
+    text complement
+    text district
+    text city
+    text state
+  }
+  client_store {
+    uuid client_id PK,FK
+    uuid store_id PK "ref. lógica structure.store"
+    timestamptz associated_at
+  }
+  client_benefit {
+    uuid id PK
+    uuid client_id FK
+    text registration_number
+    text bank_code
+    text bank_name
+    text account_type "checking | savings | salary"
+    text branch
+    text account_number
+    timestamptz deleted_at
+  }
+  client_document {
+    uuid id PK
+    uuid client_id FK
+    text description
+    text file_key
+    text file_name
+    text content_type
+    bigint size_bytes
+    text uploaded_by_user_id
+    timestamptz uploaded_at
+    timestamptz deleted_at
+  }
+  client_profile {
+    uuid client_id PK,FK
+    numeric monthly_income
+    numeric available_margin
+    date birth_date
+    text sex "female | male"
+    text agency_name
+    text agency_sphere "federal | state | municipal"
+    text agency_state
+    text agency_city
+    date admission_date
+    text employer_name
+    text employer_cnpj
+    date employer_founded_on
+    int employer_employee_count
+    text employer_cnae_code
+    text employer_cnae_description
+    text updated_by_user_id
+  }
+  client_note {
+    uuid id PK
+    uuid client_id FK
+    text body
+    text author_user_id
+    timestamptz created_at
+    timestamptz deleted_at
+  }
+  contract {
+    uuid id PK
+    uuid client_id FK
+    uuid segment_id "ref. lógica structure.segment"
+    text operation
+    text bank_code
+    text bank_name
+    numeric amount
+    numeric installment
+    int term_months
+    date paid_to_client_on
+    text source "paid_proposal | imported"
+    uuid proposal_id "ref. lógica proposals.proposal"
+    uuid prospecting_list_id "ref. lógica marketing.prospecting_list"
+  }
+                  </div>
+                  <pre id="code-04-clientes-1" class="mermaid-code-view"><code>erDiagram
+  client ||--o{ client_store : "accessed by"
+  client ||--o{ client_benefit : "has"
+  client ||--o{ client_document : "has"
+  client ||--o{ contract : "history"
+  client ||--o| client_profile : "profile"
+  client ||--o{ client_note : "notes"
+
+  client {
+    uuid id PK
+    text full_name
+    text cpf "UK parcial"
+    text phone
+    text email
+    text zip_code
+    text street
+    text number
+    text complement
+    text district
+    text city
+    text state
+  }
+  client_store {
+    uuid client_id PK,FK
+    uuid store_id PK "ref. lógica structure.store"
+    timestamptz associated_at
+  }
+  client_benefit {
+    uuid id PK
+    uuid client_id FK
+    text registration_number
+    text bank_code
+    text bank_name
+    text account_type "checking | savings | salary"
+    text branch
+    text account_number
+    timestamptz deleted_at
+  }
+  client_document {
+    uuid id PK
+    uuid client_id FK
+    text description
+    text file_key
+    text file_name
+    text content_type
+    bigint size_bytes
+    text uploaded_by_user_id
+    timestamptz uploaded_at
+    timestamptz deleted_at
+  }
+  client_profile {
+    uuid client_id PK,FK
+    numeric monthly_income
+    numeric available_margin
+    date birth_date
+    text sex "female | male"
+    text agency_name
+    text agency_sphere "federal | state | municipal"
+    text agency_state
+    text agency_city
+    date admission_date
+    text employer_name
+    text employer_cnpj
+    date employer_founded_on
+    int employer_employee_count
+    text employer_cnae_code
+    text employer_cnae_description
+    text updated_by_user_id
+  }
+  client_note {
+    uuid id PK
+    uuid client_id FK
+    text body
+    text author_user_id
+    timestamptz created_at
+    timestamptz deleted_at
+  }
+  contract {
+    uuid id PK
+    uuid client_id FK
+    uuid segment_id "ref. lógica structure.segment"
+    text operation
+    text bank_code
+    text bank_name
+    numeric amount
+    numeric installment
+    int term_months
+    date paid_to_client_on
+    text source "paid_proposal | imported"
+    uuid proposal_id "ref. lógica proposals.proposal"
+    uuid prospecting_list_id "ref. lógica marketing.prospecting_list"
+  }</code></pre>
+                </div>
+                
+<p>Todas as tabelas têm <code>created_at</code> e <code>updated_at</code> (omitidos no diagrama).</p>
+<h2>3. Tabelas</h2>
+<h3>3.1. <code>client</code> (Cliente)</h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>.</td>
+</tr>
+<tr>
+<td><code>full_name</code></td>
+<td>text</td>
+<td>não</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>cpf</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Só os 11 dígitos. <b>Único quando preenchido</b> (índice parcial <code>WHERE cpf IS NOT NULL</code>, RN-CLI-02). Preenchido <b>uma vez</b>, depois imutável (RN-CLI-11), garantido pela aplicação.</td>
+</tr>
+<tr>
+<td><code>phone</code></td>
+<td>text</td>
+<td>não</td>
+<td>Normalizado (só dígitos, com DDD).</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Opcional no Cliente.</td>
+</tr>
+<tr>
+<td><code>zip_code</code> … <code>state</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Endereço; CEP preenche o resto pelo ViaCEP, que pode falhar sem bloquear (RN-CLI-07).</td>
+</tr>
+</tbody></table></div>
+<p>Índice (não único) em <code>(lower(full_name), phone) WHERE cpf IS NULL</code>, para achar o Cliente sem CPF por Nome completo + Telefone exatos (RN-CLI-12). <b>Sem exclusão e sem status</b>: o Cliente é do tenant e sobrevive à Loja (RN-CLI-10).</p>
+<h3>3.2. <code>client_store</code> (Cliente × Loja)</h3>
+<p>Chave <code>(client_id, store_id)</code>. Uma linha nasce <b>só</b> quando uma Lead do Cliente é distribuída à Loja (RN-CLI-04), pelo contrato de Clientes chamado por Leads, na mesma transação. Nunca é apagada: excluir a Loja não afeta o Cliente (RN-CLI-10). É <b>a tabela que o filtro de escopo usa</b> para o Cliente: com <code>store</code> ou <code>team</code>, a Loja só vê Clientes que têm linha aqui.</p>
+<h3>3.3. <code>client_benefit</code> (Benefício)</h3>
+<p>Zero ou mais por Cliente (RN-CLI-08): <code>registration_number</code> (Matrícula), banco por código + nome (lista do Banco Central), <code>account_type</code>, <code>branch</code> (Agência), <code>account_number</code> (Conta). Exclusão suave.</p>
+<h3>3.4. <code>client_document</code> (Documento do Cliente)</h3>
+<p>Arquivo no Blob Storage, container <code>client-documents</code> (<a href="../../ADR/0024-armazenamento-de-arquivos-blob/index.html" class="inline-link"><b>ADR-0024</b></a>). O banco guarda a chave, o nome original, tipo, tamanho, descrição, quem enviou e quando (RF-CLI-04). <b>Visível a qualquer um com acesso ao Cliente</b>, de qualquer Loja associada (decisão do usuário); por isso não guarda Loja. Os Documentos da Proposta, ao contrário, ficam restritos à Proposta e a quem a acessa (<code>proposals</code>). Exclusão suave; o arquivo permanece enquanto a linha existir.</p>
+<h3>3.5. <code>client_profile</code> (perfil do Cliente)</h3>
+<p>Uma linha por Cliente, criada no primeiro dado de perfil (RN-CLI-14). Vale o último valor informado, venha da Huggy, do operador, da Simulação ou da Lista. Dinheiro em <code>numeric(14,2)</code>.</p>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Grupo</th>
+<th>Colunas</th>
+<th>Bloco do Layout / campo de Regra</th>
+</tr></thead><tbody>
+<tr>
+<td>Financeiro</td>
+<td><code>monthly_income</code>, <code>available_margin</code></td>
+<td>Dados financeiros; "Margens"</td>
+</tr>
+<tr>
+<td>Pessoal</td>
+<td><code>birth_date</code>, <code>sex</code></td>
+<td>"Idade", "Sexo"</td>
+</tr>
+<tr>
+<td>Servidor</td>
+<td><code>agency_name</code>, <code>agency_sphere</code>, <code>agency_state</code> (UF), <code>agency_city</code></td>
+<td>Dados do servidor (RN-LAY-11): <code>state</code> quando a esfera é federal ou estadual, <code>city</code> quando municipal, <code>CHECK</code> garante um ou outro</td>
+</tr>
+<tr>
+<td>Trabalho</td>
+<td><code>admission_date</code></td>
+<td>Dados trabalhistas; "Tempo de emprego" (calculado)</td>
+</tr>
+<tr>
+<td>Empresa</td>
+<td><code>employer_name</code>, <code>employer_cnpj</code>, <code>employer_founded_on</code>, <code>employer_employee_count</code>, <code>employer_cnae_code</code>, <code>employer_cnae_description</code></td>
+<td>Dados da empresa; "Idade da empresa", "Número de funcionários"</td>
+</tr>
+</tbody></table></div>
+<p>Idade e tempo de emprego são <b>calculados</b> das datas, não gravados. A Matrícula vem de <code>client_benefit</code>. Os campos de contratos pré-existentes das Regras saem de <code>contract</code>; os de aceitação do banco, da Simulação.</p>
+<h3>3.6. <code>client_note</code> (Notas)</h3>
+<p>Texto, autor e data (RN-CLI-15). Sem edição; o autor exclui (exclusão suave). Visível a quem acessa o Cliente.</p>
+<h3>3.7. <code>contract</code> (histórico de Contratos)</h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>client_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">FK</span> → <code>client</code>.</td>
+</tr>
+<tr>
+<td><code>segment_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td>Ref. lógica. Segmento da Proposta (via Lead) ou o alvo da Lista (RN-CLI-13).</td>
+</tr>
+<tr>
+<td><code>operation</code></td>
+<td>text</td>
+<td>não</td>
+<td>Um dos quatro valores do catálogo.</td>
+</tr>
+<tr>
+<td><code>bank_code</code>, <code>bank_name</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Quando conhecido.</td>
+</tr>
+<tr>
+<td><code>amount</code>, <code>installment</code></td>
+<td>numeric(14,2)</td>
+<td>sim / sim</td>
+<td>Sem Parcela, "sem dados para análise" na Carteira Ativa (RN-CRA-02).</td>
+</tr>
+<tr>
+<td><code>term_months</code></td>
+<td>int</td>
+<td>sim</td>
+<td>Idem.</td>
+</tr>
+<tr>
+<td><code>paid_to_client_on</code></td>
+<td>date</td>
+<td>sim</td>
+<td>Base do prazo restante e do Filtro de base da Varredura.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>paid_proposal</code> | <code>imported</code>.</td>
+</tr>
+<tr>
+<td><code>proposal_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica. <b>Único quando preenchido</b> (1:1 com a Proposta Paga, RN-PRP-18). <code>CHECK (source <> 'paid_proposal' OR proposal_id IS NOT NULL)</code>.</td>
+</tr>
+<tr>
+<td><code>prospecting_list_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td>Ref. lógica à Lista que importou (RN-PRS-15).</td>
+</tr>
+</tbody></table></div>
+<p>O Contrato de Proposta Paga é <b>atualizado</b> quando a Proposta é editada depois do Pago (RN-PRP-18), por evento de Propostas. Índice em <code>(client_id, segment_id, paid_to_client_on DESC)</code> para a Varredura achar o último Contrato do Cliente no Segmento (RN-CRA-02). As Lojas nunca leem esta tabela (RN-CLI-13).</p>
+<h2>4. Fora deste schema</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>O quê</th>
+<th>Onde</th>
+</tr></thead><tbody>
+<tr>
+<td>Leads, Simulações, Propostas do Cliente</td>
+<td><code>leads</code>, <code>simulation</code>, <code>proposals</code></td>
+</tr>
+<tr>
+<td>Conversas</td>
+<td>Huggy (só a associação, em <code>messaging</code>)</td>
+</tr>
+<tr>
+<td>Arquivos dos Documentos</td>
+<td>Blob Storage (<a href="../../ADR/0024-armazenamento-de-arquivos-blob/index.html" class="inline-link"><b>ADR-0024</b></a>)</td>
+</tr>
+</tbody></table></div>
+<h2>5. Decisões deste modelo</h2>
+<p>1. <b>CPF só com dígitos e único só quando preenchido.</b> A busca do Cliente sem CPF por Nome + Telefone usa índice comum; quem impede a duplicata é a aplicação, que reaproveita o Cliente encontrado em vez de criar outro (RN-CLI-12).</p>
+<p>2. <b>Documento do Cliente é do Cliente</b>, visível a toda Loja associada; o da Proposta é da Proposta (decisão do usuário).</p>
+<p>3. <b>Tipo de conta do Benefício</b> com três valores (<code>checking</code> corrente, <code>savings</code> poupança, <code>salary</code> conta salário/benefício), confirmados pelo usuário.</p>
+<p>4. <b>Cliente sem exclusão nem status.</b></p>
+<p>5. <b>Perfil numa tabela 1:1 com colunas tipadas</b>, porque o motor de Simulação e a pré-análise comparam esses valores; idade e tempo de emprego calculados.</p>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../C4/index.html">Hub C4 Model</a>
+      <a href="../../ADR/index.html">Decisões de Arquitetura (ADRs)</a>
+      <a href="../index.html">Catálogo de Persistência</a>
+      <a href="README.md" target="_blank">Ver Fonte Markdown (.md)</a>
+    </div>
+    <div>SmartCorbans · Banco de Dados Relacional · Schemas PostgreSQL isolados</div>
+  </footer>
+</div>
+
+</body>
+</html>

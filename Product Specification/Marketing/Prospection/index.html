@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Prospecção · Marketing — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Marketing</a>
+      <span class="sep">/</span>
+      <span class="current">Prospecção</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Marketing
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Dashboard/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Dashboard</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../ActiveClientBase/index.html" >Carteira Ativa</option><option value="../Dashboard/index.html" >Dashboard</option><option value="../Prospection/index.html" selected>Prospecção</option></select>
+    <span class="pager-btn disabled">Próximo →</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Marketing · Geral
+    </div>
+    <h1>Prospecção <span class="app-badge marketing">Marketing</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Marketing · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.8 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Marketing — Documento de Produto</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-marketing-prospec-o">Corban Marketing · Prospecção</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Marketing</p>
+<p><b>Documento pai:</b> Corban Marketing — Documento de Produto</p>
+<p><b>Versão:</b> 0.8</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.8</td><td><b>Marcas de proposta confirmadas pelo usuário:</b> <span class="badge rule-badge">RN-PRS-15</span> (colunas de contrato viram Contratos importados), <span class="badge rule-badge">RN-PRS-09</span> (validade de 7 dias) e o tratamento de Descartadas e Bloqueadas na <span class="badge rule-badge">RN-PRS-16</span>.</td></tr><tr><td>0.7</td><td>Acompanha o Documento de Produto v0.9: a Lista <b>notifica</b> quando entra em Aguardando aprovação e em Falha (<span class="badge rule-badge">RN-MKT-10</span>). §8 passa a expor os eventos ao sino do Shell.</td></tr><tr><td>0.6</td><td><b>Pendências fechadas pelo usuário.</b> Confirmados: Cliente criado para toda linha válida e não bloqueada, inclusive as Descartadas (<span class="badge rule-badge">RN-PRS-16</span>), e criação no início do processamento. Itens 7 e 8 resolvidos.</td></tr><tr><td>0.5</td><td><b>Decisões do usuário.</b> (1) A pré-análise <b>grava Simulação na injeção</b>, para o contato com Oferta aprovada (<span class="badge rule-badge">RN-PRS-04</span>, <span class="badge rule-badge">RN-PRS-10</span>; Produto, <span class="badge rule-badge">RN-MKT-02</span>). (2) <b>Base legal, declarações e retenção saem do escopo inicial</b>: sai o campo Base legal, a declaração do assistente e a <span class="badge rule-badge">RN-PRS-14</span> (reservada); "Origem da base" passa a texto informativo opcional. (3) Saem os itens abertos que fogem da definição do produto (§9, item 5).</td></tr><tr><td>0.4</td><td><b>Decisões do usuário.</b> (1) A <b>Carga de base foi removida</b> (§3.4, <span class="badge rf-badge">RF-PRS-06</span>, <span class="badge rule-badge">RN-PRS-11</span> e <span class="badge rule-badge">RN-PRS-12</span> reservados). (2) O <b>Cliente nasce depois do mapeamento</b> (<span class="badge rule-badge">RN-PRS-16</span>), mesmo sem CPF, e permanece mesmo que as Leads não sejam distribuídas. (3) O gestor escolhe entre <b>distribuir as Leads</b> e <b>concluir sem distribuir</b>; a Lista fica <b>Guardada</b> (novo estado) e pode ser distribuída depois (<span class="badge rule-badge">RN-PRS-06</span>, <span class="badge rule-badge">RN-PRS-17</span>, <span class="badge rf-badge">RF-PRS-04</span>). (4) As colunas de contrato da linha viram <b>Contratos importados</b> no histórico do Cliente (<span class="badge rule-badge">RN-PRS-15</span>) [proposta]. (5) A Lista de bloqueio fora do Marketing vira nota de evolução do Produto. Declarações de base legal e retenção ficam como estão, para o jurídico.</td></tr><tr><td>0.3</td><td><b>Fecha quatro itens abertos (§9, itens 1 a 4), decisões do usuário.</b> E-mail passa a ser <b>opcional</b> na Carga de base (<span class="badge rule-badge">RN-PRS-11</span>), com Clientes v0.8; a pré-análise considera Ofertas de qualquer Região; a Lista de bloqueio vale só para o Marketing; o valor potencial em lote usa parcela = margem e prazo máximo (Documento de Produto v0.5, <span class="badge rule-badge">RN-MKT-05</span> e <span class="badge rule-badge">RN-MKT-08</span>). A pré-análise roda na <b>Lista</b>, não na Carga de base.</td></tr><tr><td>0.2</td><td><b>Levantamento do Marketing, decisões do usuário.</b> (1) <b>Nova Carga de base</b> (§3.4): a importação de Clientes em lote sai do CRM e passa a ser exclusiva do Marketing, no nível do tenant, sem gerar Lead (o cliente é do tenant, não da Loja). (2) <b>Origem corrigida:</b> a Lead nasce com a <b>Origem da lead Prospecção</b> (Leads, <span class="badge rule-badge">RN-LED-12</span>) e a <b>referência à Lista</b>, e não mais com a Tag de categoria "Origem". A Lista ganha <b>Origem de Venda</b> opcional (copiada às leads) e <b>Custo da base</b> opcional. (3) <b>A pré-análise não grava Simulação</b>: o resultado fica na própria Lista (<span class="badge rule-badge">RN-MKT-02</span>). (4) <b>Campo sem valor não desclassifica</b> (<span class="badge rule-badge">RN-MKT-03</span>). (5) <b>Injeção controlada:</b> novo estado Aguardando aprovação, aprovação obrigatória, limite diário opcional, cancelamento, revalidação a cada injeção (<span class="badge rule-badge">RN-PRS-06</span> a 09). (6) <b>Duplicidade completa:</b> Lead ativa, Proposta em andamento e carência de 90 dias (<span class="badge rule-badge">RN-MKT-04</span>). (7) <b>Conformidade:</b> Lista de bloqueio "não perturbe", declaração de origem e base legal e retenção curta das linhas descartadas (§3.5, <span class="badge rule-badge">RN-MKT-05</span> e 06). (8) As regras compartilhadas com a Carteira Ativa passam a viver no Documento de Produto (RN-MKT). Texto reescrito; <b>as RN-PRS foram renumeradas</b>.</td></tr><tr><td>0.1</td><td>Versão inicial. Absorve a "Simulação em Lote" removida do módulo de Simulações (CRM) e a "Importação Tenant-wide com Pré-análise" citada em Clientes.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-PRS) e regras de negócio (RN-PRS) próprios. As regras que valem também para a Carteira Ativa (RN-MKT) estão no Documento de Produto do Marketing e são só referenciadas aqui.</p>
+<blockquote><p><b>O coração do Outbound.</b> A Prospecção atua no nível do tenant. Recebe bases externas (listas compradas, parcerias), passa cada contato pela "peneira" do motor de Ofertas e Regras do Admin e, depois da aprovação do gestor, entrega só o que qualificou (Leads) para a distribuição entre as Lojas. É também a <b>única porta de importação em lote de Clientes</b> do produto: os Clientes da base nascem aqui, e a distribuição das Leads é um passo opcional.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Permitir que o tenant importe bases de contatos, crie os Clientes, analise cada contato contra as regras comerciais do Admin e, <b>se quiser</b>, distribua os aprovados como Leads, de forma controlada. A Lista fica guardada para ser distribuída em outro momento.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de Marketing (tenant)</b> — importa, mapeia, configura a pré-análise, decide entre distribuir as Leads e concluir sem distribuir, e mantém a Lista de bloqueio.</li>
+<li><b>Sistema</b> — processa a pré-análise em segundo plano e injeta as Leads no CRM, respeitando o ritmo aprovado.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-lista-de-prospec-o">3.1. Lista de Prospecção</h2>
+<p>O lote de contatos importado. Entidade gerencial do Marketing: é o recipiente dos contatos até que virem Leads no CRM.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome da Lista</td><td>Sim</td><td>Identificador interno (ex.: "Base INSS Outubro 2026").</td></tr><tr><td>Segmento alvo</td><td>Sim</td><td>Define o Funil de Vendas em que as Leads entram (Stage tipo Novo).</td></tr><tr><td>Origem da base</td><td>Não</td><td>Texto livre e informativo: de onde veio a base (fornecedor, parceria).</td></tr><tr><td>Origem de Venda</td><td>Não</td><td>Rótulo do tenant (módulo Origem de Venda, Admin), <code>Combobox</code>. <b>Copiado às Leads geradas</b> (<span class="badge rule-badge">RN-MKT-01</span>).</td></tr><tr><td>Custo da base (R$)</td><td>Não</td><td>Quanto o tenant pagou pela base. Alimenta o custo no Dashboard.</td></tr><tr><td>Status</td><td>Sim</td><td>Ver §6.</td></tr><tr><td>Contadores</td><td>Calculados</td><td>Linhas, Clientes novos e já existentes, inválidas, bloqueadas, em carência/colisão, descartadas, qualificadas, injetadas (<span class="badge rf-badge">RF-PRS-03</span>).</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-PRS-01</span> — Importação centralizada no tenant.</b> A Lista de Prospecção pertence ao tenant. Todo Cliente criado por ela nasce do tenant e <b>sem Loja associada</b> (<span class="badge rule-badge">RN-MKT-09</span>). Nenhum contato chega a uma Loja antes de virar Lead e passar pelo rodízio (módulo de Leads).</p>
+<p><b><span class="badge rule-badge">RN-PRS-16</span> — Os Clientes nascem depois do mapeamento.</b> Ao confirmar a configuração da pré-análise, a Lista vai para Processando pré-análise, que <b>primeiro valida as linhas e cria os Clientes</b> e só depois avalia. Nasce um Cliente para toda linha <b>válida e não bloqueada</b>, inclusive as que depois ficarem Descartadas. O mínimo é <b>Nome e Telefone</b> válidos; o <b>CPF é opcional</b> e, se vier, precisa ser válido (preenchido depois, Clientes, <span class="badge rule-badge">RN-CLI-11</span>). Linhas Inválidas e Bloqueadas não criam Cliente. Se o Cliente já existe (por CPF, ou por Nome + Telefone sem CPF, Clientes <span class="badge rule-badge">RN-CLI-02</span> e <span class="badge rule-badge">RN-CLI-12</span>), é <b>reaproveitado, sem sobrescrever</b> os dados dele. O Cliente nasce sem Loja (<span class="badge rule-badge">RN-MKT-09</span>) e permanece mesmo que a Lista nunca seja distribuída. <i>(Decisão do usuário.)</i></p>
+<h2 id="3-2-pr--an-lise">3.2. Pré-análise</h2>
+<p>Rotina de sistema que substitui a simulação manual do operador, aplicada a cada linha válida da Lista.</p>
+<p><b><span class="badge rule-badge">RN-PRS-02</span> — Cruzamento com o Admin.</b> Antes de rodar, o gestor escolhe as <b>Operações</b> a testar (ex.: Novo, Portabilidade). Para cada linha, o sistema avalia as Ofertas ativas e vigentes dessas Operações e as Regras de cada uma (bloqueantes e de aviso), usando os dados mapeados da linha. Os campos mapeáveis são os do catálogo de campos das Regras (Admin): Dados do cliente, Dados da empresa empregadora e Dados de contratos pré-existentes.</p>
+<p><b><span class="badge rule-badge">RN-PRS-03</span> — Filtro de qualificação.</b> O contato só se qualifica se for elegível a <b>ao menos uma</b> Oferta testada. Os demais ficam "Descartados" no resultado da Lista, com o motivo (a Mensagem de erro da Regra bloqueante que falhou), e <b>não geram Lead</b> (o Cliente já existe, <span class="badge rule-badge">RN-PRS-16</span>). Os <b>filtros macro</b> opcionais (ex.: "descartar se idade > 70") agem antes das Regras das Ofertas.</p>
+<p><b><span class="badge rule-badge">RN-PRS-04</span> — Campo sem valor e Simulação.</b> Regra que depende de campo que a linha não trouxe <b>não desclassifica</b>: o requisito fica "não avaliado" (<span class="badge rule-badge">RN-MKT-03</span>). Durante a análise, a pré-análise <b>não grava Simulação</b> (<span class="badge rule-badge">RN-MKT-02</span>): o resultado por contato fica na Lista (<span class="badge rf-badge">RF-PRS-03</span>). A Simulação é gravada na injeção (<span class="badge rule-badge">RN-PRS-10</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRS-05</span> — Resultado por contato.</b> Cada linha termina em um destes resultados: <b>Inválida</b> (CPF ou telefone inválido), <b>Bloqueada</b> (Lista de bloqueio, <span class="badge rule-badge">RN-MKT-05</span>), <b>Descartada</b> (nenhuma Oferta elegível), <b>Qualificada</b> (com as Ofertas elegíveis, o valor potencial e os requisitos não avaliados — <span class="badge rule-badge">RN-MKT-08</span>). Em carência ou colisão, o contato fica Qualificado até a injeção, e é a injeção que o recusa (<span class="badge rule-badge">RN-PRS-08</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRS-15</span> — Colunas de contrato viram Contratos importados.</b> Quando a linha traz dados de contrato ("Dados de contratos pré-existentes", <span class="badge rule-badge">RN-PRS-02</span>), o sistema grava um <b>Contrato importado</b> no histórico do Cliente (Clientes, <span class="badge rule-badge">RN-CLI-13</span>), com o Segmento alvo da Lista. É esse histórico que a Carteira Ativa passa a minerar. <i>(Decisão do usuário.)</i></p>
+<h2 id="3-3-aprova-o-e-inje-o">3.3. Aprovação e injeção</h2>
+<p><b><span class="badge rule-badge">RN-PRS-06</span> — Nada é injetado sem aprovação.</b> Terminada a pré-análise, a Lista fica <b>Aguardando aprovação</b>. O gestor revisa o resultado (<span class="badge rf-badge">RF-PRS-03</span>) e escolhe: <b>distribuir</b> (aprova a injeção, <span class="badge rule-badge">RN-PRS-07</span>), <b>concluir sem distribuir</b> (a Lista fica <b>Guardada</b>, <span class="badge rule-badge">RN-PRS-17</span>) ou <b>cancelar</b>. Concluir sem distribuir e cancelar não geram Lead; os Clientes já criados permanecem (<span class="badge rule-badge">RN-PRS-16</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRS-07</span> — Ritmo de injeção.</b> Ao aprovar, o gestor escolhe: <b>injetar tudo</b> ou <b>limite diário de N leads</b>. Com limite, o excedente espera na fila da Lista, e a Lista fica <b>Injetando</b> até esvaziá-la. O gestor pode pausar e retomar a injeção, e cancelar o que ainda não foi injetado (as Leads já injetadas continuam).</p>
+<p><b><span class="badge rule-badge">RN-PRS-08</span> — Revalidação a cada injeção.</b> No momento de injetar cada contato, o sistema reavalia a duplicidade (<span class="badge rule-badge">RN-MKT-04</span>) e a Lista de bloqueio (<span class="badge rule-badge">RN-MKT-05</span>), porque a situação pode ter mudado desde a pré-análise. Contato recusado nessa hora é contado como "Em carência ou colisão" ou "Bloqueado" e <b>não é injetado</b>.</p>
+<p><b><span class="badge rule-badge">RN-PRS-09</span> — O resultado tem validade.</b> A elegibilidade vale a da pré-análise. Um resultado distribuído depois de <b>7 dias</b> da pré-análise exige reprocessar a Lista, porque as Ofertas e Regras podem ter mudado.</p>
+<p><b><span class="badge rule-badge">RN-PRS-10</span> — A injeção cria a Lead.</b> Para cada contato injetado, o Cliente já existe (<span class="badge rule-badge">RN-PRS-16</span>) e a Lead associa-se a ele. A Lead nasce no Stage tipo Novo do Funil do Segmento alvo, com <b>Origem da lead Prospecção</b>, a referência à Lista e a Origem de Venda da Lista (<span class="badge rule-badge">RN-MKT-01</span>), e entra no rodízio de Lojas, com cobrança (Leads, <span class="badge rule-badge">RN-LED-02</span>, 03 e 13). Se o contato tem ao menos uma Oferta aprovada, a avaliação é <b>gravada como Simulação de origem Marketing</b>, ligada à Lead (Simulações, <span class="badge rule-badge">RN-SIM-01</span>; Produto, <span class="badge rule-badge">RN-MKT-02</span>).</p>
+<p><b><span class="badge rule-badge">RN-PRS-17</span> — A Lista pode ser guardada e distribuída depois.</b> Em Aguardando aprovação, o gestor pode <b>concluir sem distribuir</b>: a Lista vai para <b>Guardada</b>, com o resultado preservado, os Clientes mantidos e nenhuma Lead gerada. Em Guardada, o gestor pode <b>distribuir</b> quando quiser, escolhendo o ritmo como na <span class="badge rule-badge">RN-PRS-07</span>; a distribuição é uma aprovação e exige <code>prospecting_lists:approve</code>. Passada a validade do resultado (<span class="badge rule-badge">RN-PRS-09</span>), é preciso <b>reprocessar</b> antes. A Lista Guardada continua na listagem, e não se exclui se tiver Leads. <i>(Decisão do usuário.)</i></p>
+<h2 id="3-4-removida-na-v0-4-n-mero-reservado">3.4. <i>(Removida na v0.4; número reservado)</i></h2>
+<p>A <b>Carga de base</b> deixou de existir. Os Clientes nascem na importação da <b>Lista</b> (<span class="badge rule-badge">RN-PRS-16</span>), mesmo que a Lista seja guardada sem distribuir as Leads (<span class="badge rule-badge">RN-PRS-17</span>). Os números <b><span class="badge rule-badge">RN-PRS-11</span></b> e <b><span class="badge rule-badge">RN-PRS-12</span></b> ficam reservados.</p>
+<h2 id="3-5-conformidade">3.5. Conformidade</h2>
+<p><b><span class="badge rule-badge">RN-PRS-13</span> — Lista de bloqueio.</b> O tenant mantém uma lista de <b>CPFs e telefones</b> que não podem ser abordados (cadastros "não perturbe"), importável por arquivo e editável (<span class="badge rf-badge">RF-PRS-07</span>). Vale para toda injeção do Marketing (Prospecção e Carteira Ativa) como <b>bloqueio rígido</b> (<span class="badge rule-badge">RN-MKT-05</span>).</p>
+<p>*<i><span class="badge rule-badge">RN-PRS-14</span> — </i>(removida na v0.5; número reservado).*** A retenção das linhas descartadas saiu do escopo inicial do produto.</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-prs-01-upload-mapeamento-e-dados-da-lista"><span class="badge rf-badge">RF-PRS-01</span> — Upload, mapeamento e dados da Lista</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> importar um arquivo CSV/XLSX e mapear as colunas <b>para</b> transformar a planilha em dados que o sistema entenda.</p>
+<p><b>Comportamento esperado:</b> Wizard: upload → mapeamento → dados da Lista → configuração da pré-análise (<span class="badge rf-badge">RF-PRS-02</span>). O sistema tenta o <i>auto-match</i> dos cabeçalhos; <b>Nome e Telefone</b> são obrigatórios e o <b>CPF é opcional</b> (se vier, precisa ser válido); os demais campos vêm do catálogo de campos das Regras, inclusive os dados de contrato (<span class="badge rule-badge">RN-PRS-15</span>). O gestor informa Nome da Lista, Segmento alvo e, opcionalmente, Origem da base, Origem de Venda e Custo da base. O arquivo é validado linha a linha (CPF, telefone, duplicidade no próprio arquivo). Upload tolerante a conexão instável.</p>
+<h2 id="rf-prs-02-configura-o-da-pr--an-lise"><span class="badge rf-badge">RF-PRS-02</span> — Configuração da pré-análise</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> definir o que testar <b>para</b> só aprovar contatos com potencial real de venda.</p>
+<p><b>Comportamento esperado:</b> O gestor escolhe as Operações a testar e, opcionalmente, filtros macro sobre os campos mapeados. Ao confirmar, a Lista vai para <b>Processando pré-análise</b>, trancada para edição: o sistema primeiro valida as linhas e <b>cria os Clientes</b> (<span class="badge rule-badge">RN-PRS-16</span>) e depois avalia.</p>
+<h2 id="rf-prs-03-resultado-da-lista"><span class="badge rf-badge">RF-PRS-03</span> — Resultado da Lista</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> ver o resultado da pré-análise <b>para</b> saber o aproveitamento e os motivos de descarte antes de aprovar.</p>
+<p><b>Comportamento esperado:</b> Funil da Lista: <b>Total de linhas ➔ Inválidas ➔ Bloqueadas (não perturbe) ➔ Descartadas (com o motivo, via Mensagem de erro da Regra) ➔ Qualificadas ➔ Injetadas</b>, com as recusadas na injeção (carência ou colisão) à parte. Mostra também quantos Clientes foram criados e quantos já existiam. Para as Qualificadas, mostra o valor potencial total e o total de requisitos "não avaliados". Em Descartadas, filtra por motivo.</p>
+<h2 id="rf-prs-04-aprovar-e-controlar-a-inje-o"><span class="badge rf-badge">RF-PRS-04</span> — Aprovar e controlar a injeção</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> aprovar a injeção e controlar o ritmo <b>para</b> não inundar as Lojas nem gastar o saldo delas de uma vez.</p>
+<p><b>Comportamento esperado:</b> Em <b>Aguardando aprovação</b>, o gestor vê o total de Leads que seriam injetadas e escolhe: <b>Distribuir</b> ("injetar tudo" ou limite diário), <b>Concluir sem distribuir</b> ou <b>Cancelar</b>. Em <b>Guardada</b>, pode <b>Distribuir</b> depois, com a mesma escolha de ritmo. Em <b>Injetando</b>, pode pausar, retomar e cancelar o restante. Resultado vencido (<span class="badge rule-badge">RN-PRS-09</span>) oferece "Reprocessar".</p>
+<h2 id="rf-prs-05-gest-o-das-listas"><span class="badge rf-badge">RF-PRS-05</span> — Gestão das Listas</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> listar e consultar as Listas <b>para</b> acompanhar o que foi importado e distribuir as guardadas.</p>
+<p><b>Comportamento esperado:</b> Listagem com nome, Segmento, status, data e contadores; filtros por status, Segmento e período. Lista em Pendente de mapeamento ou Falha pode ser descartada. <b>Lista com Leads injetadas não se exclui</b>, porque as Leads a referenciam.</p>
+<h2 id="rf-prs-06-removido-na-v0-4-n-mero-reservado"><span class="badge rf-badge">RF-PRS-06</span> — <i>(removido na v0.4; número reservado)</i></h2>
+<p>A Carga de base foi removida. Ver <span class="badge rule-badge">RN-PRS-16</span> e <span class="badge rule-badge">RN-PRS-17</span>.</p>
+<h2 id="rf-prs-07-lista-de-bloqueio"><span class="badge rf-badge">RF-PRS-07</span> — Lista de bloqueio</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> manter os contatos que não podem ser abordados <b>para</b> cumprir os cadastros "não perturbe".</p>
+<p><b>Comportamento esperado:</b> Importar arquivo de CPFs e telefones, adicionar e remover entradas manualmente, buscar. Cada entrada guarda a fonte e a data; mudanças são auditadas. Contatos já injetados não são retirados do CRM por entrar na lista depois.</p>
+<h2 id="rf-prs-08-par-metro-de-car-ncia"><span class="badge rf-badge">RF-PRS-08</span> — Parâmetro de carência</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> definir a carência entre injeções <b>para</b> não abordar a mesma pessoa repetidamente.</p>
+<p><b>Comportamento esperado:</b> Campo único do tenant: dias de carência, padrão <b>90</b> (<span class="badge rule-badge">RN-MKT-04</span>).</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-PRS-01</span></b> — A Lista pertence ao tenant; Cliente nasce sem Loja.</li>
+<li><b><span class="badge rule-badge">RN-PRS-02</span></b> — A pré-análise cruza os dados contra Ofertas e Regras das Operações escolhidas.</li>
+<li><b><span class="badge rule-badge">RN-PRS-03</span></b> — Só vira Lead quem é elegível a ao menos uma Oferta; os demais não geram Lead (o Cliente já existe).</li>
+<li><b><span class="badge rule-badge">RN-PRS-04</span></b> — Campo sem valor não desclassifica; a análise não grava Simulação (só a injeção grava).</li>
+<li><b><span class="badge rule-badge">RN-PRS-05</span></b> — Resultado por contato: Inválida, Bloqueada, Descartada ou Qualificada.</li>
+<li><b><span class="badge rule-badge">RN-PRS-06</span></b> — Nada é injetado sem aprovação; o gestor distribui, conclui sem distribuir ou cancela.</li>
+<li><b><span class="badge rule-badge">RN-PRS-07</span></b> — Injetar tudo ou limite diário; pausar, retomar, cancelar.</li>
+<li><b><span class="badge rule-badge">RN-PRS-08</span></b> — Duplicidade e bloqueio são revalidados a cada injeção.</li>
+<li><b><span class="badge rule-badge">RN-PRS-09</span></b> — O resultado vence em 7 dias e exige reprocessar.</li>
+<li><b><span class="badge rule-badge">RN-PRS-10</span></b> — A injeção cria a Lead (Origem Prospecção, referência à Lista) associada ao Cliente já criado, e grava a Simulação de origem Marketing.</li>
+<li><b><span class="badge rule-badge">RN-PRS-11</span></b> e <b><span class="badge rule-badge">RN-PRS-12</span></b> — <i>(removidas; números reservados)</i>.</li>
+<li><b><span class="badge rule-badge">RN-PRS-13</span></b> — Lista de bloqueio rígida para toda injeção do Marketing.</li>
+<li><b><span class="badge rule-badge">RN-PRS-14</span></b> — <i>(removida; número reservado)</i>.</li>
+<li><b><span class="badge rule-badge">RN-PRS-15</span></b> — Colunas de contrato da linha viram Contratos importados no histórico do Cliente.</li>
+<li><b><span class="badge rule-badge">RN-PRS-16</span></b> — Os Clientes nascem ao iniciar a pré-análise, depois do mapeamento, sem Loja e às vezes sem CPF.</li>
+<li><b><span class="badge rule-badge">RN-PRS-17</span></b> — A Lista pode ser concluída sem distribuir, fica Guardada e pode ser distribuída depois.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Lista de Prospecção:</b></p>
+<div class="tablewrap"><table><thead><tr><th>Estado</th><th>Significado</th><th>Sai para</th></tr></thead><tbody><tr><td><b>Pendente de mapeamento</b></td><td>Arquivo carregado, mapeamento e pré-análise por configurar.</td><td>Processando pré-análise · descartada</td></tr><tr><td><b>Processando pré-análise</b></td><td>Rotina em segundo plano: cria os Clientes e depois avalia. Lista trancada.</td><td>Aguardando aprovação · Falha</td></tr><tr><td><b>Aguardando aprovação</b></td><td>Resultado pronto, nada foi injetado.</td><td>Injetando (distribuir) · Guardada (concluir sem distribuir) · Cancelada · Processando (reprocessar)</td></tr><tr><td><b>Guardada</b></td><td>Pré-análise pronta; o gestor concluiu sem distribuir. Clientes mantidos, nenhuma Lead gerada. Pode ser distribuída depois (<span class="badge rule-badge">RN-PRS-17</span>).</td><td>Injetando (distribuir) · Processando pré-análise (reprocessar, se vencida) · Cancelada</td></tr><tr><td><b>Injetando</b></td><td>Distribuição aprovada; as Leads saem conforme o ritmo.</td><td>Concluída · Cancelada (o restante) · pausada e retomada</td></tr><tr><td><b>Concluída</b></td><td>Fila esvaziada.</td><td>—</td></tr><tr><td><b>Falha</b></td><td>Erro estrutural (arquivo corrompido).</td><td>descartada</td></tr><tr><td><b>Cancelada</b></td><td>Cancelada pelo gestor antes de injetar tudo.</td><td>—</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a distribuição em si (Leads, CRM); a edição das Ofertas e Regras (Admin); a precificação cobrada da Loja (Funis de Vendas); o envio de mensagens aos contatos; a importação de Clientes pela Loja (<b>removida do CRM</b>); notificações de lead injetada (as Leads aparecem no board e no pool); e a aplicação da Lista de bloqueio fora do Marketing (Leads manuais, Huggy e landing pages não passam por ela; é nota de evolução, Produto §6).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Ofertas e Regras (Admin)</b> — motor de elegibilidade e catálogo de campos.</li>
+<li><b>Segmentos e Funis de Vendas (Admin)</b> — destino da Lead.</li>
+<li><b>Origem de Venda (Admin)</b> — rótulo opcional.</li>
+<li><b>Clientes (CRM)</b> — deduplicação (por CPF, ou por Nome + Telefone sem CPF) e criação do Cliente do tenant e do Contrato importado.</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Leads (CRM)</b> — o evento de injeção, que dispara o rodízio entre as Lojas.</li>
+<li><b>Carteira Ativa</b> — a Lista de bloqueio e a carência (RN-MKT), e os Contratos importados que ela minera.</li>
+<li><b>Dashboard (Marketing)</b> — aproveitamento, custo e volume gerado.</li>
+<li><b>Notificações (Shell Privado)</b> — Lista em Aguardando aprovação e em Falha (<span class="badge rule-badge">RN-MKT-10</span>).</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<ol>
+<li><i>(Resolvido na v0.3.)</i> <b>Região e pré-análise.</b> A pré-análise é do tenant, sem Loja, e considera as Ofertas ativas de <b>qualquer Região</b>; a Região só atua na Simulação da Loja que recebe a Lead (Ofertas, <span class="badge rule-badge">RN-REG-04</span>). O resumo da Lead é referência.</li>
+<li><i>(Resolvido na v0.3.)</i> <b>E-mail na Carga de base:</b> opcional; o Cliente não exige e-mail (Clientes v0.8).</li>
+<li><i>(Movido na v0.4 para as notas de evolução do Produto, §6.)</i> <b>Lista de bloqueio</b> fora do Marketing.</li>
+<li><i>(Resolvido na v0.3.)</i> <b>Valor potencial em lote:</b> sem valor desejado, parcela = margem disponível e prazo = máximo da Oferta (Produto, <span class="badge rule-badge">RN-MKT-08</span>).</li>
+<li><i>(Removido na v0.5: base legal e retenção estão fora do escopo do produto.)</i></li>
+<li><i>(Resolvido na v0.4.)</i> A Carga foi removida. A Carteira Ativa lê o histórico de contratos, que a Lista também alimenta (<span class="badge rule-badge">RN-PRS-15</span>).</li>
+<li><i>(Resolvido na v0.6.)</i> <b>Clientes de contatos descartados:</b> o Cliente é criado para toda linha válida e não bloqueada, inclusive as Descartadas (<span class="badge rule-badge">RN-PRS-16</span>).</li>
+<li><i>(Resolvido na v0.6.)</i> <b>Momento de criar os Clientes:</b> no início do processamento, e não ao confirmar o mapeamento.</li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Prospecção v0.8 — módulo da aplicação Marketing.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-marketing-prospec-o-matriz-de-permiss-es">Corban Marketing · Prospecção — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Marketing</p>
+<p><b>Documento pai:</b> Corban Marketing · Prospecção (módulo v0.5)</p>
+<p><b>Versão:</b> 0.3</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.3</td><td>Acompanha o módulo v0.5: <code>create</code> deixa de citar a base legal (saiu do escopo inicial).</td></tr><tr><td>0.2</td><td><b>Remove o recurso <code>client_loads</code></b> (a Carga de base foi removida do módulo, Prospecção v0.4). <code>approve</code> passa a cobrir também <b>distribuir uma Lista Guardada</b> e <b>concluir sem distribuir</b>. Acompanha o módulo v0.4.</td></tr><tr><td>0.1</td><td>Versão inicial. Define os recursos do Marketing no catálogo de permissões, que o Documento de Produto do Marketing listava como "a consolidar".</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre os recursos deste módulo: <code>prospecting_lists</code>, <code>blocklist</code> e <code>marketing_settings</code>. Formato da chave, conforme o padrão do produto: <code>recurso:ação:escopo</code>.</p>
+<p><b>Aplicação dos recursos: Marketing.</b> Todos os recursos deste documento pertencem à aplicação Marketing. Ter ao menos uma permissão deles dá acesso à aplicação (Usuários, <span class="badge rule-badge">RN-USR-16</span>).</p>
+<p>A tabela é compacta: uma linha por <code>recurso:ação</code>, com os escopos oferecidos. Para obter a chave completa, combine a ação com o escopo (ex.: <code>prospecting_lists:view</code> → <code>prospecting_lists:view:all</code>).</p>
+<p><b>O que diferencia um Cargo do outro não é a chave, e sim quais linhas ele recebe.</b></p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th><th>O que cobre</th></tr></thead><tbody><tr><td><code>prospecting_lists</code></td><td><code>view</code></td><td><code>all</code></td><td>Ver a listagem das Listas, o detalhe e o resultado da pré-análise (<span class="badge rf-badge">RF-PRS-03</span>, <span class="badge rf-badge">RF-PRS-05</span>)</td></tr><tr><td><code>prospecting_lists</code></td><td><code>create</code></td><td><code>all</code></td><td>Importar, mapear, informar os dados da Lista, configurar a pré-análise e reprocessar (<span class="badge rf-badge">RF-PRS-01</span>, <span class="badge rf-badge">RF-PRS-02</span>)</td></tr><tr><td><code>prospecting_lists</code></td><td><code>approve</code></td><td><code>all</code></td><td>Distribuir as Leads (de uma Lista pronta ou Guardada), concluir sem distribuir e controlar a injeção: pausar, retomar e cancelar (<span class="badge rf-badge">RF-PRS-04</span>, <span class="badge rule-badge">RN-PRS-17</span>)</td></tr><tr><td><code>prospecting_lists</code></td><td><code>delete</code></td><td><code>all</code></td><td>Descartar uma Lista em Pendente de mapeamento ou Falha (<span class="badge rf-badge">RF-PRS-05</span>)</td></tr><tr><td><code>blocklist</code></td><td><code>view</code></td><td><code>all</code></td><td>Consultar a Lista de bloqueio (<span class="badge rf-badge">RF-PRS-07</span>)</td></tr><tr><td><code>blocklist</code></td><td><code>manage</code></td><td><code>all</code></td><td>Importar, adicionar e remover entradas da Lista de bloqueio (<span class="badge rf-badge">RF-PRS-07</span>)</td></tr><tr><td><code>marketing_settings</code></td><td><code>view</code></td><td><code>all</code></td><td>Ver o parâmetro de carência (<span class="badge rf-badge">RF-PRS-08</span>)</td></tr><tr><td><code>marketing_settings</code></td><td><code>edit</code></td><td><code>all</code></td><td>Alterar o parâmetro de carência (<span class="badge rf-badge">RF-PRS-08</span>)</td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-por-que-tudo-em-escopo-all">2. Por que tudo em escopo <code>all</code></h2>
+<p>O Marketing atua <b>acima das Lojas</b>, no nível do tenant (Documento de Produto do Marketing, §1). Lista, bloqueio e carência não pertencem a Loja nem a Time, então <code>store</code>, <code>team</code> e <code>self</code> não têm significado aqui. Um Cargo ou tem a permissão, ou não tem.</p>
+<hr class="divider">
+<h2 id="3-notas-sobre-as-a-es">3. Notas sobre as ações</h2>
+<p><b><code>create</code> e <code>approve</code> são separadas.</b> Quem configura uma Lista não é, necessariamente, quem autoriza a injeção. Distribuir faz as Leads entrarem no rodízio e <b>debita o saldo das Lojas</b> (Leads, <span class="badge rule-badge">RN-LED-13</span>), então é uma decisão com efeito financeiro em terceiros (<span class="badge rule-badge">RN-MKT-07</span>). Um Cargo pode preparar Listas sem poder liberá-las.</p>
+<p><b><code>approve</code> cobre também pausar, retomar e cancelar.</b> São os controles da mesma decisão. Quem pode liberar a injeção pode freá-la. <i>(Escolha desta versão; se for preciso que o Cargo possa cancelar sem poder aprovar, a ação se divide.)</i></p>
+<p><b>Criar uma Lista cria Clientes.</b> Importar uma Lista cria Clientes do tenant em massa (<span class="badge rule-badge">RN-PRS-16</span>), por isso <code>prospecting_lists:create</code> já cobre isso. Também <b>não exige nenhuma permissão de Clientes no CRM</b>: o Marketing é independente do CRM.</p>
+<p><b>A Lista de bloqueio tem <code>view</code> separado de <code>manage</code>.</b> Consultar o conteúdo expõe CPFs e telefones, e alterá-la muda quem pode ser abordado em todo o tenant (<span class="badge rule-badge">RN-MKT-05</span>).</p>
+<p><b>Sem ação <code>export</code>.</b> A v1 não exporta Listas nem a Lista de bloqueio.</p>
+<p><b>Cada ação inclui as anteriores?</b> Não. As chaves são independentes, como no resto do produto. A interface esconde o que a pessoa não pode usar: quem tem <code>prospecting_lists:create</code> sem <code>view</code> não encontra a listagem, e o Cargo deve ser montado com os dois.</p>
+<hr class="divider">
+<h2 id="4-owner-tenant">4. Owner / Tenant</h2>
+<p>Não aparece nesta matriz. Owner/Tenant tem bypass total do catálogo de permissões (Usuários, <span class="badge rule-badge">RN-USR-03</span>).</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Prospecção v0.3, companheira do módulo v0.5.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Marketing</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Marketing</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

@@ -8,13 +8,13 @@ A documentação de front-end (arquitetura do monorepo, UX e design system) fica
 
 | Quero entender… | Leia |
 |---|---|
-| O produto, o escopo e as regras gerais | [`Product Specification/spec.md`](Product%20Specification/spec.md) |
+| O produto, o escopo e as regras gerais | [`Product Specification/index.html`](Product%20Specification/index.html) · [`spec.md`](Product%20Specification/spec.md) |
 | Uma aplicação | `Product Specification/<App>/spec.md` (Documento de Produto da aplicação) |
 | Um módulo | `Product Specification/<App>/<Módulo>/spec.md` e a `Matriz de Permissões.md` ao lado |
 | Como as entidades se relacionam | `Product Specification/<App>/Relacionamentos e Regras de Negócio.md` |
 | Como o sistema é construído | [`Architecture/C4`](Architecture/C4), do Contexto à Implantação |
 | Por que uma decisão de arquitetura foi tomada | [`Architecture/ADR/README.md`](Architecture/ADR/README.md) |
-| As tabelas de cada módulo | [`Architecture/Dados/README.md`](Architecture/Dados/README.md) |
+| As tabelas de cada módulo | [`Architecture/Dados`](Architecture/Dados/index.html) |
 
 ## Estrutura
 
@@ -54,7 +54,7 @@ Sistemas externos ativos: Keycloak, Huggy, AbacatePay (só Pix), API do Banco Ce
 
 ## Diagramas publicados
 
-As versões desenhadas dos diagramas C4 estão publicadas como páginas (Contexto, Containers, Componentes da API, Admin, CRM e Marketing, Implantação). Os arquivos `.md` em `Architecture/C4` trazem a fonte em Mermaid e são a referência: em caso de diferença, vale o `.md`.
+As versões desenhadas dos diagramas C4 estão publicadas como páginas interativas no [Hub do C4 Model](Architecture/C4/index.html) (Contexto, Containers, Componentes da API, Admin, CRM e Marketing, Implantação). Para navegar por toda a documentação, acesse o [Portal Inicial da Documentação](index.html). Os arquivos `.md` em `Architecture/C4` trazem a fonte em Mermaid e são a referência: em caso de diferença, vale o `.md`.
 
 ## Convenções
 

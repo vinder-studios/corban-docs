@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Documento de Produto · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topbar">
+    <div class="breadcrumbs">
+      <a href="../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Documento de Produto</span>
+    </div>
+    <div class="actions">
+      <a href="index.html" class="btn-nav">Módulos do Admin</a>
+      <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+  <header>
+    <div class="eyebrow"><b>Visão Guarda-Chuva</b> · Aplicação Admin</div>
+    <h1>Documento de Produto · Admin <span class="app-badge admin">Admin</span></h1>
+  </header>
+  <article>
+    <h1 id="corban-admin-documento-de-produto">Corban Admin — Documento de Produto</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin (primeira aplicação do Corban, ao lado de CRM e Marketing)</p>
+<p><b>Versão:</b> 0.3</p>
+<p><b>Data:</b> [a definir]</p>
+<p><b>Módulos:</b> Cargos v0.4 · Usuários v0.7 · Dashboard v0.5 · Lojas v0.15 · Funis de Vendas v0.17 · Layout de Lead v0.7 · Segmentos v0.8 · Produtos v0.5 · Promotoras v0.4 · Regiões v0.7 · Status de Proposta v0.7 · Origem de Venda v0.8 · Ofertas v0.15 · Regras v0.9 · Relatórios v0.7</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.3</td><td>Fecha o item aberto 1: a lista de ações críticas da auditoria passa a ser regra única na Especificação Geral (<span class="badge rnf-badge">RNF005</span>, v2.5). <span class="badge rule-badge">RN-ADM-02</span> aponta para ela.</td></tr><tr><td>0.2</td><td><b>Módulo de Integrações como nota de evolução</b> (§6): passa a ser o ponto de partida das integrações externas de simulação (CLT via Jaéconsig) e do hub técnico do Marketing (Meta, Google e TikTok). Decisão do usuário.</td></tr><tr><td>0.1</td><td>Versão inicial. Documento guarda-chuva da aplicação Admin, no mesmo formato do Documento de Produto do Marketing: o que a aplicação é, quem a usa, o fluxo de ponta a ponta, as regras que atravessam os módulos, o que ela entrega às outras aplicações, o roadmap e o que está em aberto. <b>Não cria regra nova</b>: consolida o que os 15 módulos já definem e aponta para a regra de origem. As regras compartilhadas aqui usam o prefixo RN-ADM.</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="1-o-que-o-admin">1. O que é o Admin</h1>
+<p>O Admin é a aplicação em que o <b>tenant configura a estrutura da própria operação</b>: quem tem acesso e com quais permissões, quais Lojas e Times existem, quais públicos e funis de venda são atendidos, e quais Ofertas comerciais o motor de simulação avalia. Ele não atende clientes nem negocia (isso é do CRM) e não gera demanda (isso é do Marketing). O Admin <b>define as regras do jogo</b>; as outras duas aplicações as <b>consomem</b>.</p>
+<p>Os módulos se organizam em seis <b>seções</b> da navegação:</p>
+<div class="tablewrap"><table><thead><tr><th>Seção</th><th>Módulo</th><th>Para que serve</th><th>Especificação</th></tr></thead><tbody><tr><td><b>Acesso</b></td><td><b>Cargos</b></td><td>Conjuntos nomeados de permissões, que o tenant monta livremente.</td><td><code>corban-admin-cargos-v0_4</code></td></tr><tr><td></td><td><b>Usuários</b></td><td>Quem existe no sistema, com Cargo, Loja, Time e permissões adicionais; sessões ativas.</td><td><code>corban-admin-usuarios-v0_6</code></td></tr><tr><td><b>Visão geral</b></td><td><b>Dashboard</b></td><td>Tela inicial: alertas de configuração, evolução de custo e preço da lead, últimos usuários.</td><td><code>corban-admin-dashboard-v0_5</code></td></tr><tr><td><b>Vendas</b></td><td><b>Lojas</b></td><td>Unidades de venda, seus Times, os Segmentos e tipos de lead que cada Loja recebe, e o saldo de Créditos.</td><td><code>corban-admin-lojas-v0_14</code></td></tr><tr><td></td><td><b>Funis de Vendas</b></td><td>O pipeline de cada Segmento: etapas, Ações, tags e preço da lead. Inclui, como 6ª aba, o <b>Layout de Lead</b>.</td><td><code>corban-admin-funis-vendas-v0_17</code></td></tr><tr><td></td><td><b>Layout de Lead</b></td><td>A composição do Card e do Sheet de detalhe da Lead, por Funil.</td><td><code>corban-admin-layout-lead-v0_7</code></td></tr><tr><td><b>Cadastros</b></td><td><b>Segmentos</b></td><td>Os públicos pagadores atendidos; cada Segmento nasce com seu Funil.</td><td><code>corban-admin-segmentos-v0_8</code></td></tr><tr><td></td><td><b>Produtos</b></td><td>Os instrumentos de crédito comercializados.</td><td><code>corban-admin-produtos-v0_5</code></td></tr><tr><td></td><td><b>Promotoras</b></td><td>As entidades pagadoras, que carregam o recorte geográfico das Ofertas.</td><td><code>corban-admin-promotoras-v0_4</code></td></tr><tr><td></td><td><b>Regiões</b></td><td>Os recortes geográficos, usados como qualificador.</td><td><code>corban-admin-regioes-v0_7</code></td></tr><tr><td></td><td><b>Status de Proposta</b></td><td>Os status do ciclo da Proposta, em quatro tipos que o sistema reconhece.</td><td><code>corban-admin-status-proposta-v0_7</code></td></tr><tr><td></td><td><b>Origem de Venda</b></td><td>O rótulo de por onde a venda chegou; cadastro gerido no ponto de uso, sem tela própria.</td><td><code>corban-admin-origem-venda-v0_8</code></td></tr><tr><td><b>Oferta comercial</b></td><td><b>Ofertas</b></td><td>A unidade comercial que o motor de simulação avalia.</td><td><code>corban-admin-ofertas-v0_15</code></td></tr><tr><td></td><td><b>Regras</b></td><td>As condições de elegibilidade, reutilizáveis entre Ofertas.</td><td><code>corban-admin-regras-v0_9</code></td></tr><tr><td><b>Análise</b></td><td><b>Relatórios</b></td><td>Visão global (todas as Lojas) de produção, funil, esteira, venda de leads, comissões e desempenho das Ofertas.</td><td><code>corban-admin-relatorios-v0_7</code></td></tr></tbody></table></div>
+<p><b>O que o Admin não tem.</b> Não há módulo de "estrutura organizacional" separado: a necessidade é coberta por Lojas, Segmentos, Funis de Vendas e Times (CRM).</p>
+<hr class="divider">
+<h1 id="2-atores-e-acesso">2. Atores e acesso</h1>
+<ul>
+<li><b>Tenant / Owner</b> — papel de sistema, único por tenant, com permissões plenas. Não passa pela checagem do catálogo de permissões (bypass total), é criado na implantação e não é editável, excluível nem atribuível por usuários comuns (Usuários, <span class="badge rule-badge">RN-USR-03</span>).</li>
+<li><b>Gestor do tenant</b> — qualquer usuário cujo Cargo (mais as permissões adicionais) inclua permissões do Admin. Não há papéis fixos além do Owner: cada tenant monta os seus Cargos.</li>
+<li><b>Gestor de Loja</b> — nos poucos pontos em que o Admin oferece escopo <code>store</code> (Lojas, Times e Usuários da própria Loja), um usuário com esse recorte opera só a sua Loja.</li>
+<li><b>Sistema</b> — cria o Funil junto com o Segmento, aplica a cascata de inativação e exclusão, grava o histórico de preço de lead e as trilhas de auditoria.</li>
+</ul>
+<p>O acesso é por <b>permissão</b>, nunca por papel (<span class="badge rule-badge">RN-USR-16</span>): o usuário entra no Admin quando suas permissões efetivas incluem ao menos uma permissão da aplicação; Loja e Time só definem o <b>alcance</b>. O Admin aparece no app switcher para quem tem acesso a mais de uma aplicação. A navegação oculta o que o usuário não pode usar, e a rota sem permissão mostra o estado "sem acesso" do Shell.</p>
+<p>Quase todos os recursos do Admin têm escopo <code>all</code>, porque o Admin atua sobre o tenant inteiro. Catálogo de permissões da aplicação (<code>recurso:ação:escopo</code>):</p>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ações</th><th>Escopos</th><th>Módulo</th></tr></thead><tbody><tr><td><code>roles</code></td><td><code>view</code>, <code>create</code>, <code>edit</code>, <code>manage_permissions</code>, <code>inactivate</code>, <code>delete</code></td><td><code>all</code></td><td>Cargos</td></tr><tr><td><code>users</code></td><td><code>view</code> · <code>create</code>, <code>edit</code>, <code>manage_access</code>, <code>manage_permissions</code>, <code>inactivate</code>, <code>reactivate</code></td><td><code>all</code>, <code>store</code> · <code>all</code></td><td>Usuários</td></tr><tr><td><code>sessions</code></td><td><code>view</code> · <code>manage</code></td><td><code>all</code>, <code>store</code> · <code>all</code></td><td>Usuários</td></tr><tr><td><code>stores</code></td><td><code>view</code>, <code>edit</code>, <code>manage_segments</code>, <code>manage_credits</code>, <code>refund</code>, <code>inactivate</code>, <code>reactivate</code> · <code>create</code>, <code>delete</code></td><td><code>all</code>, <code>store</code> · <code>all</code></td><td>Lojas</td></tr><tr><td><code>teams</code></td><td><code>view</code> · <code>create</code>, <code>edit</code>, <code>inactivate</code>, <code>reactivate</code>, <code>delete</code></td><td><code>all</code>, <code>store</code>, <code>team</code> · <code>all</code>, <code>store</code></td><td>Lojas (Times)</td></tr><tr><td><code>segments</code></td><td><code>view</code>, <code>create</code>, <code>edit</code>, <code>inactivate</code>, <code>reactivate</code>, <code>delete</code></td><td><code>all</code></td><td>Segmentos</td></tr><tr><td><code>funnels</code></td><td><code>view</code>, <code>edit</code>, <code>manage_pricing</code>, <code>inactivate</code>, <code>reactivate</code></td><td><code>all</code></td><td>Funis de Vendas</td></tr><tr><td><code>offers</code></td><td><code>view</code>, <code>create</code>, <code>edit</code>, <code>manage_rules</code>, <code>manage_pricing</code>, <code>inactivate</code>, <code>reactivate</code>, <code>delete</code></td><td><code>all</code></td><td>Ofertas</td></tr><tr><td><code>products</code>, <code>promoters</code>, <code>regions</code></td><td><code>view</code>, <code>create</code>, <code>edit</code>, <code>inactivate</code>, <code>reactivate</code>, <code>delete</code></td><td><code>all</code></td><td>Produtos, Promotoras, Regiões</td></tr><tr><td><code>rules</code></td><td><code>view</code>, <code>create</code>, <code>edit</code>, <code>inactivate</code>, <code>reactivate</code>, <code>delete</code></td><td><code>all</code></td><td>Regras</td></tr><tr><td><code>proposal_statuses</code></td><td><code>view</code>, <code>create</code>, <code>edit</code>, <code>inactivate</code>, <code>reactivate</code>, <code>delete</code></td><td><code>all</code></td><td>Status de Proposta</td></tr><tr><td><code>sale_origins</code></td><td><code>view</code> (acesso universal) · <code>create</code> · <code>delete</code></td><td>— · <code>all</code>, <code>store</code> · <code>all</code></td><td>Origem de Venda</td></tr><tr><td><code>reports_production</code>, <code>reports_funnel</code>, <code>reports_proposals_pipeline</code>, <code>reports_lead_sales</code>, <code>reports_commissions</code>, <code>reports_offers_eligibility</code></td><td><code>view</code>, <code>export</code></td><td><code>all</code></td><td>Relatórios</td></tr></tbody></table></div>
+<p>Dashboard e Layout de Lead não têm recurso próprio: cada bloco do Dashboard depende do <code>view</code> do módulo de origem, e o Layout de Lead é a 6ª aba de Funis de Vendas, sob as permissões de <code>funnels</code>. Ações que mexem em dinheiro ou em acesso têm permissão <b>separada</b> da edição comum (<code>manage_pricing</code>, <code>manage_credits</code>, <code>refund</code>, <code>manage_access</code>, <code>manage_permissions</code>).</p>
+<hr class="divider">
+<h1 id="3-fluxo-de-ponta-a-ponta">3. Fluxo de ponta a ponta</h1>
+<p>A ordem abaixo é a de configurar um tenant do zero; cada passo habilita o seguinte.</p>
+<ol>
+<li><b>Acesso.</b> O Owner cria os <b>Cargos</b> (conjuntos de permissões) e os <b>Usuários</b>, cada um com exatamente um Cargo e, se for o caso, Loja, Time e permissões adicionais.</li>
+<li><b>Cadastros-base.</b> O tenant cadastra <b>Regiões</b>, <b>Produtos</b> e <b>Promotoras</b> (a Promotora recebe suas Regiões), os <b>Status de Proposta</b> (o tenant já nasce com um de cada tipo) e os <b>Segmentos</b> que atende.</li>
+<li><b>Funil.</b> Cada Segmento criado gera automaticamente o seu <b>Funil de Vendas</b>, que fica "Aguardando configuração" até o gestor definir etapas, Ações, tags e as quatro linhas de preço de lead. O <b>Layout de Lead</b> define como a Lead aparece no board e no detalhe.</li>
+<li><b>Oferta comercial.</b> Cadastram-se as <b>Regras</b> de elegibilidade e depois as <b>Ofertas</b>, que combinam Promotora, Produto, Operação e Banco com a parametrização financeira e as Regras (com os valores de cada requisito).</li>
+<li><b>Lojas e Times.</b> Cada <b>Loja</b> é criada com sua Região, Segmentos que opera e tipos de lead que recebe; os <b>Times</b> escolhem o Segmento, o que lhes dá acesso ao Funil. Os usuários são vinculados a Loja e Time.</li>
+<li><b>Operação.</b> Com isso o CRM funciona: as Leads entram nos Funis, são distribuídas às Lojas e aos operadores, simuladas contra as Ofertas e viram Propostas. O Marketing consome as mesmas Ofertas e Regras.</li>
+<li><b>Acompanhamento.</b> O <b>Dashboard</b> do Admin sinaliza o que ficou por configurar (Funis aguardando configuração, Ofertas com regras incompletas, Lojas sem Time), e os <b>Relatórios</b> mostram o resultado global.</li>
+</ol>
+<p>O gestor volta a este fluxo sempre que a operação muda: um novo Segmento, uma Oferta nova, uma Loja que entra, um usuário que sai.</p>
+<hr class="divider">
+<h1 id="4-regras-compartilhadas-rn-adm">4. Regras compartilhadas (RN-ADM)</h1>
+<p>As regras abaixo atravessam vários módulos. Cada uma aponta para a regra de origem; em caso de divergência, <b>vale o módulo</b>.</p>
+<p><b><span class="badge rule-badge">RN-ADM-01</span> — Acesso por permissão; Owner com bypass; o efeito é imediato.</b> Toda tela e ação do Admin dependem de permissão (<code>recurso:ação:escopo</code>). O Owner não passa pelo catálogo. Mudar o Cargo ou as permissões de alguém vale imediatamente, e as permissões adicionais somam, nunca subtraem (Usuários, <span class="badge rule-badge">RN-USR-01</span>, 03, 13; Cargos, <span class="badge rule-badge">RN-CRG-02</span>).</p>
+<p><b><span class="badge rule-badge">RN-ADM-02</span> — Toda gestão de acesso é auditada</b> (lista completa de ações auditadas na Especificação Geral, <span class="badge rnf-badge">RNF005</span>). Mudanças em Cargos, Usuários e permissões geram trilha de auditoria (Cargos, <span class="badge rule-badge">RN-CRG-03</span>; Usuários, <span class="badge rule-badge">RN-USR-17</span>). Quem pode gerenciar as permissões de um Cargo pode conceder qualquer acesso, inclusive a si mesmo (<span class="badge rule-badge">RN-CRG-04</span>); por isso <code>manage_permissions</code> é permissão à parte.</p>
+<p><b><span class="badge rule-badge">RN-ADM-03</span> — Os cadastros-base são livres do tenant e seguem o mesmo ciclo.</b> Segmentos, Produtos, Promotoras, Regiões e Status de Proposta são cadastros do tenant, com inativar, reativar e excluir. O que <b>bloqueia ou cascateia</b> depende do cadastro:</p>
+<div class="tablewrap"><table><thead><tr><th>Cadastro</th><th>Ao inativar</th><th>Ao excluir</th></tr></thead><tbody><tr><td><b>Produto</b></td><td>Bloqueado enquanto houver Oferta (<span class="badge rule-badge">RN-PRD-02</span>).</td><td>Bloqueado nas mesmas condições (<span class="badge rule-badge">RN-PRD-03</span>).</td></tr><tr><td><b>Promotora</b></td><td>Não bloqueia: inativar ofertas ou substituir (conforme <span class="badge rule-badge">RN-PRD-02</span> para Produto).</td><td>Bloqueado enquanto houver Oferta.</td></tr><tr><td><b>Região</b></td><td>Não bloqueia inativação; exige informar a quantidade de vínculos e o efeito.</td><td>Mesma cascata e mesma confirmação (<span class="badge rule-badge">RN-REG-03</span>).</td></tr><tr><td><b>Segmento</b></td><td>Cascateia para o Funil, se ele estiver Ativo, avisando antes (<span class="badge rule-badge">RN-SEG-06</span>).</td><td>Bloqueado se o Funil já foi ativado ou se houver Oferta; do contrário exclui Segmento e Funil e remove as associações com Lojas e Times (<span class="badge rule-badge">RN-SEG-04</span>, 08, 09).</td></tr><tr><td><b>Status de Proposta</b></td><td>Propostas vinculadas pedem migração para status do mesmo tipo (<span class="badge rule-badge">RN-STP-02</span>, 05). O último ativo de um tipo não pode ser inativado (<span class="badge rule-badge">RN-STP-07</span>).</td><td>Mesma migração (<span class="badge rule-badge">RN-STP-03</span>).</td></tr><tr><td><b>Regra</b></td><td>Informar efeito nas novas/atuais associações de Oferta (reativação informa Ofertas afetadas).</td><td>Não bloqueia: desvincula das Ofertas em lote, com alerta que diz a consequência (<span class="badge rule-badge">RN-RGR-07</span>, 10).</td></tr><tr><td><b>Origem de Venda</b></td><td>—</td><td>Sem bloqueio; o histórico preserva o rótulo como texto (<span class="badge rule-badge">RN-ORI-01</span>, 04).</td></tr></tbody></table></div>
+<p>O <b>Código</b> dos cadastros é editável após a criação; ver §6.</p>
+<p><b><span class="badge rule-badge">RN-ADM-04</span> — Excluir Loja, Time e Usuário é exclusão suave, e o histórico permanece.</b> A Loja, o Time e o usuário excluídos somem das listas e das seleções, mas Extrato, Leads, Propostas, Metas e Relatórios continuam apontando para eles, marcados como excluídos. O usuário só é excluído em cascata da exclusão da Loja, e o Código da Loja e o e-mail do usuário ficam liberados (Lojas, <span class="badge rule-badge">RN-LOJ-15</span>, 08, 09; Usuários, <span class="badge rule-badge">RN-USR-04</span>, 05).</p>
+<p><b><span class="badge rule-badge">RN-ADM-05</span> — Um Segmento, um Funil.</b> O Funil nasce junto com o Segmento, é único por Segmento e tenant-wide, e o Segmento não muda depois. Funil que já foi ativado nunca é excluído: é inativado, com drenagem das Leads (Funis de Vendas, <span class="badge rule-badge">RN-FNL-01</span>, 02, 09, 12, 14). O <b>Tipo</b> do stage é o que o sistema entende; o nome é livre (<span class="badge rule-badge">RN-FNL-13</span>).</p>
+<p><b><span class="badge rule-badge">RN-ADM-06</span> — A Loja e o Time ligam a operação ao Funil.</b> O Segmento do <b>Time</b> é o que dá acesso ao Funil (Lojas, <span class="badge rule-badge">RN-LOJ-02</span>). A <b>Loja</b> escolhe, por Segmento, se está Ativa e <b>quais tipos de lead recebe</b>, e a Loja com "Pode receber lead sem saldo" é o destino de última instância e recebe todos os tipos (<span class="badge rule-badge">RN-LOJ-01</span>, 17, 18). Desligar o Segmento é bloqueado enquanto houver Leads em andamento daquele Segmento na Loja (<span class="badge rule-badge">RN-LOJ-16</span>).</p>
+<p><b><span class="badge rule-badge">RN-ADM-07</span> — O preço da lead tem quatro linhas, por Origem, e tem histórico.</b> Cada Funil define o custo e o preço da lead para quatro Origens (Campanha, Orgânica, Prospecção e Carteira Ativa); a margem pode ser negativa, e cada mudança de valor gera um registro de histórico (Funis de Vendas, <span class="badge rule-badge">RN-FNL-07</span>, 08, 16). Mexer em preço exige <code>manage_pricing</code>, e o gráfico do Dashboard exige essa permissão (Dashboard, §3.2).</p>
+<p><b><span class="badge rule-badge">RN-ADM-08</span> — Saldo e estorno são ações do Admin.</b> Adicionar saldo manualmente e estornar são ações da tela de Lojas; o estorno nunca é do CRM (Lojas, <span class="badge rule-badge">RN-LOJ-11</span>, 12, 13). O interruptor "Pode receber lead sem saldo" habilita saldo negativo e só é editável com <code>stores:manage_credits</code> em escopo <code>all</code>.</p>
+<p><b><span class="badge rule-badge">RN-ADM-09</span> — A Oferta combina quatro peças e é avaliada por Regras.</b> Uma Oferta é Promotora + Produto + Operação + Banco, com taxa, prazo e comissão, mais as Regras que a limitam (Ofertas, <span class="badge rule-badge">RN-OFR-01</span>). Quem vê qual Oferta depende da <b>Região da Promotora</b> (<span class="badge rule-badge">RN-OFR-02</span>, <span class="badge rule-badge">RN-PRM-02</span>, <span class="badge rule-badge">RN-REG-04</span>); o Segmento determina a elegibilidade na simulação (<span class="badge rule-badge">RN-OFR-08</span>). A Operação é um catálogo fixo do sistema: Novo, Refinanciamento, Portabilidade e Portabilidade com Refinanciamento. O valor base da comissão depende da Operação (<span class="badge rule-badge">RN-OFR-07</span>).</p>
+<p><b><span class="badge rule-badge">RN-ADM-10</span> — A Regra define a condição; a Oferta define o valor.</b> A Regra é cadastrada uma vez, com requisitos no formato Campo + Operador, sem valor; o valor de cada requisito é definido na Oferta (Regras, <span class="badge rule-badge">RN-RGR-12</span>). Todos os requisitos precisam passar (<span class="badge rule-badge">RN-RGR-01</span>). Editar uma Regra em uso afeta as Ofertas imediatamente (<span class="badge rule-badge">RN-RGR-08</span>). A Oferta só fica completa com todos os valores preenchidos, e uma Oferta <b>ativa</b> nunca está incompleta (Ofertas, <span class="badge rule-badge">RN-OFR-03</span>; Regras, <span class="badge rule-badge">RN-RGR-13</span>). A <b>mensagem de erro</b> da Regra é a explicação geral lida por quem avalia o cliente (<span class="badge rule-badge">RN-RGR-11</span>).</p>
+<p><b><span class="badge rule-badge">RN-ADM-11</span> — O mesmo motor serve a quem simula e a quem prospecta.</b> As Ofertas e Regras do Admin são avaliadas pelas Simulações do CRM e pela pré-análise em lote do Marketing, com o mesmo resultado. A Proposta guarda um snapshot da Oferta ao associá-la, e os relatórios leem esse snapshot, não a configuração atual (Relatórios, <span class="badge rule-badge">RN-REL-15</span>, 20).</p>
+<p><b><span class="badge rule-badge">RN-ADM-12</span> — Os relatórios do Admin são globais e têm tipos fixos.</b> Todo relatório do Admin é escopo <code>all</code>. Os tipos são fixos; a personalização é filtro, agrupamento e Visão salva, que é pessoal. A exportação é fiel à tela e auditada. Lojas, Times e Operadores excluídos continuam nos relatórios (Relatórios, <span class="badge rule-badge">RN-REL-01</span> a 08, 18).</p>
+<hr class="divider">
+<h1 id="5-o-que-o-admin-entrega-s-outras-aplica-es">5. O que o Admin entrega às outras aplicações</h1>
+<div class="tablewrap"><table><thead><tr><th>Para</th><th>O que o Admin fornece</th><th>Módulo de origem</th></tr></thead><tbody><tr><td><b>CRM · Leads</b></td><td>Stages, Tipos, Ações e Tags do Funil; as quatro linhas de preço; elegibilidade de Loja (Segmento, tipos de lead, saldo) e de operador (Time, flag "Pode receber lead"); lista de Origens de Venda.</td><td>Funis de Vendas, Lojas, Usuários, Origem de Venda</td></tr><tr><td><b>CRM · Layout da Lead</b></td><td>A composição do Card e do Sheet de detalhe, por Funil.</td><td>Layout de Lead</td></tr><tr><td><b>CRM · Simulações</b></td><td>A Oferta completa (parametrização e Regras com valores), Produtos, Promotoras, Segmentos e a Região da Loja, que filtra as Ofertas visíveis.</td><td>Ofertas, Regras, Produtos, Promotoras, Regiões</td></tr><tr><td><b>CRM · Propostas</b></td><td>Status e seus tipos, valor base e comissão da Oferta, Origem de Venda e a ação Formalizar, que cria a Proposta.</td><td>Status de Proposta, Ofertas, Funis de Vendas</td></tr><tr><td><b>CRM · Créditos</b></td><td>O preço da lead (débito) e as ações Adicionar saldo e Estornar.</td><td>Funis de Vendas, Lojas</td></tr><tr><td><b>CRM · Membros, Times, Configurações</b></td><td>As entidades Usuário, Cargo, Loja e Time; a Loja edita um recorte dela mesma pelo CRM, escrevendo no mesmo registro.</td><td>Usuários, Cargos, Lojas</td></tr><tr><td><b>CRM · Relatórios</b></td><td>Os três tipos de relatório compartilhados, com a mesma mecânica, sem a dimensão Loja.</td><td>Relatórios</td></tr><tr><td><b>Marketing</b></td><td>Ofertas e Regras (motor da pré-análise, com a mensagem de erro como motivo de descarte), Segmentos e Funis (destino da Lead), Origem de Venda (rótulo da Lista e da Varredura).</td><td>Ofertas, Regras, Segmentos, Funis de Vendas, Origem de Venda</td></tr><tr><td><b>Todas as aplicações</b></td><td>As permissões efetivas de cada usuário (Cargo + adicionais) e o status ativo ou inativo, base de toda visibilidade e ação.</td><td>Usuários, Cargos</td></tr></tbody></table></div>
+<p>Dois pontos em que o Admin lê ou escreve em dados que são do CRM, por decisão de produto: a tela de <b>inativação de usuário</b> mostra a contagem de Leads em andamento e exige a redistribuição (Usuários, <span class="badge rule-badge">RN-USR-05</span>), e a <b>Loja</b> é editável tanto no Admin quanto, em um recorte, no CRM.</p>
+<hr class="divider">
+<h1 id="6-notas-de-evolu-o-roadmap">6. Notas de evolução (roadmap)</h1>
+<p>Itens conhecidos, fora da v1.</p>
+<h2 id="autentica-o-multifator">Autenticação multifator</h2>
+<p>O MFA é evolução conhecida, fora da v1, dado o caráter sensível dos dados tratados (Especificação, §1.6).</p>
+<h2 id="m-dulo-de-integra-es">Módulo de Integrações</h2>
+<p>O Admin ganhará um <b>módulo de Integrações</b>, ainda não modelado, onde o tenant configura as conexões do Corban com sistemas externos. Ele é o ponto de partida de duas famílias de integração:</p>
+<ul>
+<li><b>Simulação externa.</b> Qualquer integração externa de simulação, por exemplo CLT via Jaéconsig, entra por aqui. Hoje só o motor interno está ativo (CRM, Simulações, <span class="badge rule-badge">RN-SIM-08</span>).</li>
+<li><b>Marketing (hub técnico).</b> Credenciais e fluxo OAuth2 com Meta Business, Google Ads e TikTok Ads, previstos para a V3 do Marketing (Marketing, Documento de Produto, §6).</li>
+</ul>
+<p>Quando o módulo existir, o <b>Código dos cadastros</b> (Segmentos, Produtos, Promotoras e Regiões), hoje editável após a criação, passa a ser uma ação de risco se algum sistema externo referenciar um cadastro por código. A reavaliação acontece junto com a definição do módulo.</p>
+<h2 id="lista-de-bloqueio-fora-do-marketing">Lista de bloqueio fora do Marketing</h2>
+<p>Ver Marketing, Documento de Produto, §6. Não altera o Admin.</p>
+<hr class="divider">
+<h1 id="7-itens-abertos">7. Itens abertos</h1>
+<ol>
+<li><i>(Resolvido na v0.3.)</i> <b>Auditoria como requisito transversal:</b> a lista única de ações críticas está na Especificação Geral, <span class="badge rnf-badge">RNF005</span> (v2.5).</li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Admin — Documento de Produto v0.3. Os 15 módulos têm Fase 1 completa. A Fase 2 está completa em todos, exceto o Layout de Lead (o wireframe existe fora deste fluxo) e a Origem de Venda, que tem formato reduzido porque não tem tela própria.</i></p>
+  </article>
+  <footer>
+    <div class="footer-links">
+      <a href="../../index.html">← Início da Documentação</a>
+      <a href="../index.html">Hub de Especificação</a>
+      <a href="index.html">Hub do Admin</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Documento de Produto · Admin</div>
+  </footer>
+</div>
+</body>
+</html>

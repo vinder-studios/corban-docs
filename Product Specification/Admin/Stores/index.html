@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lojas · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Lojas</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Segments/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Segmentos</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" >Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" selected>Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../Users/index.html" class="pager-btn">Usuários <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Vendas
+    </div>
+    <h1>Lojas <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Vendas</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.15 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-lojas">Corban Admin · Lojas</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Vendas</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.15</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.15</td><td>Acompanha Créditos v0.6: a Loja adiciona saldo pelo CRM <b>só via Pix</b> (AbacatePay). Ajusta a aba Créditos e <span class="badge rule-badge">RN-LOJ-11</span>.</td></tr><tr><td>0.14</td><td><b>Pendência cruzada resolvida.</b> A <span class="badge rule-badge">RN-USR-05</span> de Usuários (v0.6) já prevê a exclusão de usuário em cascata da Loja (soft-delete); sai o aviso do topo e o item 1 de itens abertos.</td></tr><tr><td>0.13</td><td><b>O lojista escolhe quais tipos de lead recebe em cada Segmento</b> (decisão do usuário). (1) O interruptor "Recebe leads" por Segmento deixa de existir e é <b>substituído por um interruptor por Origem da lead</b>: Campanha, Orgânica, Prospecção e Carteira Ativa (nova <span class="badge rule-badge">RN-LOJ-17</span>). Cada Funil tem leads de Origens diferentes, com preços diferentes (Funis, <span class="badge rule-badge">RN-FNL-07</span>), e a Loja decide quais aceita. (2) A <span class="badge rule-badge">RN-LOJ-01</span> passa a exigir "Ativo" para ligar qualquer Origem, e ao marcar "Ativo" as quatro nascem <b>ligadas</b>. (3) <b>Nova <span class="badge rule-badge">RN-LOJ-18</span>:</b> a Loja com "Pode receber lead sem saldo", o destino de última instância (Leads, <span class="badge rule-badge">RN-LED-02</span>), tem as Origens sempre ligadas e travadas. (4) O Segmento do Time passa a exigir "Ativo" com ao menos um tipo de lead ligado. (5) <b>Migração:</b> quem tinha "Recebe leads" ligado fica com as quatro Origens ligadas; quem tinha desligado, com as quatro desligadas. Acompanha Leads v0.12 e Configurações v0.5</td></tr><tr><td>0.12</td><td><b>A <span class="badge rule-badge">RN-LOJ-15</span> passa a dizer que o saldo não bloqueia a exclusão</b>: o diálogo de exclusão mostra o saldo como aviso quando é diferente de zero (decisão do usuário; a <span class="badge rule-badge">RN-CRD-09</span>, de Créditos, já a citava e a spec de Lojas não a tinha).</td></tr><tr><td>0.11</td><td><b>Excluir um Time passa a ser soft-delete</b> (<span class="badge rule-badge">RN-LOJ-05</span>): a atribuição das vendas no Pago e as Metas continuam apontando para o Time, marcado "(excluído)". <b>Nova <span class="badge rule-badge">RN-LOJ-16</span>:</b> desmarcar "Ativo" de um Segmento é bloqueado enquanto houver leads em andamento nele (hoje os operadores perderiam o acesso às leads que ainda trabalham). Decisões do usuário, levantamento do CRM.</td></tr><tr><td>0.10</td><td><b>O campo "Pode receber lead sem saldo" (<span class="badge rule-badge">RN-LOJ-12</span>) passa a ter lugar na spec</b>: linha na tabela de campos da Loja, interruptor na Aba Créditos (<span class="badge rf-badge">RF-LOJ-03</span>), e a regra de quem o edita (<code>stores:manage_credits</code> com escopo <code>all</code>; somente leitura com <code>store</code>). Antes, a <span class="badge rule-badge">RN-LOJ-12</span> só dizia "campo booleano da Loja", e nenhuma tela nem permissão o previa. Ligar pede confirmação descritiva. Achado na auditoria dos artefatos para o wireframe.</td></tr><tr><td>0.9</td><td><b>A Lista ganha o filtro "Sem Time ativo"</b> (<span class="badge rf-badge">RF-LOJ-01</span>), alvo do alerta "Lojas sem time" do Dashboard do Admin: o alerta prometia abrir a Lista já filtrada, e o filtro não existia (achado na revisão do Dashboard). O <span class="badge rf-badge">RF-LOJ-01</span> passa a descrever os filtros da Lista, que só existiam nos artefatos, e a incluir a exclusão no "Como".</td></tr><tr><td>0.8</td><td>Corrige o que a v0.7 dizia do documento de anotações: a seção 7 (vínculo Time↔Grupo) <b>também</b> foi superada, pelo módulo de Cargos v0.4 (Cargo é atribuído direto ao usuário e não se associa a Time), e só a seção 6 segue aberta.</td></tr><tr><td>0.7</td><td><b>A exclusão da Loja passa a ser soft-delete</b> (nova <span class="badge rule-badge">RN-LOJ-15</span>): some das listagens, e o histórico (Extrato, leads, propostas, relatórios) permanece, marcado como "Loja excluída"; o Código fica liberado. Os Times excluídos em cascata também. <b>Nova <span class="badge rule-badge">RN-LOJ-14</span></b>: a regra do chip "Todas" e da confirmação da primeira Região constava só nos artefatos. Consolidado ganha as <span class="badge rule-badge">RN-LOJ-11</span> a 15. Corrige a remissão do aviso do topo (<span class="badge rule-badge">RN-LOJ-11</span> → <span class="badge rule-badge">RN-LOJ-08</span>) e a menção a atendimentos em <span class="badge rule-badge">RN-LOJ-03</span> e 06, que passa a remeter a <span class="badge rule-badge">RN-USR-05</span>. §8 lista a distribuição de leads e o filtro de Ofertas por Região. O documento de anotações passa a "parcialmente superado". Segmento excluído remove a associação com a Loja e limpa o Time (<span class="badge rule-badge">RN-SEG-09</span>, Segmentos v0.6). Reordena esta tabela.</td></tr><tr><td>0.6</td><td><b>Acompanha a reformulação de Créditos (CRM, v0.4).</b> Corrige <span class="badge rule-badge">RN-LOJ-11</span>, que afirmava exclusividade — adicionar saldo deixou de ser ação só desta tela, já que a Loja também adiciona via Pix/Boleto (<span class="badge rf-badge">RF-CRD-03</span>, CRM). Adiciona <b>Estornar débito</b> (<span class="badge rf-badge">RF-LOJ-05</span>) — ação que vive aqui, não no CRM, operando sobre o Extrato já definido em Créditos. Aba Créditos passa a exibir também o Limite de gasto diário da Loja (somente leitura — quem edita é a própria Loja, <span class="badge rf-badge">RF-CRD-04</span>).</td></tr><tr><td>0.5</td><td>Acompanha Usuários v0.4 (<span class="badge rule-badge">RN-USR-15</span>): o usuário passa a ter <b>vínculo direto com a Loja</b>, independente do Time. Escopo <code>store</code> inclui os usuários vinculados diretamente à Loja; <span class="badge rule-badge">RN-LOJ-08</span> e a dependência com Usuários ajustadas.</td></tr><tr><td>0.4</td><td>Aba Créditos ganha o campo <b>"Pode receber lead sem saldo"</b> (<span class="badge rule-badge">RN-LOJ-12</span>) — habilita saldo negativo para esta Loja (<span class="badge rule-badge">RN-CRD-03</span>/04, módulo CRM · Créditos).</td></tr><tr><td>0.3</td><td>Adiciona a <b>4ª aba — Créditos</b>: o operador do tenant visualiza saldo e extrato (entidade dona: módulo CRM · Créditos) e adiciona saldo manualmente (<span class="badge rule-badge">RN-LOJ-11</span>). É a única ação de escrita sobre Saldo em todo o produto.</td></tr><tr><td>0.2</td><td>Corrige os campos do Time: <b>Nome</b> e <b>Segmento</b> apenas — "Loja" não é um campo editável, é o vínculo de criação, e é <b>imutável</b> (<span class="badge rule-badge">RN-LOJ-10</span>). Fecha os itens abertos 1 e 2 da v0.1: exclusão de Loja <b>exclui os Times em cascata</b>, confirmado; Time <b>não pode ser transferido de Loja</b>.</td></tr><tr><td>0.1</td><td>Versão inicial.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-LOJ) e regras de negócio (RN-LOJ) próprios. Cobre <b>Loja</b> e <b>Time</b>, que vivem na mesma tela de configuração.</p>
+<blockquote><p><b>Este documento substitui e revoga as seções 1 a 5 de <code>corban-anotacoes-operacoes-loja.md</code>.</b> Aquele documento antecipava um modelo de "Operação-instância por Loja" que nunca chegou a existir — hoje sabemos que quem carrega o pipeline é o <b>Funil</b> (tenant-wide, 1:1 com Segmento, módulo Funis de Vendas), e é nele que Loja e Time se associam, não numa instância própria por Loja. O documento de anotações fica marcado como <b>parcialmente superado</b>: as seções 1 a 5 (Loja contém Operações) são revogadas aqui; a seção 7 foi superada pelo módulo de Cargos (v0.4), e só a seção 6, que não trata de Loja nem de Operação, segue aberta.</p></blockquote>
+<blockquote><p><b>Dependência cruzada:</b> este módulo introduz a exclusão de usuário em cascata da exclusão de Loja (soft-delete, <span class="badge rule-badge">RN-LOJ-08</span>), já prevista na <span class="badge rule-badge">RN-USR-05</span> do módulo de Usuários (v0.6).</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Estruturar as unidades de venda do tenant. A Loja é a unidade organizacional visível ao mercado — endereço, CNPJ, identidade visual — e decide quais Segmentos opera. Dentro dela, Times organizam os operadores e decidem, cada um, a qual Funil (via Segmento) têm acesso.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de estrutura</b> — usuário cujas permissões efetivas incluem a gestão deste módulo.</li>
+<li><b>Gestor de Time</b> — pode ter permissão restrita ao escopo <code>store</code> (só a própria Loja) ou <code>team</code> (só o próprio Time).</li>
+<li><b>Operador</b> — consome a estrutura (Loja, Time) para saber a que Funis tem acesso; não a gerencia.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-loja">3.1. Loja</h2>
+<p>Cadastro <b>livre do tenant</b>. Campos:</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>—</td></tr><tr><td>Código</td><td>Sim</td><td>Identificador curto. Único no tenant, formato livre, editável após a criação — mesmo padrão dos demais cadastros. A unicidade vale entre Lojas não excluídas (<span class="badge rule-badge">RN-LOJ-15</span>).</td></tr><tr><td>Endereço</td><td>Sim</td><td>—</td></tr><tr><td>CNPJ</td><td>Não</td><td>Opcional nesta primeira versão.</td></tr><tr><td>Logo</td><td>Não</td><td>Imagem.</td></tr><tr><td>Regiões</td><td>Sim, com padrão</td><td>Zero ou mais Regiões (módulo de Regiões). <b>Nasce com o valor explícito "Todas"</b> — um chip visível no campo, não um campo vazio — que corresponde à ausência de restrição regional (<span class="badge rule-badge">RN-REG-04</span>, módulo de Regiões: Loja sem Região vê todas as ofertas). Mostrar "Todas" de forma explícita, e não em branco, evita que o campo pareça esquecido. Comportamento em <span class="badge rule-badge">RN-LOJ-14</span>.</td></tr><tr><td>Pode receber lead sem saldo</td><td>Não (padrão: desmarcado)</td><td>Booleano. Habilita saldo negativo (<span class="badge rule-badge">RN-LOJ-12</span>). Editado na <b>Aba Créditos</b>, por quem tem <code>stores:manage_credits</code> com escopo <code>all</code>; com <code>store</code>, aparece somente leitura.</td></tr><tr><td>Status</td><td>Sim</td><td>Ativa / Inativa (ver §6).</td></tr></tbody></table></div>
+<h2 id="3-2-aba-segmentos-da-loja">3.2. Aba Segmentos (da Loja)</h2>
+<p>Não é uma entidade própria — é a associação entre a Loja e cada Segmento do tenant, com um interruptor <b>Ativo</b> e um interruptor por <b>Origem da lead</b>, com dependência entre eles:</p>
+<div class="tablewrap"><table><thead><tr><th>Flag</th><th>O que controla</th></tr></thead><tbody><tr><td><b>Ativo</b></td><td>O Segmento aparece como operado por esta Loja.</td></tr><tr><td><b>Tipos de lead</b> (um interruptor por Origem da lead: Campanha, Orgânica, Prospecção e Carteira Ativa)</td><td>A Loja recebe leads novas daquele Segmento <b>só das Origens ligadas</b> (<span class="badge rule-badge">RN-LOJ-17</span>).</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-LOJ-01</span> — Os tipos de lead exigem "Ativo".</b> Não é possível ligar uma Origem num Segmento que não está "Ativo" nesta Loja — não faria sentido receber leads de um Segmento que ela nem opera. A interface impede a combinação inválida (desabilita os interruptores de Origem até "Ativo" estar marcado), em vez de validar depois. <b>Ao marcar "Ativo", as quatro Origens nascem ligadas.</b> Se o Segmento for excluído do tenant, a associação some desta aba (<span class="badge rule-badge">RN-SEG-09</span>).</p>
+<p><b><span class="badge rule-badge">RN-LOJ-17</span> — Cada Loja escolhe quais tipos de lead recebe em cada Segmento.</b> O Funil de um Segmento recebe leads de Origens diferentes, com preços diferentes (Funis, <span class="badge rule-badge">RN-FNL-07</span>), e a Loja liga ou desliga cada uma de forma independente: <b>Campanha, Orgânica, Prospecção e Carteira Ativa</b>, as Origens que passam pela distribuição entre Lojas e têm linha de preço. <b>Recontato e Manual não aparecem</b>: o Recontato volta à Loja anterior e a Manual nasce na própria Loja (Leads, <span class="badge rule-badge">RN-LED-12</span> e 14). Uma Loja é elegível para uma lead quando o Segmento está "Ativo" <b>e</b> a Origem daquela lead está ligada (Leads, <span class="badge rule-badge">RN-LED-02</span>). O efeito é imediato e reversível, e não afeta as leads em andamento. Desligar as quatro equivale a pausar o Segmento: ele segue "Ativo" e os Times continuam com acesso ao Funil (<span class="badge rule-badge">RN-LOJ-16</span>), mas a Loja não recebe leads novas dele. Na interface o grupo se chama <b>"Tipos de lead"</b>. <i>(Decisão do usuário.)</i></p>
+<p><b><span class="badge rule-badge">RN-LOJ-18</span> — A Loja com "Pode receber lead sem saldo" recebe todos os tipos.</b> Essa Loja (<span class="badge rule-badge">RN-LOJ-12</span>), tipicamente a do próprio tenant, é o destino de última instância da distribuição (Leads, <span class="badge rule-badge">RN-LED-02</span>). Em todo Segmento "Ativo" dela, as Origens ficam <b>ligadas e travadas</b>, com <code>Tooltip</code> explicando. Ao ligar a flag, as Origens dos Segmentos "Ativos" são ligadas; ao desligá-la, continuam ligadas e passam a poder ser alteradas. <i>(Decisão do usuário.)</i></p>
+<p><b><span class="badge rule-badge">RN-LOJ-16</span> — Desmarcar "Ativo" é bloqueado enquanto houver leads em andamento daquele Segmento na Loja.</b> O Segmento do Time é o que dá acesso ao Funil (<span class="badge rule-badge">RN-LOJ-02</span>): se a Loja deixasse de operar o Segmento com leads em andamento, o Time viraria "sem Segmento" e os operadores perderiam o acesso às leads que ainda trabalham. A interface bloqueia a ação, com a orientação de desligar os tipos de lead do Segmento e concluir ou redistribuir as leads em andamento antes. <i>(Decisão do usuário, levantamento do CRM; vale também para a mesma aba no CRM · Configurações.)</i></p>
+<h2 id="3-3-time">3.3. Time</h2>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>—</td></tr><tr><td>Segmento</td><td>Não</td><td>No máximo um. Restrito aos Segmentos que a própria Loja tem <b>"Ativo" e com ao menos um tipo de lead ligado</b> (<span class="badge rule-badge">RN-LOJ-01</span>, <span class="badge rule-badge">RN-LOJ-02</span>, <span class="badge rule-badge">RN-LOJ-17</span>) — um Time não pode escolher um Segmento que a Loja não opera de fato.</td></tr><tr><td>Status</td><td>Sim</td><td>Ativo / Inativando / Inativo (ver §6).</td></tr></tbody></table></div>
+<p><b>A Loja não é um campo do Time.</b> É o contexto em que o Time é criado (a Aba Times só existe dentro da configuração de uma Loja) — não um campo editável no formulário, e <b>imutável</b> (<span class="badge rule-badge">RN-LOJ-10</span>): um Time nunca muda de Loja depois de criado.</p>
+<p><b><span class="badge rule-badge">RN-LOJ-02</span> — O Segmento do Time é o que dá acesso ao Funil.</b> Um Time com Segmento selecionado acessa o Funil daquele Segmento (via a relação 1:1 Segmento↔Funil, já fechada no módulo de Funis de Vendas). Um Time <b>sem</b> Segmento existe normalmente, mas não acessa nenhum Funil — útil para times administrativos ou de suporte que não trabalham leads diretamente. Se o Segmento for excluído do tenant, o Time fica sem Segmento (<span class="badge rule-badge">RN-SEG-09</span>).</p>
+<h2 id="3-4-escopos-store-team-e-self">3.4. Escopos <code>store</code>, <code>team</code> e <code>self</code></h2>
+<p>Os três escopos usados em todo o catálogo de permissões do produto (além de <code>all</code>) se ancoram nesta estrutura:</p>
+<div class="tablewrap"><table><thead><tr><th>Escopo</th><th>Alcance</th></tr></thead><tbody><tr><td><code>store</code></td><td>Todos os dados da Loja inteira — todos os Times dela e os usuários vinculados diretamente à Loja (<span class="badge rule-badge">RN-USR-15</span>), com ou sem Time.</td></tr><tr><td><code>team</code></td><td>Só os dados do Time do usuário.</td></tr><tr><td><code>self</code></td><td>Só os dados do próprio usuário.</td></tr></tbody></table></div>
+<p>Afetam <b>visibilidade de leads, pipeline e qualquer outro recurso do sistema</b> cujo catálogo de permissões ofereça esses escopos — a aplicação concreta é decidida em cada módulo consumidor (Leads, Simulações, etc.), não aqui. Este módulo só define a estrutura (Loja, Time) da qual esses escopos derivam.</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-loj-01-gest-o-de-lojas-crud"><span class="badge rf-badge">RF-LOJ-01</span> — Gestão de lojas (CRUD)</h2>
+<p><b>Como</b> gestor de estrutura, <b>eu quero</b> criar, consultar, editar, inativar e excluir Lojas <b>para</b> refletir as unidades de venda do tenant.</p>
+<p>Tela de configuração com quatro abas: <b>Informações gerais</b>, <b>Segmentos</b>, <b>Times</b>, <b>Créditos</b>. A listagem permite busca por nome ou código e filtros por status, por Região e pela situação dos Times ("Sem Time ativo": Lojas ativas sem nenhum Time ativo — alvo do alerta do Dashboard do Admin).</p>
+<h2 id="rf-loj-02-ciclo-de-vida-do-time"><span class="badge rf-badge">RF-LOJ-02</span> — Ciclo de vida do Time</h2>
+<p><b><span class="badge rule-badge">RN-LOJ-03</span> — Inativar um Time tem dois modos.</b> Ao inativar, o Time para de receber itens novos (leads e demais itens de trabalho — categorias em <span class="badge rule-badge">RN-USR-05</span>). O gestor escolhe entre:</p>
+<ul>
+<li><b>Inativação imediata</b> — exige redistribuir, na hora, todos os itens ativos daquele Time para outro Time <b>da mesma Loja</b>.</li>
+<li><b>Inativação após finalizar</b> — o Time entra em estado <b>Inativando</b>: para de receber itens novos, mas os que já estão em andamento seguem até o fim. Quando o último for concluído, o Time passa a <b>Inativo</b> automaticamente.</li>
+</ul>
+<p><b><span class="badge rule-badge">RN-LOJ-04</span> — Reativar durante a drenagem cancela a inativação agendada.</b> Se o gestor reativa um Time que está em <b>Inativando</b>, ele volta a <b>Ativo</b> e recomeça a receber itens novos — a inativação automática que estava agendada é cancelada, não só adiada.</p>
+<p><b><span class="badge rule-badge">RN-LOJ-05</span> — Excluir um Time.</b> O gestor escolhe entre migrar os membros do Time para outro Time (da mesma Loja), ou, se preferir não migrar, precisa redistribuir os itens ativos daquele Time para outro — mesmo mecanismo de <span class="badge rule-badge">RN-LOJ-03</span>. <b>A exclusão é soft-delete</b>, como a de Loja e a de Usuário (<span class="badge rule-badge">RN-LOJ-15</span>): o Time some das listas e das seleções, mas o histórico (Metas e vendas atribuídas a ele no Pago) continua apontando para ele, com a marca "(excluído)". As Metas do Time ficam preservadas como histórico.</p>
+<h2 id="rf-loj-04-gest-o-de-saldo-aba-cr-ditos"><span class="badge rf-badge">RF-LOJ-04</span> — Gestão de saldo (aba Créditos)</h2>
+<p><b>Como</b> operador do tenant, <b>eu quero</b> ver o saldo de cada Loja e adicionar créditos <b>para</b> manter a operação delas funcionando.</p>
+<p><b>Comportamento esperado:</b> a aba mostra o saldo atual, o Limite de gasto diário (somente leitura — quem edita é a própria Loja, <span class="badge rf-badge">RF-CRD-04</span> do módulo CRM · Créditos), o interruptor <b>"Pode receber lead sem saldo"</b> (<span class="badge rule-badge">RN-LOJ-12</span>) e o extrato completo (entidades <b>Saldo</b> e <b>Extrato</b>, definidas e detalhadas naquele módulo — este módulo só consome e adiciona, não redefine). Ação "Adicionar saldo": valor + nota opcional, gera um lançamento de Crédito imediatamente refletido no saldo — <b>um dos dois caminhos de adicionar saldo</b>, o outro sendo a própria Loja via Pix (<span class="badge rf-badge">RF-CRD-03</span>, CRM). Cada lançamento do Extrato abre os mesmos Detalhes da operação já definidos em Créditos (<span class="badge rf-badge">RF-CRD-06</span>) — não redefinidos aqui. Um campo próprio da Loja, <b>"Pode receber lead sem saldo"</b> (<code>Switch</code>), também vive nesta aba.</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-LOJ-11</span> — Adicionar saldo manualmente é ação exclusiva desta tela — mas não a única forma de adicionar saldo.</b> <i>(Revisão: a versão anterior afirmava exclusividade total, hoje falsa.)</i> Nenhuma outra tela do <b>Admin</b> permite adicionar saldo. No CRM, porém, a própria Loja adiciona saldo via Pix (<span class="badge rf-badge">RF-CRD-03</span>, módulo CRM · Créditos) — segundo caminho, fora desta tela. Débitos continuam sempre automáticos, por lead entregue (<span class="badge rule-badge">RN-CRD-01</span>); estorno de débito é <span class="badge rf-badge">RF-LOJ-05</span>, abaixo.</p>
+<p><b><span class="badge rule-badge">RN-LOJ-12</span> — "Pode receber lead sem saldo" habilita saldo negativo.</b> Campo booleano da Loja. Quando marcado, a Loja continua recebendo leads mesmo com saldo insuficiente — o débito é aplicado normalmente e o saldo pode ficar negativo (<span class="badge rule-badge">RN-CRD-01</span>, <span class="badge rule-badge">RN-CRD-03</span>, módulo CRM · Créditos). Uso típico: a Loja do próprio tenant operador. Efeito sobre os tipos de lead: <span class="badge rule-badge">RN-LOJ-18</span>. Desmarcado por padrão para Lojas novas. <b>Onde se edita:</b> na Aba Créditos, ao lado do saldo, e só por quem tem <code>stores:manage_credits</code> com escopo <code>all</code> — com <code>store</code>, o interruptor aparece <b>somente leitura</b>, porque o efeito é financeiro e um gestor de Loja não deve poder autorizar o próprio saldo negativo. <b>Ligar</b> pede confirmação descritiva (a Loja passa a poder ficar com saldo negativo); <b>desligar</b> é direto <i>(a confirmação é escolha desta revisão)</i>. Permanece como única exceção à regra padrão — confirmado pelo usuário, não revogado pela introdução do Limite de gasto diário.</p>
+<h2 id="rf-loj-05-estornar-d-bito"><span class="badge rf-badge">RF-LOJ-05</span> — Estornar débito</h2>
+<p><b>Como</b> operador do tenant, <b>eu quero</b> estornar um débito aplicado indevidamente à Loja <b>para</b> corrigir o saldo sem apagar o histórico.</p>
+<p><b>Comportamento esperado:</b> a partir do Detalhe de um lançamento de Débito no Extrato (aba Créditos, <span class="badge rf-badge">RF-CRD-06</span>), ação "Estornar" — pede um motivo (texto livre) e, ao confirmar, gera um lançamento de <b>Crédito</b> no valor do débito original, referenciando-o. Mesmo princípio de ledger append-only já estabelecido em Créditos (<span class="badge rule-badge">RN-CRD-06</span>) — o lançamento original nunca é editado nem excluído.</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-LOJ-13</span> — Estorno é exclusivo desta tela, nunca do CRM.</b> Diferente de Adicionar saldo (que agora tem dois caminhos — <span class="badge rule-badge">RN-LOJ-11</span>), Estornar continua existindo só aqui — a Loja nunca estorna o próprio débito, só consulta o resultado no Extrato dela.</p>
+<h2 id="rf-loj-03-ciclo-de-vida-da-loja"><span class="badge rf-badge">RF-LOJ-03</span> — Ciclo de vida da Loja</h2>
+<p><b><span class="badge rule-badge">RN-LOJ-06</span> — Inativar uma Loja.</b> Ela para de receber itens novos (leads e demais itens de trabalho — categorias em <span class="badge rule-badge">RN-USR-05</span>) em todos os seus Times. Diferente do Time, não há dois modos aqui — é sempre "para de receber novos, os em andamento seguem".</p>
+<p><b><span class="badge rule-badge">RN-LOJ-07</span> — Excluir uma Loja é bloqueado enquanto houver itens ativos.</b> O gestor precisa inativar primeiro e aguardar os processos em andamento se encerrarem, em qualquer Time da Loja, antes de poder excluí-la.</p>
+<p><b><span class="badge rule-badge">RN-LOJ-08</span> — Exclusão da Loja oferece excluir os usuários exclusivos dela.</b> Ao excluir, a interface pergunta se o gestor quer excluir também os usuários que estão associados <b>apenas</b> a esta Loja (pelo vínculo direto com a Loja ou via Time, considerando o Cargo; um usuário tem no máximo uma Loja e um Time — módulo de Usuários). Se sim, exibe a lista completa desses usuários, pré-marcada, para o gestor confirmar ou desmarcar individualmente antes de aplicar. <b>Exclusão de usuário aqui é soft-delete</b>: some das listagens do sistema, mas o registro permanece no banco — contradiz <span class="badge rule-badge">RN-USR-05</span>, que precisa ser atualizada (ver nota no topo deste documento).</p>
+<p><b><span class="badge rule-badge">RN-LOJ-09</span> — Excluir a Loja exclui os Times dela em cascata, também de forma suave (<span class="badge rule-badge">RN-LOJ-15</span>).</b> Confirmado. Como a exclusão da Loja já exige que não haja itens ativos em nenhum Time (<span class="badge rule-badge">RN-LOJ-07</span>), os Times dela estão necessariamente vazios de trabalho no momento da exclusão.</p>
+<p><b><span class="badge rule-badge">RN-LOJ-10</span> — O Time não pode ser transferido de Loja.</b> A Loja é definida na criação do Time e nunca muda — não existe ação de "mover Time para outra Loja" em nenhuma tela do produto.</p>
+<p><b><span class="badge rule-badge">RN-LOJ-14</span> — A Loja nasce com "Todas"; a primeira Região específica pede confirmação.</b> <i>(Regra que constava só na Descrição, na Microcopy e na Matriz de Estados; escrita no módulo na v0.7, espelhando a <span class="badge rule-badge">RN-PRM-06</span> de Promotoras.)</i> A Loja nasce <b>sem Região específica</b>, mostrada como o chip <b>"Todas"</b>, que equivale a não ter restrição regional (<span class="badge rule-badge">RN-REG-04</span>: a Loja sem Região vê todas as ofertas). O campo de Regiões não existe no cadastro, só na Configuração. Ao <b>escolher a primeira Região específica</b> de uma Loja existente, a interface pede uma <b>confirmação leve</b>, porque a Loja passa a ver só as ofertas de promotoras com Região em comum (ou sem Região) e deixa de ver as demais; as Regiões seguintes não pedem confirmação. Ao <b>remover a última Região específica</b>, o campo volta a "Todas" automaticamente, sem confirmação (é ampliar, não restringir). Uma Região <b>inativada ou excluída</b> (<span class="badge rule-badge">RN-REG-02</span>) é removida da Loja, e a Loja volta a "Todas" se era a última.</p>
+<p><b><span class="badge rule-badge">RN-LOJ-15</span> — Excluir uma Loja é exclusão suave (soft-delete), como a dos usuários.</b> A Loja excluída some das listagens e das seleções (inclusive da distribuição de leads), mas o <b>registro permanece</b>: o Extrato de Créditos (append-only, <span class="badge rule-badge">RN-CRD-06</span>), as leads e propostas já concluídas e os relatórios continuam referenciando-a, marcada como excluída. Vale também para os Times excluídos em cascata (<span class="badge rule-badge">RN-LOJ-09</span>). Não há ação de restaurar nesta versão. O <b>Código</b> de uma Loja excluída fica liberado para uso por outra Loja (a identidade é o registro, não o código). <i>(Decisão do usuário; a liberação do Código e o efeito nos Times são escolha desta revisão.)</i> <b>A exclusão (e a inativação) não é bloqueada por saldo:</b> quando o saldo da Loja é diferente de zero, o diálogo de exclusão mostra o saldo como <b>aviso</b>, e o Extrato permanece (Créditos, <span class="badge rule-badge">RN-CRD-09</span>). <i>(Decisão do usuário, levantamento do CRM.)</i></p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-LOJ-01</span></b> — Os tipos de lead exigem "Ativo" no mesmo Segmento; ao ativar, as quatro Origens nascem ligadas.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-02</span></b> — Segmento do Time dá acesso ao Funil correspondente; sem Segmento, sem Funil.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-03</span></b> — Inativar Time: imediata (com redistribuição) ou após finalizar (drenagem automática).</li>
+<li><b><span class="badge rule-badge">RN-LOJ-04</span></b> — Reativar Time em drenagem cancela a inativação agendada.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-05</span></b> — Excluir Time: migra membros ou redistribui itens; a exclusão é soft-delete (histórico e Metas preservados).</li>
+<li><b><span class="badge rule-badge">RN-LOJ-16</span></b> — Desmarcar "Ativo" de um Segmento é bloqueado enquanto houver leads em andamento nele.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-06</span></b> — Inativar Loja para recebimento de itens novos, sem modo imediato/drenagem — só um comportamento.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-07</span></b> — Excluir Loja bloqueado com itens ativos em qualquer Time.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-08</span></b> — Exclusão da Loja oferece soft-delete dos usuários exclusivos dela.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-09</span></b> — Exclusão da Loja cascade-exclui os Times (soft-delete, <span class="badge rule-badge">RN-LOJ-15</span>).</li>
+<li><b><span class="badge rule-badge">RN-LOJ-10</span></b> — Time não pode ser transferido de Loja; imutável após a criação.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-11</span></b> — Adicionar saldo manualmente é exclusivo desta tela no Admin, mas não o único caminho (a Loja também adiciona, no CRM).</li>
+<li><b><span class="badge rule-badge">RN-LOJ-12</span></b> — "Pode receber lead sem saldo" habilita saldo negativo; desmarcado por padrão. Editado na Aba Créditos, só com <code>manage_credits</code> em <code>all</code> (somente leitura com <code>store</code>); ligar pede confirmação.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-13</span></b> — Estornar débito é exclusivo desta tela, nunca do CRM.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-14</span></b> — A Loja nasce com "Todas"; a primeira Região específica pede confirmação leve; remover a última repõe "Todas".</li>
+<li><b><span class="badge rule-badge">RN-LOJ-15</span></b> — Excluir a Loja é soft-delete: o histórico permanece, e o Código é liberado. Saldo diferente de zero não bloqueia: o diálogo mostra o saldo como aviso.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-17</span></b> — Cada Loja escolhe, por Segmento, quais tipos de lead recebe (Campanha, Orgânica, Prospecção, Carteira Ativa); a elegibilidade exige a Origem ligada.</li>
+<li><b><span class="badge rule-badge">RN-LOJ-18</span></b> — A Loja com "Pode receber lead sem saldo" recebe todos os tipos: Origens ligadas e travadas.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Loja:</b></p>
+<ul>
+<li><b>Ativa</b> — opera Segmentos, recebe leads conforme a Aba Segmentos.</li>
+<li><b>Inativa</b> — não recebe itens novos em nenhum Time.</li>
+<li><b>Excluída</b> — bloqueada enquanto houver item ativo (<span class="badge rule-badge">RN-LOJ-07</span>); <b>soft-delete</b>, como o dos usuários associados (<span class="badge rule-badge">RN-LOJ-15</span>): some das listagens, e o histórico permanece.</li>
+</ul>
+<p><b>Time:</b></p>
+<ul>
+<li><b>Ativo</b> — recebe itens novos, conforme o Segmento associado.</li>
+<li><b>Inativando</b> — não recebe itens novos; itens em curso seguem; volta a Ativo se reativado (<span class="badge rule-badge">RN-LOJ-04</span>).</li>
+<li><b>Inativo</b> — sem itens em curso, não recebe novos. Alcançado por inativação imediata (com redistribuição) ou pelo fim da drenagem.</li>
+</ul>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a configuração do Funil em si (módulo Funis de Vendas), o cadastro de Segmentos e Regiões (módulos próprios), nem a atribuição de Cargo a usuário (módulo de Usuários & Permissões) — este módulo só define a estrutura Loja/Time à qual o usuário se associa.</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Segmentos</b> — lista de Segmentos do tenant, para a Aba Segmentos da Loja.</li>
+<li><b>Funis de Vendas</b> — o Funil correspondente ao Segmento escolhido no Time é o que efetivamente concede acesso ao pipeline.</li>
+<li><b>Regiões</b> — lista de Regiões, para o campo da Loja.</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Usuários</b> — a lista de Lojas e a de Times, para os campos Loja e Time do usuário; os escopos <code>store</code>/<code>team</code> derivam desta estrutura.</li>
+<li><b>Leads / pipeline (CRM)</b> — quais Funis cada Time efetivamente alcança e, para a distribuição de leads entre Lojas, a flag "Ativo" e os tipos de lead ligados por Segmento (<span class="badge rule-badge">RN-LOJ-17</span>) e o campo "Pode receber lead sem saldo" (<span class="badge rule-badge">RN-LOJ-12</span>).</li>
+<li><b>Ofertas e Simulações (CRM)</b> — a Região da Loja, que filtra as Ofertas visíveis (<span class="badge rule-badge">RN-REG-04</span>, <span class="badge rule-badge">RN-OFR-02</span>).</li>
+</ul>
+<p><b>Depende também de:</b></p>
+<ul>
+<li><b>Créditos</b> (CRM) — dono das entidades Saldo, Extrato e Detalhes da operação; este módulo só as exibe e escreve nelas via Adicionar saldo (<span class="badge rule-badge">RN-LOJ-11</span>) e Estornar (<span class="badge rf-badge">RF-LOJ-05</span>). Expõe de volta: o Limite de gasto diário (editado só no CRM), exibido aqui somente leitura.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<ol>
+<li><i>(Resolvido na v0.14.)</i> <b>Atualização de <span class="badge rule-badge">RN-USR-05</span></b> em Usuários: já incorpora a exclusão em cascata (soft-delete).</li>
+<li><b><code>corban-anotacoes-operacoes-loja.md</code>: resolvido.</b> Atualizado para "Parcialmente superado": as seções 1 a 5 (Operação-instância por Loja) são revogadas por este módulo, a seção 7 foi superada por Cargos v0.4, e só a seção 6 segue aberta.</li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Lojas v0.14 — módulo da aplicação Admin, seção Vendas.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-lojas-matriz-de-permiss-es">Corban Admin · Lojas — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Vendas</p>
+<p><b>Documento pai:</b> Corban Admin · Lojas (módulo v0.6)</p>
+<p><b>Versão:</b> 0.2</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Adiciona <code>manage_credits</code> e <code>refund</code> ao recurso <code>stores</code> — Aba Créditos (Adicionar saldo, Estornar), nunca coberta aqui antes.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre dois recursos: <code>stores</code> (Loja) e <code>teams</code> (Time) — entidades distintas, com Cargos podendo governar uma sem a outra (ex.: um gestor de RH que só mexe em Times, não em dados cadastrais de Loja). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz-stores">1. Matriz — <code>stores</code></h2>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>view</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>create</code></td><td><code>all</code></td></tr><tr><td><code>edit</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>manage_segments</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>manage_credits</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>refund</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>inactivate</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>reactivate</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>delete</code></td><td><code>all</code></td></tr></tbody></table></div>
+<h2 id="2-matriz-teams">2. Matriz — <code>teams</code></h2>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>view</code></td><td><code>all</code>, <code>store</code>, <code>team</code></td></tr><tr><td><code>create</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>edit</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>inactivate</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>reactivate</code></td><td><code>all</code>, <code>store</code></td></tr><tr><td><code>delete</code></td><td><code>all</code>, <code>store</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="3-por-que-create-e-delete-de-loja-s-o-exclusivos-de-all">3. Por que <code>create</code> e <code>delete</code> de Loja são exclusivos de <code>all</code></h2>
+<p>Abrir ou fechar uma unidade de venda é decisão de tenant, não de quem já trabalha numa Loja específica — não existe "gerente de loja que cria a própria loja". <code>delete</code> também carrega a cascata de soft-delete de usuários (<span class="badge rule-badge">RN-LOJ-08</span>), sensível demais para escopo <code>store</code>.</p>
+<h2 id="4-por-que-teams-view-chega-a-team">4. Por que <code>teams:view</code> chega a <code>team</code></h2>
+<p>É o único par recurso:ação deste módulo — e um dos poucos do produto — que oferece os três escopos não-<code>all</code>. Faz sentido: um operador comum, sem nenhuma permissão de gestão, ainda precisa saber quem são os colegas do próprio Time (para redistribuição informal, por exemplo). <code>store</code> e <code>all</code> seguem a hierarquia normal (gestor de loja vê todos os times dela; gestor de tenant vê tudo).</p>
+<h2 id="5-stores-manage-segments-stores-manage-credits-e-stores-refund-s-o-a-es-pr-prias-separadas-de-edit">5. <code>stores:manage_segments</code>, <code>stores:manage_credits</code> e <code>stores:refund</code> são ações próprias, separadas de <code>edit</code></h2>
+<p>Mesma lógica já usada em outros módulos (ex.: <code>roles:manage_permissions</code> separado de <code>roles:edit</code>): mexer nas flags "Ativo"/"Recebe leads" por Segmento, adicionar saldo ou estornar um débito têm efeito operacional ou financeiro direto — mais sensíveis que editar nome ou endereço da Loja. <code>refund</code> é a mais sensível das três (reverte uma transação já aplicada) — por isso separada de <code>manage_credits</code>, não incluída nela: um Cargo pode adicionar saldo sem poder estornar.</p>
+<hr class="divider">
+<h2 id="6-owner-tenant">6. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Lojas v0.2.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

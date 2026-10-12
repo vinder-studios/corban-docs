@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Relacionamentos e Regras de Negócio · CRM — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topbar">
+    <div class="breadcrumbs">
+      <a href="../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="index.html">CRM</a>
+      <span class="sep">/</span>
+      <span class="current">Relacionamentos &amp; Regras</span>
+    </div>
+    <div class="actions">
+      <a href="index.html" class="btn-nav">Módulos do CRM</a>
+      <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+  <header>
+    <div class="eyebrow"><b>Mapa de Relações e Regras</b> · Aplicação CRM</div>
+    <h1>Relacionamentos e Regras de Negócio · CRM <span class="app-badge crm">CRM</span></h1>
+  </header>
+  <article>
+    <h1 id="corban-crm-relacionamentos-e-regras-de-neg-cio">Corban CRM · Relacionamentos e Regras de Negócio</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.2</p>
+<p><b>Data:</b> 10/10/2026</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.2</td><td>Pendências resolvidas (decisões do usuário): multiplicador gravado na associação da Oferta (Tabelas Multiplicadoras v0.6); ViaCEP incluído na spec §4.4 e no C4; as quatro relações inferidas confirmadas.</td></tr><tr><td>0.1</td><td>Versão inicial, montada a partir das seções "Entidades e conceitos" e "Depende de" dos 14 módulos do CRM. Relações sem regra explícita na spec estavam marcadas como inferidas.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Visão consolidada das relações entre as entidades do CRM e delas com o Admin e o Marketing. Cada relação remete ao módulo dono da regra. Não substitui os documentos de módulo; existe para dar a leitura rápida do grafo e servir de base ao modelo de dados. <b>Em caso de divergência, vale o módulo.</b></p>
+<p>Entidades do Admin que o CRM só consome (Funil, Stage, Oferta, Status de Proposta, Loja, Time, Usuário, Cargo, Segmento) estão no documento de relacionamentos do Admin; aqui aparecem só pelo lado do CRM.</p>
+<hr class="divider">
+<h1 id="lead">🎯 Lead</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Lead → Funil</b> (Admin)</td><td><code>N : 1</code></td><td>Obrigatório. Vem do Segmento; a Lead nasce no Stage tipo Novo do Funil (<span class="badge rule-badge">RN-FNL-13</span>, <span class="badge rule-badge">RN-FNL-15</span>).</td></tr><tr><td><b>Lead → Stage</b> (Admin)</td><td><code>N : 1</code></td><td>Obrigatório; sempre um Stage do próprio Funil. <b>Só muda por Ação</b> (<span class="badge rule-badge">RN-LED-11</span>), nunca por arrastar.</td></tr><tr><td><b>Lead → Loja</b> (Admin)</td><td><code>N : 1</code></td><td>Vazio só em trânsito, enquanto a distribuição entre Lojas resolve (<span class="badge rule-badge">RN-LED-01</span>). Isolamento absoluto entre Lojas, mesmo no mesmo Funil (<span class="badge rule-badge">RN-LED-06</span>).</td></tr><tr><td><b>Lead → Operador</b> (Usuário)</td><td><code>N : 1</code></td><td>Vazio enquanto a Lead está no pool da Loja (<span class="badge rule-badge">RN-LED-05</span>).</td></tr><tr><td><b>Lead → Cliente</b></td><td><code>N : 1</code> (opcional)</td><td>A Lead nasce sem Cliente; o Cliente é criado ou associado quando ela reúne Nome + CPF + Telefone (<span class="badge rule-badge">RN-CLI-01</span>). Mesmo CPF associa ao Cliente existente, nunca duplica (<span class="badge rule-badge">RN-CLI-02</span>). Um Cliente pode ter várias Leads ao longo do tempo.</td></tr><tr><td><b>Lead → Promotora</b> (Admin)</td><td><code>N : 1</code> (opcional)</td><td>Pré-preenche a Promotora da Simulação (<span class="badge rule-badge">RN-SIM-06</span>).</td></tr><tr><td><b>Lead → Origem de Venda</b> (Admin)</td><td><code>N : 1</code> (opcional)</td><td>Rótulo editável. Na Lead do Marketing nasce copiada da Lista ou Varredura (<span class="badge rule-badge">RN-LED-16</span>).</td></tr><tr><td><b>Lead → Lista ou Varredura</b> (Marketing)</td><td><code>N : 1</code> (só Prospecção e Carteira Ativa)</td><td>Referência <b>imutável</b>, somente leitura (<span class="badge rule-badge">RN-LED-16</span>). Vazia nas demais Origens.</td></tr><tr><td><b>Lead → Resumo das Ofertas elegíveis</b></td><td><code>1 : N</code> (só Leads do Marketing)</td><td>Gravado na injeção, somente leitura, com os requisitos não avaliados (<span class="badge rule-badge">RN-LED-16</span>).</td></tr><tr><td><b>Lead → Conversa</b></td><td><code>1 : 1</code></td><td>Ver Conversa.</td></tr><tr><td><b>Lead → Simulação</b></td><td><code>1 : N</code></td><td>Ver Simulação.</td></tr><tr><td><b>Lead → Proposta</b></td><td><code>1 : 0..1</code></td><td>No máximo uma Proposta por Lead (<span class="badge rule-badge">RN-PRP-01</span>).</td></tr><tr><td><b>Lead → Débito</b> (Créditos)</td><td><code>1 : 0..1</code></td><td>Só as Origens com linha de preço debitam, uma vez, ao atribuir à Loja (<span class="badge rule-badge">RN-LED-13</span>, <span class="badge rule-badge">RN-CRD-01</span>). Recontato e Manual não debitam. Um único débito por Lead.</td></tr><tr><td><b>Lead</b></td><td>—</td><td><b>Origem da lead</b> definida pelo sistema, uma vez, imutável (<span class="badge rule-badge">RN-LED-12</span>). Lead que reabre? Só por Ação Reabrir; Lead cancelada por Proposta não reabre (<span class="badge rule-badge">RN-FNL-19</span>). Não é excluída fisicamente (exclusão suave, RN-SC-08).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="cliente">👤 Cliente</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Cliente → Loja</b> (Admin)</td><td><code>N : N</code> (associação)</td><td>É o que controla quem vê o Cliente (<span class="badge rule-badge">RN-CLI-04</span>). A associação nasce <b>só</b> quando uma Lead do Cliente é distribuída à Loja. Simulação ou Proposta com o CPF não associam (<span class="badge rule-badge">RN-CLI-04</span>). Excluir ou inativar a Loja não afeta o Cliente (<span class="badge rule-badge">RN-CLI-10</span>).</td></tr><tr><td><b>Cliente → Lead</b></td><td><code>1 : N</code></td><td>Ver Lead. Cliente pode existir sem Lead (nasce de Lista do Marketing, <span class="badge rule-badge">RN-CLI-03</span>).</td></tr><tr><td><b>Cliente → Benefício</b></td><td><code>1 : N</code></td><td>Zero ou mais, cada um com Matrícula, Banco, Tipo de Conta, Agência e Conta (<span class="badge rule-badge">RN-CLI-08</span>).</td></tr><tr><td><b>Cliente → Documento do Cliente</b></td><td><code>1 : N</code></td><td>Aparecem em todas as negociações do Cliente; distintos dos Documentos da Proposta (<span class="badge rule-badge">RN-PRP-11</span>, <span class="badge rf-badge">RF-CLI-04</span>).</td></tr><tr><td><b>Cliente → Contrato</b></td><td><code>1 : N</code></td><td>Histórico interno do tenant; as Lojas não veem (<span class="badge rule-badge">RN-CLI-13</span>).</td></tr><tr><td><b>Cliente → Simulação</b></td><td><code>1 : N</code> (opcional do lado da Simulação)</td><td>Associação automática por CPF, só para Cliente já associado à Loja (<span class="badge rule-badge">RN-SIM-05</span>).</td></tr><tr><td><b>Cliente → Proposta</b></td><td><code>1 : N</code></td><td>Toda Proposta tem Cliente, por referência ou dados inline (Propostas, §3.1).</td></tr><tr><td><b>Cliente</b></td><td>—</td><td><b>CPF único no tenant</b> quando preenchido; opcional, preenchido uma vez e depois imutável (<span class="badge rule-badge">RN-CLI-11</span>). Sem CPF, reaproveita por Nome completo + Telefone exatos (<span class="badge rule-badge">RN-CLI-12</span>). Sem fusão de Clientes nesta versão.</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="contrato-hist-rico-do-cliente">📑 Contrato (histórico do Cliente)</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Contrato → Cliente</b></td><td><code>N : 1</code></td><td>Obrigatório.</td></tr><tr><td><b>Contrato → Proposta</b></td><td><code>1 : 1</code> (Origem "Proposta Paga")</td><td>Criado quando a Proposta chega a Pago e <b>acompanha</b> as edições posteriores dela (<span class="badge rule-badge">RN-PRP-18</span>).</td></tr><tr><td><b>Contrato → Lista</b> (Marketing)</td><td><code>N : 1</code> (Origem "Importado")</td><td>Gravado a partir das colunas de contrato da Lista (<span class="badge rule-badge">RN-PRS-15</span>).</td></tr><tr><td><b>Contrato → Segmento, Banco</b></td><td><code>N : 1</code></td><td>Segmento da Proposta (via Lead) ou o alvo da Lista; Banco quando conhecido (API do Banco Central).</td></tr><tr><td><b>Contrato</b></td><td>—</td><td>Operação do catálogo fixo. Sem Parcela e Prazo, fica "sem dados para análise" na Carteira Ativa (<span class="badge rule-badge">RN-CLI-13</span>).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="simula-o">🧮 Simulação</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Simulação → Lead</b></td><td><code>N : 1</code> (opcional)</td><td>Presente quando parte do contexto de uma Lead.</td></tr><tr><td><b>Simulação → Cliente</b></td><td><code>N : 1</code> (opcional)</td><td>Ver Cliente. Os dados do cliente são sempre gravados <b>inline</b> no snapshot (<span class="badge rule-badge">RN-SIM-05</span>).</td></tr><tr><td><b>Simulação → Segmento, Produto, Promotora</b> (Admin)</td><td><code>N : 1</code></td><td>Obrigatórios; com a Operação (catálogo fixo), definem as Ofertas avaliadas (<span class="badge rule-badge">RN-SIM-06</span>, RN-SIM-06a).</td></tr><tr><td><b>Simulação → Resultado por Oferta</b></td><td><code>1 : N</code></td><td>Uma linha por Oferta avaliada: elegível ou não, motivo, requisitos que falharam com o valor da Oferta, taxa, prazo, parcela, valores (<span class="badge rule-badge">RN-SIM-11</span>).</td></tr><tr><td><b>Resultado → Oferta</b> (Admin)</td><td><code>N : 1</code></td><td>Referência <b>e</b> snapshot dos valores da época; mudar a Oferta depois não altera a Simulação.</td></tr><tr><td><b>Simulação</b></td><td>—</td><td><b>Imutável</b>; refazer gera registro novo (§3.1). Três origens de disparo: Manual, Automática via Lead, Marketing (<span class="badge rule-badge">RN-SIM-01</span>). Não consome Créditos (<span class="badge rule-badge">RN-SIM-03</span>).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="proposta">📝 Proposta</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Proposta → Lead</b></td><td><code>0..1 : 1</code></td><td>Opcional; quando presente, 1:1 (<span class="badge rule-badge">RN-PRP-01</span>). Só o nascimento automático (Formalização) sempre tem Lead (<span class="badge rule-badge">RN-PRP-02</span>).</td></tr><tr><td><b>Proposta → Cliente</b></td><td><code>N : 1</code></td><td>Obrigatório: referência ao Cliente <b>ou</b> dados inline (CPF, Nome, Telefone).</td></tr><tr><td><b>Proposta → Operador</b> (Usuário)</td><td><code>N : 1</code></td><td>Obrigatório. Recebe o crédito da venda (<span class="badge rule-badge">RN-PRP-16</span>).</td></tr><tr><td><b>Proposta → Atores</b> (Usuários)</td><td><code>N : 1</code> cada (Consultor, Averbador, Emissor de Boleto, Digitador)</td><td>Opcionais; cada um trava ao ser atribuído (<span class="badge rule-badge">RN-PRP-09</span>). Entram no escopo <code>self</code> (<span class="badge rule-badge">RN-PRP-17</span>), mas não recebem crédito.</td></tr><tr><td><b>Proposta → Status de Proposta</b> (Admin)</td><td><code>N : 1</code></td><td>Obrigatório; nasce no ativo mais antigo do tipo Novo (<span class="badge rule-badge">RN-STP-08</span>). O Tipo comanda o comportamento e o que é editável (<span class="badge rule-badge">RN-PRP-15</span>).</td></tr><tr><td><b>Proposta → Oferta</b> (Admin)</td><td><code>N : 1</code> + snapshot</td><td>Uma só; pode faltar em Novo, obrigatória para sair dele. Snapshot na associação e a cada troca: Oferta, Produto, Promotora, Banco, Operação, taxa de comissão e multiplicador (<span class="badge rule-badge">RN-PRP-05</span>, <span class="badge rule-badge">RN-PRP-07</span>). Travada em Pago e Cancelado.</td></tr><tr><td><b>Proposta → Simulação de referência</b></td><td><code>N : 0..1</code></td><td>Pré-preenche o valor.</td></tr><tr><td><b>Proposta → Banco de origem</b></td><td><code>N : 0..1</code></td><td>Obrigatório em Portabilidade e Portabilidade com Refinanciamento (<span class="badge rule-badge">RN-PRP-14</span>); API do Banco Central.</td></tr><tr><td><b>Proposta → Origem de Venda</b> (Admin)</td><td><code>N : 0..1</code></td><td>Copiada da Lead na criação, depois independente (<span class="badge rule-badge">RN-PRP-13</span>).</td></tr><tr><td><b>Proposta → Documento da Proposta</b></td><td><code>1 : N</code></td><td>Exclusivos da negociação (<span class="badge rule-badge">RN-PRP-11</span>).</td></tr><tr><td><b>Proposta → Linha do tempo</b></td><td><code>1 : N</code></td><td>Gerada pelo sistema, não editável (<span class="badge rule-badge">RN-PRP-12</span>).</td></tr><tr><td><b>Proposta → Atribuição no Pago</b></td><td><code>1 : 0..1</code></td><td>Gravada no Pago: Operador, <b>Time</b> e <b>Cargo</b> naquele instante, Valor de meta e valor da comissão (<span class="badge rule-badge">RN-PRP-05</span>). Metas, Rankings, Dashboard e Relatórios leem esta atribuição.</td></tr><tr><td><b>Proposta → Contrato</b></td><td><code>1 : 0..1</code></td><td>Ver Contrato.</td></tr><tr><td><b>Proposta</b></td><td>—</td><td><b>Nunca é excluída</b> (<span class="badge rule-badge">RN-PRP-08</span>); engano se resolve cancelando. Pago e Cancelado movem a Lead para o Stage do mesmo Tipo (<span class="badge rule-badge">RN-PRP-03</span>). Não debita saldo (<span class="badge rule-badge">RN-PRP-06</span>).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="conversa">💬 Conversa</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Conversa → Lead</b></td><td><code>1 : 1</code></td><td>O SmartCorbans persiste <b>só a associação</b> com a conversa da Huggy; as mensagens não são gravadas (Chat, §3.1).</td></tr><tr><td><b>Conversa</b></td><td>—</td><td>Ativa do Stage Novo até Pago ou Cancelado; depois, somente leitura (<span class="badge rule-badge">RN-CHT-02</span>, <span class="badge rule-badge">RN-CHT-05</span>). Mensagem sem Lead cria a Lead (<span class="badge rule-badge">RN-CHT-01</span>).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="cr-ditos">💰 Créditos</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Loja → Saldo</b></td><td><code>1 : 1</code></td><td>Saldo em R$ e Limite de gasto diário opcional (Créditos, §3.1). Nunca negativo, exceto com a flag "Pode receber lead sem saldo" (<span class="badge rule-badge">RN-CRD-03</span>).</td></tr><tr><td><b>Loja → Lançamento (Extrato)</b></td><td><code>1 : N</code></td><td><b>Append-only</b>: nada é editado ou excluído (Créditos, §3.2). Cada lançamento guarda o saldo resultante.</td></tr><tr><td><b>Lançamento de Débito → Lead</b></td><td><code>1 : 1</code></td><td>Ver Lead. Guarda o Funil, a Origem e o Produto que definiram o preço.</td></tr><tr><td><b>Lançamento de Estorno → Débito</b></td><td><code>0..1 : 1</code></td><td>O estorno é um Crédito novo que referencia o Débito original (<span class="badge rule-badge">RN-CRD-06</span>). Um débito só pode ser estornado uma vez.</td></tr><tr><td><b>Lançamento de Crédito → Cobrança Pix</b></td><td><code>0..1 : 1</code></td><td>A cobrança tem estado próprio (Aguardando, Confirmado, Expirado/Cancelado); só a confirmada gera lançamento (Créditos, §6).</td></tr><tr><td><b>Lançamento de Crédito manual → Usuário do Admin</b></td><td><code>N : 1</code></td><td>Quem adicionou, com nota opcional.</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="multiplicador-de-meta">✖️ Multiplicador de Meta</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Multiplicador → Loja × Oferta</b></td><td>único por par</td><td>Ausência de registro <b>é</b> 100% (<span class="badge rule-badge">RN-MUT-01</span> a 03). Só para Ofertas que a Loja enxerga pela Região.</td></tr><tr><td><b>Multiplicador → Proposta</b></td><td>—</td><td>Copiado como snapshot na Proposta ao associar a Oferta e a cada troca; travado a partir do Pago (<span class="badge rule-badge">RN-MUT-04</span>, <span class="badge rule-badge">RN-PRP-05</span>).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="meta">🏁 Meta</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Meta → Time ou Membro</b></td><td><code>N : 1</code>, exclusivo</td><td>Um destino só, nunca os dois (<span class="badge rule-badge">RN-MET-01</span>). Vários por destino, inclusive do mesmo Tipo (<span class="badge rule-badge">RN-MET-02</span>).</td></tr><tr><td><b>Meta de Time → Cargos elegíveis</b></td><td><code>N : N</code></td><td>Opcional; filtra quem conta, pelo Cargo gravado no Pago (<span class="badge rule-badge">RN-MET-11</span>).</td></tr><tr><td><b>Meta individual → Meta de Time de origem</b></td><td><code>N : 1</code></td><td>Só nas geradas por distribuição (<span class="badge rule-badge">RN-MET-06</span>). Encerrada, nunca excluída, quando o Membro deixa de ser elegível (<span class="badge rule-badge">RN-MET-10</span>).</td></tr><tr><td><b>Meta → Proposta</b></td><td>—</td><td>Sem vínculo gravado: o progresso é calculado das Propostas Pagas pela atribuição no Pago, dentro do Prazo (<span class="badge rule-badge">RN-MET-03</span>). Não há tabela de ligação Meta↔Proposta.</td></tr><tr><td><b>Meta</b></td><td>—</td><td>Excluir o Time encerra as Metas dele (<span class="badge rule-badge">RN-MET-12</span>). Tipo travado após a criação (<span class="badge rule-badge">RN-MET-05</span>).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="ranking">🏆 Ranking</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Ranking → Loja</b></td><td><code>N : 1</code></td><td>Sempre de uma Loja, nunca cross-Loja (<span class="badge rule-badge">RN-RNK-01</span>).</td></tr><tr><td><b>Ranking → Cargos elegíveis</b></td><td><code>N : N</code></td><td>Só em Tipo Membros (<span class="badge rule-badge">RN-RNK-11</span>).</td></tr><tr><td><b>Loja → Link do Modo TV</b></td><td><code>1 : 0..1</code></td><td>Token gerado no primeiro acesso a Rankings; regenerar invalida o anterior (<span class="badge rule-badge">RN-RNK-12</span>).</td></tr><tr><td><b>Ranking → Proposta</b></td><td>—</td><td>Calculado das Propostas Pagas do mês, pela atribuição no Pago (<span class="badge rule-badge">RN-RNK-02</span>). Sem vínculo gravado.</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="membro-time-e-configura-es">👥 Membro, Time e Configurações</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Membro = Usuário</b> (Admin)</td><td>—</td><td>Mesma entidade, com escopo <code>store</code> (CRM · Membros). Nasce na Loja de quem cadastra (<span class="badge rule-badge">RN-MBR-01</span>).</td></tr><tr><td><b>Membro → Time</b></td><td><code>N : 0..1</code></td><td>No máximo um Time, da mesma Loja; trocar move, com confirmação (<span class="badge rule-badge">RN-TIM-02</span>, <span class="badge rule-badge">RN-USR-02</span>).</td></tr><tr><td><b>Time</b> (Admin)</td><td>—</td><td>Mesma entidade do Admin · Lojas; o CRM não acrescenta campos (CRM · Times).</td></tr><tr><td><b>Loja → Segmento × Origem da lead</b> (Admin)</td><td>—</td><td>O CRM edita o recorte "Ativo" e os tipos de lead que recebe por Segmento, no mesmo registro do Admin (<span class="badge rule-badge">RN-CFG-01</span>).</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="relat-rios-e-dashboard">📊 Relatórios e Dashboard</h1>
+<div class="tablewrap"><table><thead><tr><th>Relacionamento</th><th>Cardinalidade</th><th>Regras</th></tr></thead><tbody><tr><td><b>Visão salva → Usuário</b></td><td><code>N : 1</code></td><td>Pessoal (Relatórios, §3.2).</td></tr><tr><td><b>Dashboard, Relatórios</b></td><td>—</td><td>Leituras sobre Leads, Propostas, Metas e Créditos; sem entidade própria além da Visão salva.</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="pend-ncias-entre-documentos">📌 Pendências entre documentos</h1>
+<p>Nenhuma. As três da v0.1 foram resolvidas na v0.2.</p>
+<hr class="divider">
+<p>_Fim do documento. Relacionamentos e Regras de Negócio v0.2 — visão consolidada, CRM._</p>
+  </article>
+  <footer>
+    <div class="footer-links">
+      <a href="../../index.html">← Início da Documentação</a>
+      <a href="../index.html">Hub de Especificação</a>
+      <a href="index.html">Hub do CRM</a>
+      <a href="Relacionamentos e Regras de Negócio.md" target="_blank">Ver Fonte Markdown</a>
+    </div>
+    <div>SmartCorbans · Relacionamentos e Regras · CRM</div>
+  </footer>
+</div>
+</body>
+</html>

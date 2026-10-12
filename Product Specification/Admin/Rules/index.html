@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Regras · Admin — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Admin</a>
+      <span class="sep">/</span>
+      <span class="current">Regras</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Admin
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Roles/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Cargos</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Dashboard/index.html" >Dashboard</option><option value="../LayoutLead/index.html" >Layout de Lead (Card e Sheet)</option><option value="../Offers/index.html" >Ofertas</option><option value="../Products/index.html" >Produtos</option><option value="../Promoters/index.html" >Promotoras</option><option value="../ProposalStatus/index.html" >Status de Proposta</option><option value="../Regions/index.html" >Regiões</option><option value="../Reports/index.html" >Relatórios</option><option value="../Roles/index.html" >Cargos</option><option value="../Rules/index.html" selected>Regras</option><option value="../SalesFunnel/index.html" >Funis de Vendas</option><option value="../SalesOrigin/index.html" >Origem de Venda</option><option value="../Segments/index.html" >Segmentos</option><option value="../Stores/index.html" >Lojas</option><option value="../Users/index.html" >Usuários</option></select>
+    <a href="../SalesFunnel/index.html" class="pager-btn">Funis de Vendas <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Admin · Oferta comercial
+    </div>
+    <h1>Regras <span class="app-badge admin">Admin</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Admin · Oferta comercial</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.9 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Admin — Documento de Produto (guarda-chuva da aplicação)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-admin-regras">Corban Admin · Regras</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin</p>
+<p><b>Seção:</b> Oferta comercial</p>
+<p><b>Documento pai:</b> Corban Admin — Documento de Produto (guarda-chuva da aplicação)</p>
+<p><b>Versão:</b> 0.9</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.1</td><td>Versão inicial.</td></tr><tr><td>0.2</td><td>Quatro mudanças: (1) operadores <b>Igual a</b> e <b>Diferente de</b> passam a servir campos numéricos <b>e</b> de texto; (2) Regra <b>sem requisito é permitida</b>; (3) <b>Regra não tem inativação nem status</b> — o ciclo de vida é criar/editar/excluir, e <b>não há bloqueio de exclusão</b>; (4) excluir uma Regra a <b>desvincula em lote</b> de todas as Ofertas, mediante alerta.</td></tr><tr><td>0.3</td><td>Correção: <b>Regra sem requisito não existe</b> — mínimo de um requisito é obrigatório para salvar. A v0.2 registrou o oposto, por interpretação errada da decisão.</td></tr><tr><td>0.4</td><td>O alerta de exclusão passa a comunicar a <b>consequência</b>, não só a contagem de Ofertas — com texto distinto para Regra bloqueante e de aviso (<span class="badge rule-badge">RN-RGR-10</span>). Sem itens abertos.</td></tr><tr><td>0.5</td><td>Regra ganha o campo <b>Mensagem de erro</b> — o texto que o operador vê na simulação quando o cliente não atende à condição. Substitui o nome da Regra como motivo exibido (<span class="badge rule-badge">RN-RGR-11</span>).</td></tr><tr><td>0.6</td><td><b>Reformulação de fundo.</b> Requisito deixa de carregar Valor — passa a ser só <b>Campo + Operador</b> (um template). O(s) valor(es) de cada requisito passam a ser definidos <b>por Oferta</b>, no momento da associação (<span class="badge rule-badge">RN-RGR-12</span>). <b>Comportamento vira padrão</b>, sobrescrevível por Oferta (<span class="badge rule-badge">RN-RGR-05</span> revogada e substituída). Nova regra sobre alterar o template de um requisito já usado por Ofertas (<span class="badge rule-badge">RN-RGR-13</span>). Mensagem de erro passa a ser um item aberto — texto estático pode não refletir o valor real de cada Oferta.</td></tr><tr><td>0.7</td><td><span class="badge rule-badge">RN-RGR-13</span> ganha bloqueio parcial: editar Campo/Operador de um requisito é <b>bloqueado</b> se alguma Oferta que o usa estiver <b>Ativa</b> — permanece só aviso (não bloqueio) quando as Ofertas associadas estão Inativas. Fecha o item aberto correspondente no módulo de Ofertas.</td></tr><tr><td>0.8</td><td><b>A mensagem de erro passa a ser a explicação geral da Regra, sem valores</b> (<span class="badge rule-badge">RN-RGR-11</span>): os valores vivem na Oferta (<span class="badge rule-badge">RN-RGR-12</span>) e variam entre elas, então a mensagem não pode citá-los. Quem mostra o valor é a Simulação, listando os requisitos que falharam com o valor da Oferta (Simulações v0.10, <span class="badge rule-badge">RN-SIM-11</span>), o que também resolve a dúvida de "qual requisito falhou" numa Regra de vários requisitos. Fecha o §9. Corrige resíduos: <span class="badge rf-badge">RF-RGR-01</span> (dizia "inativar" e "filtro por status", que a Regra não tem); §3.1 e <span class="badge rule-badge">RN-RGR-07</span> ("diferente de todos os demais cadastros": Origem de Venda também não tem status, e Regiões, Segmentos e Status de Proposta também não bloqueiam a exclusão); <span class="badge rule-badge">RN-RGR-02</span> (são três tipos de campo, não dois). Reordena esta tabela.</td></tr><tr><td>0.9</td><td><b>A mensagem de erro passa a ter dois públicos.</b> Além do operador, na Simulação (CRM), quem lê o motivo é o Gestor de Marketing, na pré-análise em lote (Marketing, Prospecção <span class="badge rf-badge">RF-PRS-03</span> e Carteira Ativa), onde a mensagem explica por que um contato foi <b>Descartado</b>. A <span class="badge rule-badge">RN-RGR-11</span> e o texto do campo acompanham; o conteúdo da mensagem não muda.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-RGR) e regras de negócio (RN-RGR) próprios.</p>
+<blockquote><p><b>Este módulo é o mais denso da série.</b> Diferente dos demais cadastros — que são nome, código e status —, uma Regra carrega uma estrutura interna: uma lista de requisitos, cada um com campo, operador e valores. É a razão de ele ter sido separado dos Cadastros simples.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Manter as condições de elegibilidade que determinam se um cliente pode ou não receber uma oferta. As Regras são cadastradas uma vez e reutilizadas por quantas Ofertas fizer sentido — o que evita recriar a mesma condição a cada oferta nova.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor comercial</b> — usuário cujas permissões efetivas incluem a gestão deste módulo. Tipicamente um Cargo de escopo <code>all</code>.</li>
+<li><b>Operador</b> — consome as Regras indiretamente: ao simular, vê o resultado da avaliação (elegível, elegível com alerta, ou não elegível com o motivo).</li>
+<li><b>Gestor de Marketing</b> — lê a mesma mensagem de erro na pré-análise em lote, como motivo de descarte de um contato ou Cliente (Marketing).</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-regra">3.1. Regra</h2>
+<p>Condição de elegibilidade reutilizável. Cadastro <b>livre do tenant</b>.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Como aparece na associação com Ofertas e nos motivos de desqualificação (ex.: "Idade INSS", "Sem atraso relevante").</td></tr><tr><td>Descrição</td><td>Não</td><td>Texto curto explicando o que a regra verifica.</td></tr><tr><td>Comportamento padrão</td><td>Sim</td><td><b>Bloqueia</b> ou <b>Avisa</b> — ver §3.5. É o valor inicial; cada Oferta pode sobrescrevê-lo na associação.</td></tr><tr><td>Mensagem de erro</td><td>Sim</td><td>Explicação <b>geral</b>, sem valores, exibida quando o cliente não atende à Regra: ao operador, na Simulação, e ao Gestor de Marketing, na pré-análise em lote. Os valores variam por Oferta, e quem os mostra é a Simulação — ver <span class="badge rule-badge">RN-RGR-11</span>.</td></tr><tr><td>Requisitos</td><td>Sim</td><td><b>Ao menos um.</b> Não existe Regra sem requisito — ver <span class="badge rule-badge">RN-RGR-06</span>. Cada requisito aqui é só <b>Campo + Operador</b> — sem valor (<span class="badge rule-badge">RN-RGR-12</span>).</td></tr></tbody></table></div>
+<p><b>Sem código</b> — a Regra é referenciada pelo nome, não por integração.</p>
+<p><b>Sem status (ativo/inativo).</b> Diferente da maioria dos cadastros do produto (só Origem de Venda é igual), Regra <b>não tem inativação</b>. O ciclo de vida é criar → editar → excluir, sem estado intermediário (§6).</p>
+<h2 id="3-2-requisito">3.2. Requisito</h2>
+<p>Cada Regra é composta por um ou mais requisitos. O requisito, aqui, é <b>o formato da condição</b> — não a condição completa:</p>
+<div class="tablewrap"><table><thead><tr><th>Elemento</th><th>O que é</th></tr></thead><tbody><tr><td><b>Campo</b></td><td>O que será avaliado (ver §3.3)</td></tr><tr><td><b>Operador</b></td><td>Como comparar — catálogo fixo do sistema</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-RGR-12</span> — O valor do requisito é definido pela Oferta, não pela Regra.</b> A Regra define <b>Campo + Operador</b> — o formato, ou template, do requisito. O(s) <b>valor(es)</b> — o parâmetro concreto da comparação (ex.: o "18" de "idade ≥ 18") — são preenchidos <b>em cada Oferta</b>, no momento em que ela associa aquela Regra (módulo de Ofertas). A mesma Regra "Idade mínima" (Campo: Idade, Operador: Maior ou igual) serve a uma Oferta que exige 18 anos e a outra que exige 21, sem precisar duplicar a Regra.</p>
+<p><i>Consequência: uma Regra, sozinha, não é uma condição avaliável — só vira uma ao ser associada a uma Oferta, que fornece os valores que faltam. É por isso que o módulo de Ofertas, não este, é quem efetivamente "fecha" a condição.</i></p>
+<p><b><span class="badge rule-badge">RN-RGR-01</span> — Todos os requisitos precisam passar.</b> A lista de requisitos é <b>plana</b> e sempre conjuntiva: o cliente só atende à Regra se atender a <b>todos</b> os seus requisitos. Não há operador lógico configurável, não há agrupamento e <b>não há aninhamento</b> de condições.</p>
+<p><i>Consequência prática: para expressar uma alternativa ("idade acima de 60 <b>ou</b> margem acima de 500"), o gestor cria duas Regras separadas e as associa às Ofertas conforme o caso — não há como fazê-lo dentro de uma Regra.</i></p>
+<h2 id="3-3-cat-logo-de-campos">3.3. Catálogo de campos</h2>
+<p>Os campos são <b>fixos do sistema</b>, organizados em quatro origens. O tenant não cria campos novos.</p>
+<p><b>Dados do cliente</b></p>
+<p>Margens · Sexo · Idade · Tempo de emprego</p>
+<p><b>Dados da empresa empregadora</b></p>
+<p>Idade da empresa · Número de funcionários</p>
+<p><b>Dados de contratos pré-existentes</b></p>
+<p>Nº de contratos · Parcelas a vencer · Parcelas atrasadas · Valor em atraso · Valor a vencer · Quantidade de parcelas pagas · Valor total a vencer · Valor da parcela</p>
+<p><b>Dados de aceitação do banco</b></p>
+<p>Taxa de juros · Parcela mínima · Bancos não aceitos (portabilidade) · Troco mínimo · Margem mínima · Taxa mínima</p>
+<p><b><span class="badge rule-badge">RN-RGR-02</span> — Cada campo tem um tipo, e o tipo determina os operadores disponíveis.</b> Os campos são numéricos, de texto ou de lista. Ao escolher o campo, o seletor de operador oferece apenas os compatíveis:</p>
+<div class="tablewrap"><table><thead><tr><th>Tipo do campo</th><th>Operadores oferecidos</th></tr></thead><tbody><tr><td>Numérico</td><td>Intervalo · Maior que · Maior ou igual · Menor que · Menor ou igual · <b>Igual a</b> · <b>Diferente de</b></td></tr><tr><td>Texto</td><td><b>Igual a</b> · <b>Diferente de</b></td></tr><tr><td>Lista</td><td>Deve conter · Não deve conter</td></tr></tbody></table></div>
+<p><b>Igual a</b> e <b>Diferente de</b> servem aos dois primeiros tipos — são os únicos operadores compartilhados. O que muda é a forma do campo de valor: numérico aceita número, texto aceita a opção correspondente (ex.: <b>Sexo</b>, campo de texto, comparado por igualdade).</p>
+<p><i>O campo "Bancos não aceitos (portabilidade)" é o caso de lista.</i></p>
+<p><b><span class="badge rule-badge">RN-RGR-03</span> — Bancos vêm da API do Banco Central.</b> O campo "Bancos não aceitos" tem seus valores populados pela API do BC, não por cadastro interno — não há cadastro de Bancos no produto. O seletor de valor desse campo é, portanto, diferente dos demais.</p>
+<h2 id="3-4-operadores">3.4. Operadores</h2>
+<p>Catálogo <b>fixo do sistema</b>. O tenant não cria nem edita operadores.</p>
+<div class="tablewrap"><table><thead><tr><th>Operador</th><th>Tipo</th><th>Valores esperados</th></tr></thead><tbody><tr><td>Intervalo</td><td>Numérico</td><td>Dois — mínimo e máximo</td></tr><tr><td>Maior que</td><td>Numérico</td><td>Um</td></tr><tr><td>Maior ou igual que</td><td>Numérico</td><td>Um</td></tr><tr><td>Menor que</td><td>Numérico</td><td>Um</td></tr><tr><td>Menor ou igual que</td><td>Numérico</td><td>Um</td></tr><tr><td>Igual a</td><td>Numérico ou texto</td><td>Um</td></tr><tr><td>Diferente de</td><td>Numérico ou texto</td><td>Um</td></tr><tr><td>Deve conter</td><td>Lista</td><td>Um ou mais</td></tr><tr><td>Não deve conter</td><td>Lista</td><td>Um ou mais</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-RGR-04</span> — O operador determina a forma do campo de valor.</b> Um operador de valor único exige um campo; Intervalo exige dois (mínimo e máximo); operadores de lista exigem seleção múltipla. Essa forma é a que aparece <b>na tela de Ofertas</b>, quando o gestor preenche o valor — não existe mais campo de valor na tela de Regras (<span class="badge rule-badge">RN-RGR-12</span>).</p>
+<h2 id="3-5-comportamento-bloqueia-ou-avisa">3.5. Comportamento — Bloqueia ou Avisa</h2>
+<p><b><span class="badge rule-badge">RN-RGR-05</span> — O comportamento da Regra é um padrão, sobrescrevível por Oferta.</b> <i>(Revoga a versão anterior desta regra, que o tornava fixo e imutável por associação.)</i> Toda Regra define um comportamento padrão (Bloqueia ou Avisa), usado quando a Oferta não o altera. Cada Oferta, ao associar a Regra, pode <b>sobrescrever</b> esse padrão para o seu próprio caso — a mesma Regra pode bloquear numa Oferta e apenas avisar em outra.</p>
+<div class="tablewrap"><table><thead><tr><th>Comportamento</th><th>Efeito na simulação</th></tr></thead><tbody><tr><td><b>Bloqueia</b></td><td>Cliente que não atende fica <b>não elegível</b> para a oferta. A oferta aparece no resultado sinalizada, exibindo a <b>mensagem de erro</b> da Regra como motivo da desqualificação.</td></tr><tr><td><b>Avisa</b></td><td>Cliente que não atende <b>permanece elegível</b>. A oferta aparece com alerta exibindo a <b>mensagem de erro</b> da Regra.</td></tr></tbody></table></div>
+<p><i>Isso elimina a necessidade de duplicar Regras só para variar o comportamento entre Ofertas — o motivo que justificava a versão anterior (rastreabilidade — "olhar a Regra e saber o que ela faz") passa a valer só para o padrão; o efetivo, por Oferta, é visível na tela de associação daquela Oferta.</i></p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-rgr-01-gest-o-de-regras-crud"><span class="badge rf-badge">RF-RGR-01</span> — Gestão de regras (CRUD)</h2>
+<p><b>Como</b> gestor comercial, <b>eu quero</b> criar, consultar, editar e excluir Regras <b>para</b> controlar quais clientes se qualificam para cada oferta.</p>
+<p><b>Comportamento esperado:</b> o gestor cadastra nome, descrição, comportamento padrão e a lista de requisitos (cada um só Campo + Operador, sem valor — <span class="badge rule-badge">RN-RGR-12</span>). A listagem permite busca por nome; mostra, por Regra, a quantidade de requisitos e de Ofertas que a utilizam. A edição cobre todos os campos, inclusive a composição de requisitos.</p>
+<p><b>Regras específicas:</b></p>
+<p><b><span class="badge rule-badge">RN-RGR-06</span> — Regra exige ao menos um requisito.</b> Não existe Regra sem requisito. O formulário não permite salvar enquanto a lista estiver vazia, nem remover o último requisito de uma Regra existente.</p>
+<p><i>Isso fecha, por construção, o caso da Regra vacuamente verdadeira: se "atender à Regra" é "atender a todos os requisitos" (<span class="badge rule-badge">RN-RGR-01</span>), uma Regra vazia aprovaria qualquer cliente — associá-la a uma Oferta pareceria restringir sem restringir nada. Exigir o mínimo de um requisito elimina esse estado silencioso.</i></p>
+<p><b><span class="badge rule-badge">RN-RGR-07</span> — Exclusão não é bloqueada; desvincula em lote.</b> Diferente de Produtos e Promotoras, onde uma Oferta que usa o cadastro impede excluir, <b>nenhum vínculo impede excluir uma Regra</b> — como em Regiões, a exclusão remove os vínculos. Ao excluir, ela é automaticamente <b>desvinculada de todas as Ofertas</b> que a utilizavam, em lote — o gestor não precisa desassociar uma a uma. A ação exibe alerta explícito informando quantas Ofertas serão afetadas antes de confirmar.</p>
+<p><b>Consequência:</b> as Ofertas afetadas passam a avaliar uma condição a menos. A gravidade depende do comportamento <b>efetivo em cada Oferta</b> — o padrão da Regra, ou o que aquela Oferta sobrescreveu (<span class="badge rule-badge">RN-RGR-05</span>) — não de um único comportamento fixo da Regra. Ver <span class="badge rule-badge">RN-RGR-10</span>.</p>
+<p><b><span class="badge rule-badge">RN-RGR-10</span> — O alerta de exclusão comunica a consequência, não só a contagem.</b> Informar "esta regra está em N ofertas" descreve o alcance, mas não o efeito. O alerta precisa dizer <b>o que muda</b>, agrupando as Ofertas afetadas pelo comportamento <b>efetivo</b> de cada uma (padrão da Regra ou sobrescrito, <span class="badge rule-badge">RN-RGR-05</span>):</p>
+<div class="tablewrap"><table><thead><tr><th>Comportamento efetivo na Oferta</th><th>O que muda</th><th>Gravidade</th></tr></thead><tbody><tr><td><b>Bloqueia</b></td><td>Clientes que hoje são desqualificados por esta condição, naquela Oferta, <b>passam a se qualificar</b>.</td><td>Alta — a exclusão <b>amplia</b> o alcance comercial sem que ninguém tenha decidido isso</td></tr><tr><td><b>Avisa</b></td><td>Um alerta deixa de ser exibido na simulação, naquela Oferta. A elegibilidade não muda.</td><td>Baixa — nenhum cliente muda de situação</td></tr></tbody></table></div>
+<p>Se as Ofertas afetadas tiverem comportamentos efetivos diferentes entre si (algumas bloqueando, outras avisando — possível agora que o comportamento é sobrescrevível), o alerta apresenta os dois grupos separadamente, com a contagem de cada um. O texto é redigido na Microcopy Library deste módulo.</p>
+<p><b><span class="badge rule-badge">RN-RGR-11</span> — A mensagem de erro é a explicação geral que quem avalia o cliente lê, sem valores.</b> Nome e descrição são para o gestor, dentro do Admin; a <b>mensagem de erro</b> é para quem lê o resultado da avaliação: o <b>operador</b>, na Simulação, e o <b>Gestor de Marketing</b>, na pré-análise em lote, onde ela é o motivo de um contato ser <b>Descartado</b> (Marketing, <span class="badge rf-badge">RF-PRS-03</span>). É ela que aparece como motivo quando o cliente não atende à Regra — não o nome da Regra.</p>
+<p>A distinção importa porque os dois públicos precisam de coisas diferentes: "Idade INSS" identifica a regra para quem a configura; "Cliente não atende à idade mínima exigida pela oferta" explica a recusa para quem atende o cliente.</p>
+<p><b>A mensagem não cita valores.</b> Os valores dos requisitos são definidos por Oferta (<span class="badge rule-badge">RN-RGR-12</span>) e variam entre elas: uma Regra "Idade mínima" pode exigir 18 anos numa Oferta e 21 noutra, e um texto como "pelo menos 18 anos" estaria errado na segunda. Quem mostra o valor é a <b>Simulação</b>: junto da mensagem, ela lista os <b>requisitos que falharam, com o valor da Oferta</b> (módulo de Simulações, <span class="badge rule-badge">RN-SIM-11</span>). <i>(Decisão desta revisão.)</i></p>
+<p><b>Uma mensagem por Regra, não por requisito.</b> Mesmo com vários requisitos, a Regra tem uma única mensagem, que cobre a condição como um todo. Qual requisito falhou <b>não</b> é papel da mensagem: a Simulação o indica na lista de requisitos que falharam.</p>
+<p><b><span class="badge rule-badge">RN-RGR-08</span> — Editar uma Regra em uso afeta as Ofertas imediatamente.</b> Alterar o comportamento padrão de uma Regra vale para <b>todas</b> as Ofertas que a utilizam e não o sobrescreveram, a partir daquele momento. Não há efeito retroativo sobre simulações já realizadas — cada simulação guarda snapshot imutável das condições do momento.</p>
+<p><b><span class="badge rule-badge">RN-RGR-13</span> — Alterar o template de um requisito é bloqueado se houver Oferta Ativa; permitido, com aviso, se só houver Inativas.</b> Mudar o <b>Campo</b> ou o <b>Operador</b> de um requisito invalida os valores que as Ofertas associadas já tinham preenchido para ele (<span class="badge rule-badge">RN-RGR-12</span>) — um valor único para "Maior que" não serve se o operador vira "Intervalo", por exemplo.</p>
+<div class="tablewrap"><table><thead><tr><th>Situação das Ofertas associadas</th><th>Comportamento</th></tr></thead><tbody><tr><td>Nenhuma Oferta associada</td><td>Edição livre.</td></tr><tr><td>Só Ofertas <b>Inativas</b> associadas</td><td>Edição permitida, com confirmação explícita informando quantas Ofertas serão afetadas e que os valores delas precisarão ser preenchidos de novo.</td></tr><tr><td><b>Ao menos uma Oferta Ativa</b> associada</td><td><b>Edição bloqueada.</b> O gestor precisa inativar aquela(s) Oferta(s) primeiro, no módulo de Ofertas, antes de poder alterar o formato do requisito aqui.</td></tr></tbody></table></div>
+<p><b>Por que o critério é "Ativa", não "qualquer associação".</b> Bloquear sempre que há qualquer Oferta associada tornaria uma Regra popular quase impossível de manter. O risco real que motivou o bloqueio é mais específico: uma Oferta <b>em produção</b>, rodando simulações, ficar com uma condição sem valor sem que ninguém perceba. Ofertas Inativas não têm esse risco — o aviso já basta.</p>
+<p>Adicionar um requisito novo, ou remover um existente (respeitando <span class="badge rule-badge">RN-RGR-06</span>), segue a mesma tabela.</p>
+<p><b><span class="badge rule-badge">RN-RGR-09</span> — Exclusão é o único caminho de descontinuação.</b> Sem inativação, quem quer tirar uma Regra de circulação a exclui. Não há estado intermediário nem forma de "guardar" uma Regra fora de uso.</p>
+<h2 id="rf-rgr-02-composi-o-de-requisitos"><span class="badge rf-badge">RF-RGR-02</span> — Composição de requisitos</h2>
+<p><b>Como</b> gestor comercial, <b>eu quero</b> montar a lista de requisitos de uma Regra <b>para</b> definir o formato da condição de elegibilidade que ela verifica.</p>
+<p><b>Comportamento esperado:</b> dentro da Regra, o gestor adiciona requisitos em sequência. Para cada um: escolhe o <b>campo</b> (de uma lista agrupada pelas quatro origens), depois o <b>operador</b> (filtrado pelo tipo do campo, <span class="badge rule-badge">RN-RGR-02</span>). <b>Não há campo de valor aqui</b> — a forma que o valor vai ter (um campo, dois, ou seleção múltipla) já fica definida pelo operador escolhido (<span class="badge rule-badge">RN-RGR-04</span>), mas o preenchimento em si acontece em cada Oferta (<span class="badge rule-badge">RN-RGR-12</span>). Requisitos podem ser removidos individualmente; a ordem entre eles não tem significado, já que todos precisam passar.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-RGR-01</span></b> — Lista de requisitos plana e conjuntiva; todos precisam passar.</li>
+<li><b><span class="badge rule-badge">RN-RGR-02</span></b> — Cada campo tem um tipo; o tipo determina os operadores oferecidos.</li>
+<li><b><span class="badge rule-badge">RN-RGR-03</span></b> — Valores do campo "Bancos não aceitos" vêm da API do BC.</li>
+<li><b><span class="badge rule-badge">RN-RGR-04</span></b> — O operador determina a forma do campo de valor (usada na tela de Ofertas).</li>
+<li><b><span class="badge rule-badge">RN-RGR-05</span></b> — Comportamento é um padrão da Regra, sobrescrevível por Oferta.</li>
+<li><b><span class="badge rule-badge">RN-RGR-06</span></b> — Regra exige ao menos um requisito; não existe Regra vazia.</li>
+<li><b><span class="badge rule-badge">RN-RGR-07</span></b> — Exclusão não é bloqueada; desvincula de todas as Ofertas em lote, com alerta.</li>
+<li><b><span class="badge rule-badge">RN-RGR-08</span></b> — Editar comportamento padrão em uso afeta Ofertas que não sobrescreveram, sem efeito retroativo.</li>
+<li><b><span class="badge rule-badge">RN-RGR-09</span></b> — Exclusão é o único caminho de descontinuação; não há inativação.</li>
+<li><b><span class="badge rule-badge">RN-RGR-10</span></b> — O alerta de exclusão comunica a consequência por grupo de comportamento efetivo.</li>
+<li><b><span class="badge rule-badge">RN-RGR-11</span></b> — A mensagem de erro é a explicação geral exibida ao operador (Simulação) e ao Gestor de Marketing (pré-análise), sem valores; uma por Regra. Qual requisito falhou, e com que valor, quem mostra é a Simulação (<span class="badge rule-badge">RN-SIM-11</span>).</li>
+<li><b><span class="badge rule-badge">RN-RGR-12</span></b> — O valor do requisito é definido pela Oferta, não pela Regra; a Regra define só Campo + Operador.</li>
+<li><b><span class="badge rule-badge">RN-RGR-13</span></b> — Alterar template de requisito: bloqueado se houver Oferta Ativa associada; aviso, sem bloqueio, se só Inativas.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p><b>Regra não tem estados.</b> Existe ou não existe — sem ativo/inativo, sem rascunho. É o segundo módulo do produto assim, ao lado de Origem de Venda.</p>
+<p>Transições: (inexistente) → criada; criada → excluída, com desvínculo em lote das Ofertas (<span class="badge rule-badge">RN-RGR-07</span>).</p>
+<p><b>Por que sem inativação.</b> Nos demais cadastros, inativar serve para tirar algo de circulação preservando o histórico. Aqui isso não é necessário: as simulações já realizadas guardam snapshot imutável das condições do momento (<span class="badge rule-badge">RN-RGR-08</span>), então excluir uma Regra não altera nenhum histórico — só afeta as avaliações futuras.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p>Trata do cadastro da Regra e da composição do <b>formato</b> de seus requisitos (Campo + Operador). <b>Não</b> inclui: o preenchimento dos valores dos requisitos, nem a sobrescrita de comportamento (ambos no módulo de Ofertas, no momento da associação), a avaliação em si durante a simulação (módulo de Simulações), nem o catálogo de campos, que é fixo do sistema.</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>API do Banco Central</b> — valores do campo "Bancos não aceitos" (<span class="badge rule-badge">RN-RGR-03</span>).</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Ofertas</b> — a lista de Regras (com seus requisitos em formato Campo+Operador, sem valor) para associação; é lá que o valor de cada requisito e a eventual sobrescrita de comportamento são definidos (<span class="badge rule-badge">RN-RGR-12</span>, <span class="badge rule-badge">RN-RGR-05</span>). Excluir uma Regra desvincula-a de todas elas (<span class="badge rule-badge">RN-RGR-07</span>).</li>
+<li><b>Marketing</b> (Prospecção e Carteira Ativa) — a definição completa da condição, para a pré-análise em lote, e a <b>mensagem de erro</b>, exibida como motivo de descarte (<span class="badge rule-badge">RN-RGR-11</span>).</li>
+<li><b>Simulações</b> — a definição completa da condição (formato da Regra + valores da Oferta), para avaliar contra os dados do cliente; e a <b>mensagem de erro</b>, exibida como motivo junto dos requisitos que falharam (<span class="badge rule-badge">RN-RGR-11</span>, <span class="badge rule-badge">RN-SIM-11</span>).</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Regras v0.9 — módulo da aplicação Admin.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-admin-regras-matriz-de-permiss-es">Corban Admin · Regras — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Admin · Seção Oferta comercial</p>
+<p><b>Documento pai:</b> Corban Admin · Regras (módulo v0.5)</p>
+<p><b>Versão:</b> 0.1</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre apenas o recurso deste módulo (<code>rules</code>). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>rules</code></td><td><code>view</code></td><td><code>all</code></td></tr><tr><td><code>rules</code></td><td><code>create</code></td><td><code>all</code></td></tr><tr><td><code>rules</code></td><td><code>edit</code></td><td><code>all</code></td></tr><tr><td><code>rules</code></td><td><code>delete</code></td><td><code>all</code></td></tr></tbody></table></div>
+<p><b>Sem <code>inactivate</code> e <code>reactivate</code>.</b> Regra não tem estado ativo/inativo (módulo §6) — o ciclo de vida é criar/editar/excluir. É o segundo módulo do produto assim, ao lado de Origem de Venda.</p>
+<hr class="divider">
+<h2 id="2-por-que-tudo-em-escopo-all">2. Por que tudo em escopo <code>all</code></h2>
+<p>Regra é cadastro <b>tenant-wide</b> — não pertence a Loja nem a Time. Mesma estrutura dos demais cadastros do produto.</p>
+<hr class="divider">
+<h2 id="3-notas-sobre-as-a-es">3. Notas sobre as ações</h2>
+<p><b><code>edit</code> afeta ofertas em produção.</b> Alterar requisitos ou comportamento de uma Regra vale imediatamente para todas as Ofertas que a utilizam (<span class="badge rule-badge">RN-RGR-08</span>). Um Cargo com <code>rules:edit:all</code> altera, de fato, quem se qualifica para o quê — é permissão com efeito comercial direto, não configuração inerte.</p>
+<p><b><code>delete</code> é a mais consequente do módulo.</b> Excluir uma Regra a desvincula de todas as Ofertas em lote (<span class="badge rule-badge">RN-RGR-07</span>). Se a Regra era bloqueante, o resultado é <b>ampliar</b> o público de várias ofertas de uma vez (<span class="badge rule-badge">RN-RGR-10</span>). É razoável reservá-la a Cargos mais restritos que <code>edit</code>.</p>
+<p><b>Sem ação própria para compor requisitos.</b> Adicionar, editar e remover requisitos faz parte de <code>rules:edit:all</code> — não tem chave separada, apesar de ser onde mora a lógica de negócio da Regra.</p>
+<hr class="divider">
+<h2 id="4-owner-tenant">4. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p>_Fim do documento. Matriz de Permissões — Regras v0.1._</p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Admin</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Admin</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

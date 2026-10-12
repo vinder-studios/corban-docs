@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Estrutura Organizacional · Schema `structure` — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: isDark ? 'dark' : 'neutral',
+      securityLevel: 'loose',
+      fontFamily: '"IBM Plex Sans", sans-serif'
+    });
+    updateThemeLabel();
+  });
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  function toggleMermaidCode(id) {
+    const diagram = document.getElementById('diagram-' + id);
+    const code = document.getElementById('code-' + id);
+    const btn = document.getElementById('toggle-btn-' + id);
+    if (code.style.display === 'block') {
+      code.style.display = 'none';
+      diagram.style.display = 'block';
+      btn.textContent = 'Ver Código Mermaid';
+    } else {
+      code.style.display = 'block';
+      diagram.style.display = 'none';
+      btn.textContent = 'Ver Diagrama Renderizado';
+    }
+  }
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 340px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .schema-badge {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--brand);
+  background: var(--chip);
+  border: 1px solid var(--chip-border);
+  padding: 3px 10px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 28px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+/* Diagram box */
+.diagram-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: auto;
+}
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 10px;
+}
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.diagram-toggle-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.diagram-toggle-btn:hover { color: var(--ink); border-color: var(--edge); }
+
+.mermaid-code-view {
+  display: none;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+.badge-key {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+  margin-right: 3px;
+  vertical-align: baseline;
+}
+
+/* Schema table specific column sizing */
+table.schema-table th:nth-child(1),
+table.schema-table td:nth-child(1) {
+  white-space: nowrap;
+  font-weight: 500;
+  width: 220px;
+  min-width: 170px;
+}
+table.schema-table th:nth-child(2),
+table.schema-table td:nth-child(2) {
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  width: 140px;
+  min-width: 110px;
+}
+table.schema-table th:nth-child(3),
+table.schema-table td:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+  width: 70px;
+}
+table.schema-table th:nth-child(4),
+table.schema-table td:nth-child(4) {
+  min-width: 320px;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Persistência</a>
+      <span class="sep">/</span>
+      <span class="current">Estrutura Organizacional</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Todos os Schemas
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <span class="pager-btn disabled">← Anterior</span>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../01-estrutura/index.html" selected>01-estrutura — Estrutura Organizacional</option><option value="../02-funis/index.html" >02-funis — Funis & Etapas</option><option value="../03-catalogo/index.html" >03-catalogo — Catálogo Comercial</option><option value="../04-clientes/index.html" >04-clientes — Clientes & Contatos</option><option value="../05-leads/index.html" >05-leads — Leads & Distribuição</option><option value="../06-creditos/index.html" >06-creditos — Créditos & Financeiro</option><option value="../07-simulacao/index.html" >07-simulacao — Motor de Simulação</option><option value="../08-propostas/index.html" >08-propostas — Propostas Comerciais</option><option value="../09-atendimento/index.html" >09-atendimento — Atendimento & Chat</option><option value="../10-marketing/index.html" >10-marketing — Marketing & Prospecção</option><option value="../11-desempenho/index.html" >11-desempenho — Desempenho & Metas</option><option value="../12-apoio/index.html" >12-apoio — Apoio & Infraestrutura</option><option value="../01-acesso/index.html" >01-acesso — Acesso & Permissões</option></select>
+    <a href="../02-funis/index.html" class="pager-btn">Funis & Etapas <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Modelo de Dados Lógico</b> · Estrutura & Comercial
+    </div>
+    <h1>Estrutura Organizacional <span class="schema-badge">schema: structure</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge accepted">Validado</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Schema PostgreSQL</span>
+      <span class="meta-value"><code>structure</code></span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.1 · 10/10/2026</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documentos de Referência</span>
+      <span class="meta-value">Admin · Lojas v0.15, Regiões v0.7, Segmentos v0.8; CRM · Times, Configurações; Relacionamentos do Admin v0.4; <a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>, <a href="../../ADR/0023-sem-fk-entre-modulos/index.html" class="inline-link"><b>ADR-0023</b></a></span>
+    </div>
+  </div>
+
+  <!-- Body Content -->
+  <article>
+    <h2>Histórico de revisões</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Versão</th>
+<th>Mudanças</th>
+</tr></thead><tbody>
+<tr>
+<td>0.1</td>
+<td>Primeira versão.</td>
+</tr>
+</tbody></table></div>
+<h2>1. O que o módulo guarda</h2>
+<p>Lojas, Times, Regiões, Segmentos e as associações da Loja com Regiões e Segmentos. Saldo e Extrato são do módulo Créditos; o Funil que nasce com o Segmento é do módulo Funis. <b>Quem pertence a qual Loja e Time fica no Keycloak</b> (Acesso fora do modelo): a Loja é uma Organização (<a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>), e este schema guarda o id dela.</p>
+<h2>2. Diagrama</h2>
+
+                <div class="diagram-container">
+                  <div class="diagram-header">
+                    <span class="diagram-title">Diagrama Entidade-Relacionamento (ER)</span>
+                    <button id="toggle-btn-01-estrutura-1" class="diagram-toggle-btn" onclick="toggleMermaidCode('01-estrutura-1')">Ver Código Mermaid</button>
+                  </div>
+                  <div id="diagram-01-estrutura-1" class="mermaid">
+erDiagram
+  store ||--o{ team : "has"
+  store ||--o{ store_region : "restricted to"
+  region ||--o{ store_region : ""
+  store ||--o{ store_segment : "operates"
+  segment ||--o{ store_segment : ""
+  segment |o--o{ team : "gives funnel access"
+
+  store {
+    uuid id PK
+    text name
+    text code
+    text code_normalized "UK parcial"
+    text address
+    text cnpj
+    text logo_file_key
+    boolean can_receive_leads_without_balance
+    text status "active | inactive"
+    uuid keycloak_organization_id UK
+    timestamptz deleted_at
+  }
+  team {
+    uuid id PK
+    uuid store_id FK
+    text name
+    uuid segment_id FK
+    text status "active | deactivating | inactive"
+    timestamptz deleted_at
+  }
+  region {
+    uuid id PK
+    text name
+    text code
+    text code_normalized "UK parcial"
+    text status "active | inactive"
+    timestamptz deleted_at
+  }
+  segment {
+    uuid id PK
+    text name
+    text code
+    text code_normalized "UK parcial"
+    text description
+    text status "active | inactive"
+    timestamptz deleted_at
+  }
+  store_region {
+    uuid store_id PK,FK
+    uuid region_id PK,FK
+  }
+  store_segment {
+    uuid store_id PK,FK
+    uuid segment_id PK,FK
+    boolean active
+    boolean receives_campaign
+    boolean receives_organic
+    boolean receives_prospecting
+    boolean receives_active_portfolio
+  }
+                  </div>
+                  <pre id="code-01-estrutura-1" class="mermaid-code-view"><code>erDiagram
+  store ||--o{ team : "has"
+  store ||--o{ store_region : "restricted to"
+  region ||--o{ store_region : ""
+  store ||--o{ store_segment : "operates"
+  segment ||--o{ store_segment : ""
+  segment |o--o{ team : "gives funnel access"
+
+  store {
+    uuid id PK
+    text name
+    text code
+    text code_normalized "UK parcial"
+    text address
+    text cnpj
+    text logo_file_key
+    boolean can_receive_leads_without_balance
+    text status "active | inactive"
+    uuid keycloak_organization_id UK
+    timestamptz deleted_at
+  }
+  team {
+    uuid id PK
+    uuid store_id FK
+    text name
+    uuid segment_id FK
+    text status "active | deactivating | inactive"
+    timestamptz deleted_at
+  }
+  region {
+    uuid id PK
+    text name
+    text code
+    text code_normalized "UK parcial"
+    text status "active | inactive"
+    timestamptz deleted_at
+  }
+  segment {
+    uuid id PK
+    text name
+    text code
+    text code_normalized "UK parcial"
+    text description
+    text status "active | inactive"
+    timestamptz deleted_at
+  }
+  store_region {
+    uuid store_id PK,FK
+    uuid region_id PK,FK
+  }
+  store_segment {
+    uuid store_id PK,FK
+    uuid segment_id PK,FK
+    boolean active
+    boolean receives_campaign
+    boolean receives_organic
+    boolean receives_prospecting
+    boolean receives_active_portfolio
+  }</code></pre>
+                </div>
+                
+<p>Todas as tabelas têm <code>created_at</code> e <code>updated_at</code> (omitidos no diagrama).</p>
+<h2>3. Tabelas</h2>
+<h3>3.1. <code>store</code> (Loja)</h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text</td>
+<td>não</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text</td>
+<td>não</td>
+<td>Editável.</td>
+</tr>
+<tr>
+<td><code>code_normalized</code></td>
+<td>text gerada</td>
+<td>não</td>
+<td><b>Único entre não excluídas</b> (<code>WHERE deleted_at IS NULL</code>): excluir libera o Código (RN-LOJ-15).</td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td>text</td>
+<td>não</td>
+<td>Texto livre; a spec não estrutura o endereço da Loja.</td>
+</tr>
+<tr>
+<td><code>cnpj</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Opcional na v1.</td>
+</tr>
+<tr>
+<td><code>logo_file_key</code></td>
+<td>text</td>
+<td>sim</td>
+<td>Chave do arquivo no armazenamento de arquivos (ver §6, item 1).</td>
+</tr>
+<tr>
+<td><code>can_receive_leads_without_balance</code></td>
+<td>boolean</td>
+<td>não</td>
+<td>Padrão <code>false</code>. Permite saldo negativo (RN-LOJ-12) e trava as Origens ligadas (RN-LOJ-18). Editada só com <code>stores:manage_credits:all</code>.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>active</code> | <code>inactive</code>. Inativa não recebe itens novos (RN-LOJ-06).</td>
+</tr>
+<tr>
+<td><code>keycloak_organization_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><b>Único.</b> A Organização da Loja no Keycloak (<a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a>), criada junto com a Loja pelo adaptador.</td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td>timestamptz</td>
+<td>sim</td>
+<td>Exclusão suave (RN-LOJ-15). Bloqueada com itens ativos em algum Time (RN-LOJ-07), regra checada pela aplicação no contrato de Leads.</td>
+</tr>
+</tbody></table></div>
+<p><b>Sem linha em <code>store_region</code> = "Todas"</b> (RN-LOJ-14, RN-REG-04): a ausência de restrição não é gravada como valor.</p>
+<h3>3.2. <code>team</code> (Time)</h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>.</td>
+</tr>
+<tr>
+<td><code>store_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">FK</span> → <code>store</code>. <b>Imutável</b> (RN-LOJ-10), garantido pela aplicação.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text</td>
+<td>não</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>segment_id</code></td>
+<td>uuid</td>
+<td>sim</td>
+<td><span class="badge-key">FK</span> → <code>segment</code>. Só um Segmento que a Loja tem <code>active</code> com ao menos uma Origem ligada (RN-LOJ-02); validado pela aplicação. Sem Segmento, sem Funil.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>active</code> | <code>deactivating</code> | <code>inactive</code> (Lojas §6). <code>deactivating</code> é a drenagem (RN-LOJ-03); o Worker passa a <code>inactive</code> quando o último item termina.</td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td>timestamptz</td>
+<td>sim</td>
+<td>Exclusão suave (RN-LOJ-05); em cascata quando a Loja é excluída (RN-LOJ-09).</td>
+</tr>
+</tbody></table></div>
+<h3>3.3. <code>region</code> (Região)</h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text</td>
+<td>não</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>code</code>, <code>code_normalized</code></td>
+<td>text</td>
+<td>não</td>
+<td>Código único entre não excluídas.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>active</code> | <code>inactive</code>.</td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td>timestamptz</td>
+<td>sim</td>
+<td>Exclusão (RN-REG-03).</td>
+</tr>
+</tbody></table></div>
+<p>Inativar ou excluir <b>apaga as linhas</b> de <code>store_region</code> dessa Região e pede ao Catálogo que apague as de <code>catalog.promoter_region</code>, na mesma transação (RN-REG-02, <a href="../../ADR/0012-ef-core-dbcontext-por-modulo/index.html" class="inline-link"><b>ADR-0012</b></a>). Reativar não as devolve.</p>
+<h3>3.4. <code>segment</code> (Segmento)</h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text</td>
+<td>não</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>code</code>, <code>code_normalized</code></td>
+<td>text</td>
+<td>não</td>
+<td>Código único entre não excluídos.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>sim</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text</td>
+<td>não</td>
+<td><code>active</code> | <code>inactive</code>. Inativar cascateia para o Funil, se ativo (RN-SEG-06), pelo contrato de Funis.</td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td>timestamptz</td>
+<td>sim</td>
+<td>Bloqueado se o Funil já foi ativado ou se há Oferta (RN-SEG-04, RN-SEG-08), checado nos contratos de Funis e Catálogo. Excluir apaga as linhas de <code>store_segment</code> e limpa <code>team.segment_id</code> (RN-SEG-09).</td>
+</tr>
+</tbody></table></div>
+<p>Criar o Segmento cria o Funil na mesma transação, pelo contrato de Funis (RN-SEG-05).</p>
+<h3>3.5. <code>store_region</code></h3>
+<p>Chave <code>(store_id, region_id)</code>, FKs para <code>store</code> e <code>region</code>. Associar a primeira Região pede confirmação; remover a última volta a "Todas" (RN-LOJ-14).</p>
+<h3>3.6. <code>store_segment</code> (Loja × Segmento)</h3>
+<div class="tablewrap"><table class="schema-table">
+<thead><tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Nulo</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>store_id</code>, <code>segment_id</code></td>
+<td>uuid</td>
+<td>não</td>
+<td><span class="badge-key">PK</span>, FKs.</td>
+</tr>
+<tr>
+<td><code>active</code></td>
+<td>boolean</td>
+<td>não</td>
+<td>A Loja opera o Segmento. Desligar é bloqueado com Leads em andamento (RN-LOJ-16), checado no contrato de Leads.</td>
+</tr>
+<tr>
+<td><code>receives_campaign</code>, <code>receives_organic</code>, <code>receives_prospecting</code>, <code>receives_active_portfolio</code></td>
+<td>boolean</td>
+<td>não</td>
+<td>Um por Origem com preço (RN-LOJ-17). <code>CHECK (active OR NOT (receives_campaign OR receives_organic OR receives_prospecting OR receives_active_portfolio))</code>: Origem exige <code>active</code> (RN-LOJ-01). Ao ligar <code>active</code>, nascem <code>true</code>.</td>
+</tr>
+</tbody></table></div>
+<p>Uma linha por par que já foi ativado alguma vez; desligar <code>active</code> mantém a linha. Editada pelo Admin e pelo CRM (Configurações, RN-CFG-01), no mesmo registro.</p>
+<h2>4. Fora deste schema</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>O quê</th>
+<th>Onde</th>
+</tr></thead><tbody>
+<tr>
+<td>Usuário na Loja e no Time, "Pode receber lead"</td>
+<td>Keycloak (Acesso fora do modelo)</td>
+</tr>
+<tr>
+<td>Saldo, Extrato, limite de gasto diário</td>
+<td><code>credits</code></td>
+</tr>
+<tr>
+<td>Funil do Segmento</td>
+<td><code>funnels</code></td>
+</tr>
+<tr>
+<td>Região da Promotora</td>
+<td><code>catalog</code></td>
+</tr>
+<tr>
+<td>Link do Modo TV da Loja</td>
+<td><code>performance</code></td>
+</tr>
+</tbody></table></div>
+<h2>5. Decisões deste modelo</h2>
+<p>1. <b>Origens da Loja como quatro colunas booleanas</b>, e não uma tabela: são quatro valores fixos do produto (RN-FNL-07), e o <code>CHECK</code> garante a regra de "Ativo" no próprio banco.</p>
+<p>2. <b>"Todas" as Regiões = nenhuma linha.</b></p>
+<p>3. <b>Endereço da Loja como texto livre</b>, porque a spec não o estrutura (o do Cliente, sim, por causa do ViaCEP).</p>
+<h2>6. Pontos para outros documentos</h2>
+<p>1. <b>Arquivos:</b> decidido na <b><a href="../../ADR/0024-armazenamento-de-arquivos-blob/index.html" class="inline-link"><b>ADR-0024</b></a></b> (Blob Storage privado, URL assinada). <code>logo_file_key</code> é a chave do arquivo no container <code>store-logos</code>.</p>
+<p>2. <b>Acesso no Keycloak:</b> levar Cargo, permissões, Time do usuário, "Pode receber lead", permissões adicionais e Owner para o Keycloak estende a <a href="../../ADR/0001-keycloak-sem-feijucaauth/index.html" class="inline-link"><b>ADR-0001</b></a> e muda o componente Acesso do C4. <b>Fica para debate depois da modelagem</b> (decisão do usuário); sem ADR por enquanto.</p>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../C4/index.html">Hub C4 Model</a>
+      <a href="../../ADR/index.html">Decisões de Arquitetura (ADRs)</a>
+      <a href="../index.html">Catálogo de Persistência</a>
+      <a href="README.md" target="_blank">Ver Fonte Markdown (.md)</a>
+    </div>
+    <div>SmartCorbans · Banco de Dados Relacional · Schemas PostgreSQL isolados</div>
+  </footer>
+</div>
+
+</body>
+</html>

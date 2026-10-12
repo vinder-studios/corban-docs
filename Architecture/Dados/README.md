@@ -14,23 +14,25 @@
 
 ## Como usar
 
+> **Catálogo publicado em HTML:** Todos os 12 schemas relacionais e diagramas ER interativos estão disponíveis no [Catálogo de Persistência (HTML)](index.html).
+
 Um documento por módulo da API, com o diagrama ER (Mermaid) e as tabelas. É o modelo **lógico** que os `DbContext`s implementam (ADR-0012); o físico (tipos exatos, índices finos) fecha nas migrations. Cada módulo é validado antes do seguinte. O texto dos documentos é em português; os nomes no banco, em inglês.
 
 | # | Módulo | Schema | Documento | Situação |
 |---|---|---|---|---|
-| — | Acesso | — | — | **Fora do modelo** (Keycloak) |
-| 1 | Estrutura | `structure` | `01-estrutura.md` | Validado |
-| 2 | Funis | `funnels` | `02-funis.md` | Validado |
-| 3 | Catálogo comercial | `catalog` | `03-catalogo.md` | Validado |
-| 4 | Clientes | `clients` | `04-clientes.md` | Validado |
-| 5 | Leads e Distribuição | `leads` | `05-leads.md` | Validado |
-| 6 | Créditos | `credits` | `06-creditos.md` | Validado |
-| 7 | Motor de Simulação | `simulation` | `07-simulacao.md` | Validado |
-| 8 | Propostas | `proposals` | `08-propostas.md` | Validado |
-| 9 | Atendimento | `messaging` | `09-atendimento.md` | Validado |
-| 10 | Marketing | `marketing` | `10-marketing.md` | Validado |
-| 11 | Desempenho | `performance` | `11-desempenho.md` | Validado |
-| 12 | Apoio: Auditoria, Webhooks, Jobs, Notificações | `audit`, `integration`, `jobs`, `notifications` | `12-apoio.md` | Validado |
+| — | Acesso | — | [01-acesso](01-acesso/README.md) | **Fora do modelo** (Keycloak) |
+| 1 | Estrutura | `structure` | [01-estrutura](01-estrutura/README.md) | Validado |
+| 2 | Funis | `funnels` | [02-funis](02-funis/README.md) | Validado |
+| 3 | Catálogo comercial | `catalog` | [03-catalogo](03-catalogo/README.md) | Validado |
+| 4 | Clientes | `clients` | [04-clientes](04-clientes/README.md) | Validado |
+| 5 | Leads e Distribuição | `leads` | [05-leads](05-leads/README.md) | Validado |
+| 6 | Créditos | `credits` | [06-creditos](06-creditos/README.md) | Validado |
+| 7 | Motor de Simulação | `simulation` | [07-simulacao](07-simulacao/README.md) | Validado |
+| 8 | Propostas | `proposals` | [08-propostas](08-propostas/README.md) | Validado |
+| 9 | Atendimento | `messaging` | [09-atendimento](09-atendimento/README.md) | Validado |
+| 10 | Marketing | `marketing` | [10-marketing](10-marketing/README.md) | Validado |
+| 11 | Desempenho | `performance` | [11-desempenho](11-desempenho/README.md) | Validado |
+| 12 | Apoio: Auditoria, Webhooks, Jobs, Notificações | `audit`, `integration`, `jobs`, `notifications` | [12-apoio](12-apoio/README.md) | Validado |
 
 ## Convenções
 

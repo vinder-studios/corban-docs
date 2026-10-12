@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Simulações · CRM — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">CRM</a>
+      <span class="sep">/</span>
+      <span class="current">Simulações</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do CRM
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../Settings/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Configurações</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../Chat/index.html" >Chat</option><option value="../Clients/index.html" >Clientes</option><option value="../Credits/index.html" >Créditos</option><option value="../Dashboard/index.html" >Dashboard</option><option value="../Goals/index.html" >Metas</option><option value="../Leads/index.html" >Leads</option><option value="../Members/index.html" >Membros</option><option value="../MultiplierTable/index.html" >Tabelas Multiplicadoras</option><option value="../Proposals/index.html" >Propostas</option><option value="../Rankings/index.html" >Rankings</option><option value="../Reports/index.html" >Relatórios</option><option value="../Settings/index.html" >Configurações</option><option value="../Simulations/index.html" selected>Simulações</option><option value="../Teams/index.html" >Times</option></select>
+    <a href="../Teams/index.html" class="pager-btn">Times <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · CRM · Geral
+    </div>
+    <h1>Simulações <span class="app-badge crm">CRM</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">CRM · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.14 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-crm-simula-es">Corban CRM · Simulações</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM — Documento de Produto (guarda-chuva da aplicação, a redigir)</p>
+<p><b>Versão:</b> 0.14</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.14</td><td><b>Visibilidade da Simulação de origem Marketing corrigida:</b> não é visível a qualquer usuário com acesso ao Cliente; vale a regra de cada Loja ver o seu lado (Clientes, <span class="badge rule-badge">RN-CLI-04</span> e <span class="badge rule-badge">RN-CLI-09</span>): a Loja vê as Simulações que fez e as de origem Marketing das Leads que recebeu. Decisão do usuário, no modelo de dados.</td></tr><tr><td>0.13</td><td><b>Momento e visibilidade confirmados pelo usuário.</b> A Simulação de origem Marketing é gravada na injeção da Lead e fica no histórico do Cliente, visível a qualquer usuário com acesso a ele, como as demais.</td></tr><tr><td>0.12</td><td><b>Terceira origem: Marketing.</b> Quando a avaliação em lote do Marketing encontra ao menos uma Oferta aprovada para um contato e a Lead dele é injetada, a avaliação é <b>gravada como Simulação</b> de origem <b>Marketing</b>, no histórico do Cliente (<span class="badge rule-badge">RN-SIM-01</span>, <span class="badge rule-badge">RN-MKT-02</span>). Decisão do usuário. Sem Oferta aprovada, ou sem distribuição, nada é gravado.</td></tr><tr><td>0.11</td><td><b>Levantamento do CRM.</b> (1) <b>A <span class="badge rule-badge">RN-SIM-11</span>, inserida por engano dentro da seção "Modalidade CLT — fora de escopo", vai para a §3.4</b> (junto da <span class="badge rule-badge">RN-SIM-10</span>), e o consolidado volta à ordem. (2) A <span class="badge rule-badge">RN-SIM-01</span> diz <b>duas</b> origens (dizia três). (3) A Região é a da <b>Loja do operador</b> contra a da Promotora (<span class="badge rule-badge">RN-REG-04</span>), e o §8 cita Lojas. (4) <b>Decisões do usuário:</b> na Página de Simulação, os Segmentos são os ativos que a Loja opera; a Promotora da Lead pré-preenche a da simulação; <b>o preenchimento por CPF só vale para Clientes já associados à Loja</b> (nenhum dado de outra Loja é revelado). (5) A <span class="badge rule-badge">RN-SIM-04</span> deixa de citar uma frase da <span class="badge rule-badge">RN-FNL-04</span> que não existe mais; "modalidade" vira Operação; o catálogo de Operação é de Ofertas. Reordena e fecha este histórico.</td></tr><tr><td>0.10</td><td><b>O motivo passa a mostrar os requisitos que falharam, com o valor da Oferta</b> (nova <span class="badge rule-badge">RN-SIM-11</span>), porque a mensagem de erro da Regra deixa de citar valores (Regras v0.8, <span class="badge rule-badge">RN-RGR-11</span>): eles variam por Oferta. Vale para Oferta não elegível (Regra bloqueante) e para elegível com alerta (Regra de aviso). O snapshot passa a registrar os requisitos que falharam.</td></tr><tr><td>0.9</td><td><b>Acompanha a decisão em Produtos v0.4: a Operação independe do Produto.</b> A RN-SIM-06a passa a dizer que a Operação é livre entre as 4 do catálogo; a <span class="badge rule-badge">RN-SIM-07</span> depende da Operação escolhida (e não "do Produto escolhido"); trocar a Operação, e não o Produto, descarta os campos condicionais. Alteração de consistência: a revisão completa do módulo segue na fila.</td></tr><tr><td>0.8</td><td><b>Corrige resíduo da v0.4</b>, encontrado ao analisar o CRM para Relatórios: a v0.4 removeu a origem "Automática — via importação de Clientes" (escopo do Marketing), mas a tabela de campos ("Origem do disparo") continuou listando-a. Agora são só duas origens, coerente com <span class="badge rule-badge">RN-SIM-01</span>.</td></tr><tr><td>0.7</td><td><b>Adiciona o campo explícito Operação ao formulário</b> — Produto passa a suportar várias Operações (módulo de Produtos v0.3), então não dá mais para inferir qual delas o operador quer simular só pelo Produto. Novo campo, logo após Produto, restrito às Operações que aquele Produto suporta. <span class="badge rule-badge">RN-SIM-06</span> e <span class="badge rule-badge">RN-SIM-07</span> atualizadas.</td></tr><tr><td>0.6</td><td>Confirma o mapeamento Operação → campo de valor do card (<span class="badge rule-badge">RN-SIM-10</span>) — a inferência por lógica de domínio estava correta. Sem mais pendências.</td></tr><tr><td>0.5</td><td>Adiciona <span class="badge rule-badge">RN-SIM-10</span>: Ofertas aprovadas exibem-se como <b>card</b> (Banco, valor — campo condicional por Operação —, Prazo, Parcela, Taxa), reutilizado em três lugares (resultado da simulação, ficha do Cliente, Sheet de detalhes da oferta — este último, tela nova).</td></tr><tr><td>0.4</td><td>Remove a origem "Automática — via importação de Clientes" (<span class="badge rf-badge">RF-SIM-03</span>, <span class="badge rule-badge">RN-SIM-02</span>) — <b>não é escopo do CRM</b>, é capacidade da aplicação Marketing (tenant-wide, com pré-análise), não modelada aqui. Duas origens restantes: Manual e Automática via Lead. Adiciona o campo <b>Segmento</b> explícito (<span class="badge rule-badge">RN-SIM-06</span> revisada) — sempre usado como filtro, esquecido na v0.3.</td></tr><tr><td>0.3</td><td><b>Reformulação de fundo.</b> Adiciona a <b>Página de Simulação</b> (destino de topo, formulário manual completo) — a origem "Manual" deixa de ser vaga e ganha especificação real: Dados do cliente capturados inline (CPF, Nome, Data de nascimento, Telefone), Dados da oferta (Produto + Promotora, não mais Oferta direta), Dados do contrato atual e Dados preferenciais — ambos <b>condicionais por Operação</b> (4 variantes, uma por Operação do Produto). <b>Revoga RN035 da v1.2</b> ("não existe simulação avulsa") — cliente não precisa estar cadastrado; os dados dele vão no snapshot de qualquer forma. <b>CLT/Jaéconsig sai de escopo nesta versão</b> — só o motor interno (Ofertas/Regras) está ativo; sem módulo de integrações externas ainda.</td></tr><tr><td>0.2</td><td><span class="badge rule-badge">RN-SIM-04</span> ganha precisão: o gatilho de simulação automática via Lead é <b>sempre posterior</b> à criação do Cliente (<span class="badge rule-badge">RN-CLI-06</span>, módulo de Clientes) — dois eventos sequenciais e distintos da Huggy, nunca o mesmo.</td></tr><tr><td>0.1</td><td>Versão inicial. Substitui e amplia o Módulo 5 da Especificação v1.2, incorporando o motor sobre Ofertas/Regras já fechado no Admin e <b>revogando explicitamente o limite de "sem simulação em lote"</b> daquele documento (§5.8) — a importação de Clientes agora dispara simulação automática em lote.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-SIM) e regras de negócio (RN-SIM) próprios.</p>
+<blockquote><p><b>Este módulo é orquestração, não cálculo.</b> A elegibilidade (Segmento, Região, Regras) e a parametrização financeira (taxa, prazo, comissão) já estão inteiramente definidas nos módulos de Ofertas e Regras (Admin). O que este módulo define é: quando uma simulação é disparada, o que ela avalia, e como o resultado é registrado.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Calcular e registrar, de forma comparável, as condições de crédito disponíveis para uma Lead ou Cliente — manualmente, pelo operador, ou automaticamente, ao vir de uma Lead.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Operador</b> — dispara simulações manuais, consulta resultados.</li>
+<li><b>Sistema</b> — dispara a simulação automática via Lead e grava a avaliação em lote do Marketing.</li>
+<li><b>Huggy</b> — origina o evento que dispara a simulação automática via Lead (fora do controle direto do Corban — <span class="badge rule-badge">RN-SIM-04</span>).</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-simula-o">3.1. Simulação</h2>
+<p>Registro <b>imutável</b> (snapshot) de uma rodada de cálculo comparativo. Mesmo princípio de RN033 da Especificação v1.2, sem mudança: alterações posteriores em Ofertas/Regras não afetam simulações já registradas — inclusive "refazer" (<span class="badge rf-badge">RF-SIM-04</span>) sempre gera um <b>novo</b> registro, nunca sobrescreve o anterior.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Notas</th></tr></thead><tbody><tr><td><b>Dados do cliente</b></td><td><b>Sempre capturados inline no snapshot</b> — CPF, Nome completo, Data de nascimento, Telefone. Ver <span class="badge rule-badge">RN-SIM-05</span>: não exige Cliente cadastrado.</td></tr><tr><td>Lead (opcional)</td><td>Presente quando a simulação parte do contexto de uma Lead.</td></tr><tr><td>Cliente (opcional)</td><td>Presente quando o CPF informado já corresponde a um Cliente cadastrado (<span class="badge rule-badge">RN-CLI-02</span>, associação automática) — ou quando a simulação vem de um Cliente já existente.</td></tr><tr><td><b>Segmento</b></td><td>Sempre presente — pré-preenchido a partir da Lead, quando houver; escolhido pelo operador na Página de Simulação quando não houver Lead de origem. Filtra as Ofertas elegíveis (<span class="badge rule-badge">RN-OFR-08</span>, módulo de Ofertas), como em qualquer simulação.</td></tr><tr><td><b>Dados da oferta</b></td><td>Produto + <b>Operação</b> (uma das 4 do catálogo fixo — RN-SIM-06a) + Promotora. O motor avalia todas as Ofertas que combinam Produto, Operação, Promotora <b>e</b> o Segmento informado (<span class="badge rule-badge">RN-SIM-06</span>).</td></tr><tr><td><b>Dados do contrato atual</b></td><td>Condicional pela Operação escolhida — ver <span class="badge rule-badge">RN-SIM-07</span>.</td></tr><tr><td><b>Dados preferenciais</b></td><td>Condicional pela Operação escolhida — ver <span class="badge rule-badge">RN-SIM-07</span>.</td></tr><tr><td>Origem do disparo</td><td><b>Manual (Página de Simulação)</b>, <b>Automática — via Lead</b> ou <b>Marketing — avaliação em lote</b> (<span class="badge rule-badge">RN-SIM-01</span>).</td></tr><tr><td>Resultados por Oferta</td><td>Lista comparável: Oferta, elegível ou não, motivo (mensagem de erro da Regra que desqualificou — <span class="badge rule-badge">RN-RGR-11</span>, mais os requisitos que falharam, com o valor da Oferta — <span class="badge rule-badge">RN-SIM-11</span>), taxa, prazo, parcela, valor liberado/total.</td></tr><tr><td>Data/hora, autor</td><td>Autor é o operador (manual) ou "Sistema" (automática e Marketing).</td></tr></tbody></table></div>
+<p><b><span class="badge rule-badge">RN-SIM-05</span> — Cliente não precisa estar cadastrado; a Simulação não é mais estritamente vinculada.</b> <i>(Revoga RN035 da Especificação v1.2 — "não existe simulação avulsa em nenhuma versão do produto", citada como decisão permanente naquele documento.)</i> Como toda Simulação já grava um snapshot completo, os Dados do cliente bastam por si — cadastrado ou não. Se o CPF corresponder a um Cliente existente, a Simulação se associa a ele automaticamente (aparece na ficha dele); se não corresponder, a Simulação existe com os dados digitados, sem criar Cliente nem Lead como efeito colateral. <b>O preenchimento e a associação por CPF só valem para Clientes já associados à Loja do operador</b> (<span class="badge rule-badge">RN-CLI-04</span>): para um CPF que só outras Lojas conhecem, usa-se o que o operador digitou, sem revelar nenhum dado e sem conceder acesso à Loja.</p>
+<p><b><span class="badge rule-badge">RN-SIM-06</span> — Dados da oferta são Segmento + Produto + Operação + Promotora, não uma Oferta específica.</b> O operador escolhe (ou herda da Lead) o Segmento, escolhe Produto, escolhe a Operação (uma das 4 do catálogo — RN-SIM-06a) e Promotora; o motor avalia <b>todas</b> as Ofertas que combinam os quatro — mesmo comportamento comparativo já estabelecido (<span class="badge rule-badge">RN-OFR-02</span> Região, <span class="badge rule-badge">RN-OFR-08</span> Segmento, Regras). Confirmado: o filtro de Segmento <b>sempre</b> se aplica, com ou sem Lead de origem — nunca é pulado. Na Página de Simulação, sem Lead de origem, a lista de Segmentos traz os <b>Segmentos ativos que a Loja do operador opera</b> (Ativo na Aba Segmentos). A <b>Promotora</b> da Lead, quando há, pré-preenche a Promotora da simulação.</p>
+<p><b>RN-SIM-06a — Operação é campo próprio, livre entre as 4 do catálogo fixo.</b> A Operação não depende do Produto escolhido: o operador escolhe explicitamente qual está simulando, e qualquer Produto pode ser combinado com qualquer Operação (o catálogo é definido em Ofertas; o Produto não carrega Operação). Combinação que nenhuma Oferta ativa cobre não é erro: o resultado é "nenhuma oferta encontrada". Trocar a Operação (não o Produto) descarta os campos condicionais já preenchidos (<span class="badge rule-badge">RN-SIM-07</span>).</p>
+<p><b><span class="badge rule-badge">RN-SIM-07</span> — Dados do contrato atual e Dados preferenciais são condicionais pela Operação.</b> Os campos que aparecem no formulário dependem da Operação escolhida:</p>
+<div class="tablewrap"><table><thead><tr><th>Operação</th><th>Dados do contrato atual</th><th>Dados preferenciais</th></tr></thead><tbody><tr><td><b>Novo</b></td><td>Margem, Prazo (opcional)</td><td>Nenhum</td></tr><tr><td><b>Portabilidade</b></td><td>Parcela Atual, Prazo Restante, Saldo devedor (opcional)</td><td>Prazo desejado, Margem disponível</td></tr><tr><td><b>Refinanciamento</b></td><td>Parcela Atual, Prazo Restante, Saldo devedor (opcional)</td><td>Prazo desejado, Troco Desejado, Margem disponível</td></tr><tr><td><b>Portabilidade com Refinanciamento</b></td><td>Fatura, Saldo devedor, Prazo</td><td>Nenhum</td></tr></tbody></table></div>
+<p>Para Portabilidade, a mesma Operação absorve o que antes era "Compra de Dívida" (módulo de Produtos v0.3) — usa este mesmo conjunto de campos.</p>
+<h2 id="3-2-origens-do-disparo">3.2. Origens do disparo</h2>
+<p><b><span class="badge rule-badge">RN-SIM-01</span> — Três origens possíveis, mesmo motor.</b> O cálculo em si — filtrar Ofertas por Segmento, depois por Região (a da Loja do operador contra a da Promotora, <span class="badge rule-badge">RN-REG-04</span>), depois avaliar Regras bloqueantes e de aviso — é idêntico nas três origens. O que muda é só o que dispara a rodada:</p>
+<div class="tablewrap"><table><thead><tr><th>Origem</th><th>Gatilho</th></tr></thead><tbody><tr><td><b>Manual (Página de Simulação)</b></td><td>Operador aciona explicitamente, pela tela dedicada — <span class="badge rf-badge">RF-SIM-01</span>. Cliente cadastrado ou não (<span class="badge rule-badge">RN-SIM-05</span>).</td></tr><tr><td><b>Automática — via Lead</b></td><td>Evento vindo da Huggy, quando o fluxo configurado pelo tenant considera que "os dados do usuário foram obtidos" (<span class="badge rule-badge">RN-SIM-04</span>).</td></tr><tr><td><b>Marketing — avaliação em lote</b></td><td>A Lead de um contato com ao menos uma Oferta aprovada na pré-análise do Marketing é injetada. A avaliação é gravada como Simulação, ligada à Lead e ao Cliente, com os dados usados e as Ofertas aprovadas. Não consome Créditos (<span class="badge rule-badge">RN-SIM-03</span>). Sem CPF no Cliente, o campo CPF do snapshot fica vazio. Fica no histórico do Cliente e é visível à Loja que recebeu a Lead (Clientes, <span class="badge rule-badge">RN-CLI-04</span> e <span class="badge rule-badge">RN-CLI-09</span>): cada Loja vê só as Simulações do seu lado.</td></tr></tbody></table></div>
+<p><b>O cálculo em lote não é escopo deste módulo.</b> Simular uma base inteira pertence à aplicação <b>Marketing</b> (Prospecção e Carteira Ativa), que roda a avaliação em segundo plano <b>sem gravar Simulação</b>. Este módulo só recebe o registro das avaliações com Oferta aprovada, quando a Lead é injetada (origem Marketing). O que antes era <span class="badge rf-badge">RF-SIM-03</span>/<span class="badge rule-badge">RN-SIM-02</span> foi removido daqui.</p>
+<p><b><span class="badge rule-badge">RN-SIM-03</span> — Simulação não consome Créditos.</b> Diferente de receber uma lead (que debita saldo, módulo de Créditos), simular é ação livre e repetível — nenhuma das origens gera lançamento no Extrato.</p>
+<p><b><span class="badge rule-badge">RN-SIM-04</span> — O gatilho automático via Lead é evento externo, fora do controle direto do Corban — e sempre posterior à criação do Cliente.</b> O momento exato de "dados obtidos" depende dos fluxos que o tenant configura na Huggy — mesmo princípio de <span class="badge rule-badge">RN-FNL-04</span> (módulo de Funis de Vendas): a Huggy é externa, e o Corban reage ao que recebe, sem depender dela. O Corban reage ao evento recebido; não modela nem valida a lógica interna daquele fluxo.</p>
+<p><b>Confirmado (<span class="badge rule-badge">RN-CLI-06</span>, módulo de Clientes):</b> são dois eventos sequenciais e distintos, não um só. O fluxo da Huggy primeiro coleta os dados básicos (Nome, CPF, Telefone) — criando o Cliente — e só depois, noutro ponto do mesmo fluxo, coleta os dados adicionais necessários à simulação (valor/parcela, prazo). Consequência: a <b>simulação automática via Lead nunca dispara para uma Lead sem Cliente associado</b> — a ordem Cadastro → Simulação é garantida pela sequência do próprio fluxo configurado na Huggy, não verificada pelo Corban.</p>
+<h2 id="3-4-exibi-o-de-ofertas-aprovadas-card-padr-o-reaproveitado-em-tr-s-lugares">3.4. Exibição de Ofertas aprovadas — card padrão, reaproveitado em três lugares</h2>
+<p><b><span class="badge rule-badge">RN-SIM-10</span> — Toda Oferta aprovada exibe-se como card, com o mesmo conjunto de campos, em três superfícies do produto.</b> Banco, <b>valor</b> (campo condicional pela Operação — ver tabela), Prazo, Valor da parcela, Taxa.</p>
+<div class="tablewrap"><table><thead><tr><th>Operação</th><th>Campo de valor exibido</th></tr></thead><tbody><tr><td>Novo</td><td>Valor liberado</td></tr><tr><td>Refinanciamento</td><td>Troco liberado</td></tr><tr><td>Portabilidade</td><td>Valor financiado</td></tr><tr><td>Portabilidade com Refinanciamento</td><td>Troco liberado</td></tr></tbody></table></div>
+<p>Confirmado.</p>
+<p><b>As três superfícies que usam este card:</b></p>
+<ol>
+<li>Resultado da simulação (Página de Simulação e Sheet contextual, este módulo).</li>
+<li>Ficha do Cliente (módulo de Clientes — histórico de Ofertas aprovadas em simulações passadas).</li>
+<li><b>Sheet de detalhes da oferta</b> (tela nova, <span class="badge rf-badge">RF-SIM-05</span>) — abre a partir do card, em qualquer uma das duas superfícies acima, com o detalhe completo daquela Oferta dentro daquela Simulação específica.</li>
+</ol>
+<p><b><span class="badge rule-badge">RN-SIM-11</span> — O motivo de uma Oferta que não passa mostra os requisitos que falharam, com o valor da Oferta.</b> Para cada Oferta <b>não elegível</b> (Regra bloqueante) e para cada Oferta <b>elegível com alerta</b> (Regra de aviso), o resultado mostra, junto da <b>mensagem de erro da Regra</b> (explicação geral, sem valores — <span class="badge rule-badge">RN-RGR-11</span>), a lista dos <b>requisitos que falharam</b>: Campo, condição e o valor definido <b>pela Oferta</b> (ex.: "Idade: maior ou igual a 21"). É assim que o operador vê o número exigido sem que a mensagem precise citá-lo (o valor varia por Oferta, <span class="badge rule-badge">RN-RGR-12</span>), e que se sabe qual requisito falhou numa Regra de vários. Se mais de um requisito falhou, todos são listados. O snapshot imutável registra, por Oferta avaliada, a Regra, a mensagem e os requisitos que falharam, com os valores da época (§3.1).</p>
+<h2 id="3-5-modalidade-clt-fora-de-escopo-nesta-vers-o">3.5. Modalidade CLT — fora de escopo nesta versão</h2>
+<p><b><span class="badge rule-badge">RN-SIM-08</span> — Só o motor interno está ativo; nenhuma API externa nesta versão.</b> Diferente do que se cogitou herdar da v1.2 (RN029/RF020 — consulta à API Jaéconsig), esta versão do produto <b>não inclui nenhuma integração externa de cálculo</b> — nem Jaéconsig (CLT), nem qualquer consulta automatizada de dados (ex.: Consignado Rápido para INSS). Simulações avaliam exclusivamente Ofertas do motor interno (Ofertas + Regras, Admin).</p>
+<blockquote><p><b>Nota de evolução.</b> CLT via Jaéconsig, e qualquer outra integração externa de simulação, ficam para quando o produto tiver um módulo de integrações — não modelado nesta rodada.</p></blockquote>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-sim-01-simula-o-manual-p-gina-de-simula-o"><span class="badge rf-badge">RF-SIM-01</span> — Simulação manual (Página de Simulação)</h2>
+<p><b>Como</b> operador, <b>eu quero</b> simular condições de crédito para qualquer cliente — cadastrado ou não — <b>para</b> apresentar as melhores opções disponíveis sem precisar que ele já exista na base.</p>
+<p><b>Comportamento esperado:</b> destino de topo próprio (<b>Página de Simulação</b>). O operador preenche, em sequência: Dados do cliente (CPF, Nome completo, Data de nascimento, Telefone — <span class="badge rule-badge">RN-SIM-05</span>); Dados da oferta (Produto, Operação, Promotora — <span class="badge rule-badge">RN-SIM-06</span>); Dados do contrato atual e Dados preferenciais, cujos campos mudam conforme a Operação escolhida (<span class="badge rule-badge">RN-SIM-07</span>). O motor avalia todas as Ofertas compatíveis (Região, <span class="badge rule-badge">RN-REG-04</span>; Regras bloqueantes e de aviso), resultado comparável — aprovadas e rejeitadas, com motivo — ordenado por melhor condição.</p>
+<h2 id="rf-sim-02-simula-o-autom-tica-via-lead"><span class="badge rf-badge">RF-SIM-02</span> — Simulação automática via Lead</h2>
+<p><b>Como</b> sistema, <b>eu quero</b> disparar uma simulação assim que os dados do cliente forem obtidos por um fluxo da Huggy <b>para</b> adiantar o trabalho do operador.</p>
+<p><b>Comportamento esperado:</b> ao receber o evento (<span class="badge rule-badge">RN-SIM-04</span>), o sistema roda a mesma simulação de <span class="badge rf-badge">RF-SIM-01</span>, com os dados disponíveis na Lead naquele momento (inclusive o Segmento dela — <span class="badge rule-badge">RN-SIM-06</span>), e grava como snapshot de origem automática.</p>
+<h2 id="rf-sim-04-hist-rico-de-simula-es"><span class="badge rf-badge">RF-SIM-04</span> — Histórico de simulações</h2>
+<p>Herdado de RF021 da v1.2, sem mudança: consulta cronológica, filtros por Operação, banco e período, snapshot completo por item, opção de refazer com parâmetros pré-preenchidos.</p>
+<p><b><span class="badge rule-badge">RN-SIM-09</span> — Refazer sempre gera um novo item no histórico, nunca sobrescreve.</b> Confirmado — mantém a imutabilidade de snapshot (§3.1). "Refazer" pré-preenche o formulário da Página de Simulação com os parâmetros da simulação anterior; o operador ajusta o que quiser e confirma, gerando um registro novo, independente do original.</p>
+<h2 id="rf-sim-05-sheet-de-detalhes-da-oferta"><span class="badge rf-badge">RF-SIM-05</span> — Sheet de detalhes da oferta</h2>
+<p><b>Como</b> operador, <b>eu quero</b> ver o detalhe completo de uma Oferta aprovada <b>para</b> entender exatamente as condições antes de avançar com o cliente.</p>
+<p><b>Comportamento esperado:</b> a partir de qualquer card de Oferta aprovada (resultado da simulação, ou ficha do Cliente), abre um Sheet com o detalhe completo daquela linha do snapshot — todos os campos calculados, não só o resumo do card (<span class="badge rule-badge">RN-SIM-10</span>).</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-SIM-01</span></b> — Três origens de disparo (manual, automática via Lead e Marketing), mesmo motor de cálculo; o cálculo em lote é do Marketing.</li>
+<li><b><span class="badge rule-badge">RN-SIM-03</span></b> — Simulação não consome Créditos.</li>
+<li><b><span class="badge rule-badge">RN-SIM-04</span></b> — Gatilho automático via Lead é evento externo da Huggy, fora do controle do Corban, sempre posterior à criação do Cliente.</li>
+<li><b><span class="badge rule-badge">RN-SIM-05</span></b> — Cliente não precisa estar cadastrado; revoga RN035 da v1.2 ("sem simulação avulsa").</li>
+<li><b><span class="badge rule-badge">RN-SIM-06</span></b> — Dados da oferta são Segmento + Produto + Operação + Promotora, não uma Oferta específica; Segmento sempre filtra, com ou sem Lead.</li>
+<li><b>RN-SIM-06a</b> — Operação é campo próprio, livre entre as 4 do catálogo; independe do Produto.</li>
+<li><b><span class="badge rule-badge">RN-SIM-07</span></b> — Dados do contrato atual e preferenciais são condicionais pela Operação (4 variantes).</li>
+<li><b><span class="badge rule-badge">RN-SIM-08</span></b> — Só o motor interno está ativo; nenhuma API externa (Jaéconsig, Consignado Rápido) nesta versão.</li>
+<li><b><span class="badge rule-badge">RN-SIM-09</span></b> — Refazer sempre gera novo item no histórico.</li>
+<li><b><span class="badge rule-badge">RN-SIM-10</span></b> — Ofertas aprovadas exibem-se como card padrão, reaproveitado em três superfícies (simulação, ficha do Cliente, Sheet de detalhes).</li>
+<li><b><span class="badge rule-badge">RN-SIM-11</span></b> — O motivo de uma Oferta que não passa mostra os requisitos que falharam, com o valor da Oferta; vale também para alerta de Regra de aviso.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<p>Sem estados de publicação — Simulação é snapshot imutável, existe ou não existe, como Regra e Origem de Venda.</p>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a elegibilidade em si (Ofertas, Regras — Admin), a importação de Clientes (módulo próprio), a configuração dos fluxos da Huggy que disparam a simulação automática via Lead (<span class="badge rule-badge">RN-SIM-04</span> — vive na Huggy, fora do Corban), nem qualquer integração externa de cálculo (Jaéconsig, Consignado Rápido — <span class="badge rule-badge">RN-SIM-08</span>, fora de escopo nesta versão).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Ofertas, Produtos, Regras, Regiões, Segmentos, Lojas</b> (Admin) — toda a lógica de elegibilidade e parametrização, e a Região e os Segmentos da Loja do operador.</li>
+<li><b>Leads</b> (CRM) — a Lead de origem, quando aplicável.</li>
+<li><b>Clientes</b> (CRM) — associação automática por CPF (<span class="badge rule-badge">RN-SIM-05</span>), quando o cliente já está cadastrado.</li>
+<li><b>Huggy</b> — o evento que dispara a simulação automática via Lead.</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Propostas</b> (CRM) — a simulação de referência, cujo valor pré-preenche o fechamento, e as Ofertas aprovadas, entre as quais o operador escolhe a da Proposta (<span class="badge rule-badge">RN-PRP-07</span>).</li>
+<li><b>Clientes</b> — o histórico de simulações, exibido na ficha.</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<p>Nenhuma pendência de modelagem.</p>
+<hr class="divider">
+<p><i>Fim do documento. Simulações v0.14 — módulo da aplicação CRM.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-crm-simula-es-matriz-de-permiss-es">Corban CRM · Simulações — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> CRM</p>
+<p><b>Documento pai:</b> Corban CRM · Simulações (módulo v0.13)</p>
+<p><b>Versão:</b> 0.2</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.2</td><td>Simulações de origem Marketing (autor "Sistema") visíveis a quem tem <code>view</code> no escopo que alcança o Cliente. Nenhuma chave muda.</td></tr><tr><td>0.1</td><td>Versão inicial.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre o recurso <code>simulations</code>. Formato da chave: <code>recurso:ação:escopo</code>, mesmo padrão já usado em Chat e Leads (CRM).</p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Ação</th><th>Escopos oferecidos</th></tr></thead><tbody><tr><td><code>create</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr><tr><td><code>view</code></td><td><code>self</code>, <code>team</code>, <code>store</code>, <code>all</code></td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-notas-sobre-as-a-es">2. Notas sobre as ações</h2>
+<p><b><code>create</code> e <code>view</code> são separadas, mas frequentemente andam juntas.</b> <code>create</code> cobre a Página de Simulação (Nova simulação) e o Sheet contextual; <code>view</code> cobre o Histórico. Um Cargo pode ter só <code>view</code> — consulta o que já foi simulado, sem poder rodar novas.</p>
+<p><b>Escopos seguem o mesmo critério de <code>self</code> já fixado em Chat e Leads</b> — <code>self</code> = simulações que o próprio usuário criou (autor); <code>team</code>/<code>store</code>/<code>all</code> ampliam progressivamente. Simulações automáticas via Lead (<span class="badge rule-badge">RN-SIM-04</span>, autor "Sistema") são visíveis a quem tem <code>view</code> no escopo que alcança a Lead correspondente. As de origem <b>Marketing</b> (<span class="badge rule-badge">RN-SIM-01</span>, autor "Sistema") ficam no histórico do Cliente e são visíveis a quem tem <code>view</code> no escopo que alcança o Cliente.</p>
+<hr class="divider">
+<h2 id="3-owner-tenant">3. Owner / Tenant</h2>
+<p>Não aparece nesta matriz — bypass total do catálogo.</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Simulações v0.1.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do CRM</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · CRM</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

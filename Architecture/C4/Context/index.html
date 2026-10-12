@@ -1,0 +1,298 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>
+  (function() {
+    var saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  })();
+</script>
+</head><body>
+<title>SmartCorbans C4 Contexto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: documento técnico de arquitetura — cabeçalho curto, diagrama largo como peça central, tabelas de rastreabilidade abaixo */
+:root{
+  --bg:#f4f4f5; --surface:#ffffff; --ink:#1b1b1d; --muted:#5b5b62; --line:#d4d4d8; --edge:#6e6e76;
+  --brand:#900a10; --brand-ink:#ffffff; --person:#212121; --person-ink:#ffffff;
+  --ext:#e6e6e9; --ext-ink:#1b1b1d; --ext-stroke:#8b8b93; --evo:#f9f9fa; --chip:#efe3e3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131315; --surface:#1c1c1f; --ink:#ececef; --muted:#a3a3ab; --line:#3a3a40; --edge:#8c8c95;
+  --brand:#a3121a; --brand-ink:#ffffff; --person:#2c2c31; --person-ink:#f2f2f4;
+  --ext:#26262a; --ext-ink:#ececef; --ext-stroke:#6d6d75; --evo:#18181b; --chip:#3a1c1e; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:flex;flex-direction:column;gap:40px}
+header{display:flex;flex-direction:column;gap:10px;max-width:72ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow b{color:var(--brand);font-weight:500}
+h1{font-size:clamp(26px,4vw,36px);line-height:1.15;margin:0;text-wrap:balance;font-weight:600}
+h1 .smart{color:var(--brand)}
+h2{font-size:20px;margin:0 0 12px;font-weight:600;text-wrap:balance}
+p{margin:0}
+.lede{color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+figure{margin:0;display:flex;flex-direction:column;gap:14px}
+.canvas{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.canvas svg{display:block;min-width:920px;width:100%;height:auto}
+figcaption{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:13px;color:var(--muted)}
+.key{display:inline-flex;align-items:center;gap:8px}
+.sw{width:22px;height:14px;border-radius:2px;display:inline-block}
+.sw.person{background:var(--person)} .sw.sys{background:var(--brand)}
+.sw.ext{background:var(--ext);border:1px solid var(--ext-stroke)}
+.sw.tbd{background:var(--ext);border:1px dashed var(--ext-stroke)}
+.sw.evo{background:var(--evo);border:1px dotted var(--ext-stroke)}
+
+/* SVG */
+.p-box{fill:var(--person)} .p-name{fill:var(--person-ink);font:600 14px var(--sans)} .p-type{fill:var(--person-ink);opacity:.7;font:400 11px var(--mono)} .p-desc{fill:var(--person-ink);opacity:.88;font:400 11.5px var(--sans)}
+.s-box{fill:var(--brand)} .s-name{fill:var(--brand-ink);font:700 21px var(--sans)} .s-type{fill:var(--brand-ink);opacity:.75;font:400 11px var(--mono)} .s-desc{fill:var(--brand-ink);font:400 12.5px var(--sans)} .s-apps{fill:var(--brand-ink);font:500 12px var(--mono)}
+.e-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1.2} .e-box.tbd{stroke-dasharray:6 4}
+.e-name{fill:var(--ext-ink);font:600 14px var(--sans)} .e-type{fill:var(--muted);font:400 11px var(--mono)} .e-desc{fill:var(--ext-ink);opacity:.85;font:400 11.5px var(--sans)}
+.v-bound{fill:var(--evo);stroke:var(--ext-stroke);stroke-width:1.2;stroke-dasharray:2 4}
+.v-box{fill:var(--ext);stroke:var(--ext-stroke);stroke-width:1;stroke-dasharray:2 3;opacity:.85}
+.v-title{fill:var(--muted);font:500 12px var(--mono);letter-spacing:.06em}
+.rel{stroke:var(--edge);stroke-width:1.4;fill:none} .rel.tbd{stroke-dasharray:6 4} .rel.evo{stroke-dasharray:2 4}
+.arrowhead{fill:var(--edge)}
+.l-bg{fill:var(--surface)} .l-txt{fill:var(--ink);font:400 11.5px var(--sans)} .l-tech{fill:var(--muted);font:400 10.5px var(--mono)}
+
+section{display:flex;flex-direction:column;gap:6px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+td.ref{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.pill{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.on{background:var(--chip);color:var(--brand)} .pill.tbd{border:1px dashed var(--ext-stroke);color:var(--muted)} .pill.evo{border:1px dotted var(--ext-stroke);color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px}
+ol,ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+li{max-width:70ch}
+.note{font-size:13px;color:var(--muted);max-width:72ch}
+code{font-family:var(--mono);font-size:.9em}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><b>C4 Model</b> · Nível 1 de 4 · Contexto do sistema · <a href="../index.html">Hub C4</a> · <a href="../../../index.html">Início da doc</a></div>
+    <h1><span class="smart">Smart</span>Corbans — Contexto do Sistema</h1>
+    <p class="lede">O SmartCorbans como uma caixa só, as pessoas que o usam e os sistemas externos com que conversa. Admin, CRM e Marketing ficam dentro da caixa e aparecem apenas como rótulo nas relações; abrir a caixa é o trabalho do nível 2 (Containers).</p>
+    <div class="meta"><span>v0.5 · Draft</span><span>Decisões em ADR-0001 a ADR-0004</span><span>Base: Especificação Geral v2.3</span><span>Instância única da Smartconsig</span></div>
+  </header>
+
+  <figure>
+    <div class="canvas">
+      <svg viewBox="0 0 1210 1110" role="img" aria-labelledby="dtitle">
+        <title id="dtitle">Diagrama de contexto C4 do SmartCorbans</title>
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+
+        <!-- Relações (desenhadas antes das caixas) -->
+        <line class="rel" x1="130" y1="200" x2="470" y2="358" marker-end="url(#ah)"/>
+        <line class="rel" x1="360" y1="200" x2="560" y2="358" marker-end="url(#ah)"/>
+        <line class="rel" x1="590" y1="200" x2="640" y2="358" marker-end="url(#ah)"/>
+        <line class="rel" x1="820" y1="200" x2="730" y2="358" marker-end="url(#ah)"/>
+        <line class="rel" x1="1080" y1="200" x2="1080" y2="358" marker-end="url(#ah)"/>
+        <line class="rel" x1="980" y1="395" x2="782" y2="395" marker-end="url(#ah)"/>
+        <line class="rel" x1="780" y1="455" x2="978" y2="455" marker-end="url(#ah)"/>
+        <line class="rel" x1="780" y1="510" x2="978" y2="638" marker-end="url(#ah)"/>
+        <line class="rel" x1="420" y1="420" x2="232" y2="420" marker-end="url(#ah)"/>
+        <line class="rel tbd" x1="230" y1="640" x2="418" y2="512" marker-end="url(#ah)"/>
+        <line class="rel" x1="780" y1="520" x2="978" y2="840" marker-end="url(#ah)"/>
+        <line class="rel" x1="480" y1="518" x2="232" y2="843" marker-end="url(#ah)"/>
+        <line class="rel evo" x1="600" y1="530" x2="600" y2="948" marker-end="url(#ah)"/>
+
+        <!-- Rótulos das relações -->
+        <g><rect class="l-bg" x="228" y="254" width="144" height="52" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="300" y="272">Configura a estrutura</tspan><tspan class="l-txt" x="300" y="287">e acompanha o todo</tspan><tspan class="l-tech" x="300" y="301">[Admin]</tspan></text></g>
+        <g><rect class="l-bg" x="388" y="254" width="144" height="52" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="460" y="272">Importa bases e</tspan><tspan class="l-txt" x="460" y="287">aprova injeções</tspan><tspan class="l-tech" x="460" y="301">[Marketing]</tspan></text></g>
+        <g><rect class="l-bg" x="543" y="254" width="144" height="52" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="615" y="272">Conduz Times, metas</tspan><tspan class="l-txt" x="615" y="287">e Créditos</tspan><tspan class="l-tech" x="615" y="301">[CRM]</tspan></text></g>
+        <g><rect class="l-bg" x="703" y="254" width="144" height="52" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="775" y="272">Atende, simula e</tspan><tspan class="l-txt" x="775" y="287">formaliza Propostas</tspan><tspan class="l-tech" x="775" y="301">[CRM]</tspan></text></g>
+        <g><rect class="l-bg" x="992" y="260" width="176" height="38" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="1080" y="276">Conversa</tspan><tspan class="l-tech" x="1080" y="291">[WhatsApp e outros canais]</tspan></text></g>
+        <g><rect class="l-bg" x="790" y="368" width="180" height="52" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="880" y="386">Origina Leads e Clientes;</tspan><tspan class="l-txt" x="880" y="401">dispara a Simulação</tspan><tspan class="l-tech" x="880" y="415">[eventos]</tspan></text></g>
+        <g><rect class="l-bg" x="790" y="428" width="180" height="52" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="880" y="446">Chat ao vivo; aciona</tspan><tspan class="l-txt" x="880" y="461">fluxos nas Ações do Funil</tspan><tspan class="l-tech" x="880" y="475">[API]</tspan></text></g>
+        <g><rect class="l-bg" x="796" y="556" width="168" height="38" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="880" y="572">Cobrança e confirmação</tspan><tspan class="l-tech" x="880" y="587">[Pix]</tspan></text></g>
+        <g><rect class="l-bg" x="240" y="401" width="170" height="38" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="325" y="417">Delega login e sessão</tspan><tspan class="l-tech" x="325" y="432">[e-mail e senha]</tspan></text></g>
+        <g><rect class="l-bg" x="240" y="550" width="170" height="52" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="325" y="568">Migração completa</tspan><tspan class="l-txt" x="325" y="583">dos dados</tspan><tspan class="l-tech" x="325" y="597">[carga única]</tspan></text></g>
+        <g><rect class="l-bg" x="520" y="640" width="160" height="38" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="600" y="656">Módulo de Integrações</tspan><tspan class="l-tech" x="600" y="671">[futuro]</tspan></text></g>
+
+        <g><rect class="l-bg" x="806" y="662" width="148" height="38" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="880" y="678">Consulta bancos</tspan><tspan class="l-tech" x="880" y="693">[HTTPS]</tspan></text></g>
+
+        <g><rect class="l-bg" x="272" y="681" width="140" height="38" rx="3"/><text text-anchor="middle"><tspan class="l-txt" x="342" y="697">Consulta CEP</tspan><tspan class="l-tech" x="342" y="712">[HTTPS]</tspan></text></g>
+
+        <!-- Pessoas -->
+        <g>
+          <circle class="p-box" cx="130" cy="50" r="24"/><rect class="p-box" x="30" y="70" width="200" height="130" rx="14"/>
+          <text text-anchor="middle"><tspan class="p-name" x="130" y="108">Owner e gestores</tspan><tspan class="p-type" x="130" y="126">[Pessoa]</tspan><tspan class="p-desc" x="130" y="150">Dono da Smartconsig e</tspan><tspan class="p-desc" x="130" y="166">gestores do tenant.</tspan></text>
+        </g>
+        <g>
+          <circle class="p-box" cx="360" cy="50" r="24"/><rect class="p-box" x="260" y="70" width="200" height="130" rx="14"/>
+          <text text-anchor="middle"><tspan class="p-name" x="360" y="108">Gestor de Marketing</tspan><tspan class="p-type" x="360" y="126">[Pessoa]</tspan><tspan class="p-desc" x="360" y="150">Gera demanda acima</tspan><tspan class="p-desc" x="360" y="166">das Lojas.</tspan></text>
+        </g>
+        <g>
+          <circle class="p-box" cx="590" cy="50" r="24"/><rect class="p-box" x="490" y="70" width="200" height="130" rx="14"/>
+          <text text-anchor="middle"><tspan class="p-name" x="590" y="108">Gestor(a) de Loja</tspan><tspan class="p-type" x="590" y="126">[Pessoa]</tspan><tspan class="p-desc" x="590" y="150">Loja própria ou parceira.</tspan><tspan class="p-desc" x="590" y="166">Escopo store.</tspan></text>
+        </g>
+        <g>
+          <circle class="p-box" cx="820" cy="50" r="24"/><rect class="p-box" x="720" y="70" width="200" height="130" rx="14"/>
+          <text text-anchor="middle"><tspan class="p-name" x="820" y="108">Operador de vendas</tspan><tspan class="p-type" x="820" y="126">[Pessoa]</tspan><tspan class="p-desc" x="820" y="150">Trabalha a própria</tspan><tspan class="p-desc" x="820" y="166">carteira. Escopo self.</tspan></text>
+        </g>
+        <g>
+          <circle class="e-box" cx="1080" cy="50" r="24"/><rect class="e-box" x="980" y="70" width="200" height="130" rx="14"/>
+          <text text-anchor="middle"><tspan class="e-name" x="1080" y="108">Cliente final</tspan><tspan class="e-type" x="1080" y="126">[Pessoa externa]</tspan><tspan class="e-desc" x="1080" y="150">Tomador do consignado.</tspan><tspan class="e-desc" x="1080" y="166">Não acessa o sistema.</tspan></text>
+        </g>
+
+        <!-- Sistema em foco -->
+        <a href="../Containers/index.html">
+          <g>
+            <rect class="s-box" x="420" y="360" width="360" height="170" rx="6"/>
+            <text text-anchor="middle">
+              <tspan class="s-name" x="600" y="400">SmartCorbans</tspan>
+              <tspan class="s-type" x="600" y="420">[Sistema de software]</tspan>
+              <tspan class="s-desc" x="600" y="447">Gestão comercial para correspondente</tspan>
+              <tspan class="s-desc" x="600" y="464">bancário de consignado. Instância única</tspan>
+              <tspan class="s-desc" x="600" y="481">da Smartconsig; parceiros são Lojas.</tspan>
+              <tspan class="s-apps" x="600" y="511">Admin · CRM · Marketing</tspan>
+            </text>
+          </g>
+        </a>
+
+        <!-- Externos ativos -->
+        <g>
+          <rect class="e-box" x="980" y="360" width="200" height="120" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="1080" y="390">Huggy</tspan><tspan class="e-type" x="1080" y="407">[Sistema externo]</tspan><tspan class="e-desc" x="1080" y="430">Atendimento omnichannel</tspan><tspan class="e-desc" x="1080" y="446">(WhatsApp e outros</tspan><tspan class="e-desc" x="1080" y="462">canais).</tspan></text>
+        </g>
+        <g>
+          <rect class="e-box" x="980" y="590" width="200" height="120" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="1080" y="620">AbacatePay</tspan><tspan class="e-type" x="1080" y="637">[Sistema externo]</tspan><tspan class="e-desc" x="1080" y="660">Pix na adição de</tspan><tspan class="e-desc" x="1080" y="676">crédito da Loja.</tspan><tspan class="e-desc" x="1080" y="692">Só Pix no início.</tspan></text>
+        </g>
+
+        <g>
+          <rect class="e-box" x="980" y="790" width="200" height="120" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="1080" y="820">API do Banco Central</tspan><tspan class="e-type" x="1080" y="837">[Sistema externo]</tspan><tspan class="e-desc" x="1080" y="860">Lista oficial de bancos</tspan><tspan class="e-desc" x="1080" y="876">para Ofertas, Regras</tspan><tspan class="e-desc" x="1080" y="892">e Propostas.</tspan></text>
+        </g>
+
+        <g>
+          <rect class="e-box" x="30" y="790" width="200" height="120" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="130" y="820">ViaCEP</tspan><tspan class="e-type" x="130" y="837">[Sistema externo]</tspan><tspan class="e-desc" x="130" y="860">Endereço pelo CEP na</tspan><tspan class="e-desc" x="130" y="876">ficha do Cliente.</tspan></text>
+        </g>
+
+        <!-- Identidade e migração -->
+        <g>
+          <rect class="e-box" x="30" y="360" width="200" height="120" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="130" y="390">Keycloak</tspan><tspan class="e-type" x="130" y="407">[Sistema externo]</tspan><tspan class="e-desc" x="130" y="430">Login e sessão. Mesma</tspan><tspan class="e-desc" x="130" y="446">base usada hoje, sem a</tspan><tspan class="e-desc" x="130" y="462">abstração FeijucaAuth.</tspan></text>
+        </g>
+        <g>
+          <rect class="e-box tbd" x="30" y="590" width="200" height="120" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="130" y="620">Base do sistema atual</tspan><tspan class="e-type" x="130" y="637">[MongoDB · externo]</tspan><tspan class="e-desc" x="130" y="660">Banco do sistema que a</tspan><tspan class="e-desc" x="130" y="676">Smartconsig usa hoje.</tspan><tspan class="e-desc" x="130" y="692">Migrado inteiro, uma vez.</tspan></text>
+        </g>
+
+        <!-- Evolução -->
+        <g>
+          <rect class="v-bound" x="120" y="950" width="970" height="140" rx="8"/>
+          <text class="v-title" x="140" y="974">EVOLUÇÃO · FORA DO ESCOPO ATUAL</text>
+          <rect class="v-box" x="135" y="990" width="145" height="80" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="207" y="1020">SSO corporativo</tspan><tspan class="e-desc" x="207" y="1041">Login federado</tspan><tspan class="e-desc" x="207" y="1057">via Keycloak</tspan></text>
+          <rect class="v-box" x="292" y="990" width="145" height="80" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="364" y="1020">Serviço de e-mail</tspan><tspan class="e-desc" x="364" y="1041">Cadastro e</tspan><tspan class="e-desc" x="364" y="1057">recuperação de senha</tspan></text>
+          <rect class="v-box" x="449" y="990" width="145" height="80" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="521" y="1020">Jaéconsig</tspan><tspan class="e-desc" x="521" y="1041">Simulação CLT</tspan></text>
+          <rect class="v-box" x="606" y="990" width="145" height="80" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="678" y="1020">Consig. Rápido</tspan><tspan class="e-desc" x="678" y="1041">Dados do benefício</tspan><tspan class="e-desc" x="678" y="1057">INSS</tspan></text>
+          <rect class="v-box" x="763" y="990" width="145" height="80" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="835" y="1020">Ads</tspan><tspan class="e-desc" x="835" y="1041">Meta, Google, TikTok</tspan><tspan class="e-desc" x="835" y="1057">(Marketing V3)</tspan></text>
+          <rect class="v-box" x="920" y="990" width="145" height="80" rx="6"/>
+          <text text-anchor="middle"><tspan class="e-name" x="992" y="1020">Bancos</tspan><tspan class="e-desc" x="992" y="1041">Esteira: envio,</tspan><tspan class="e-desc" x="992" y="1057">averbação, assinatura</tspan></text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>
+      <span class="key"><span class="sw person"></span>Pessoa</span>
+      <span class="key"><span class="sw sys"></span>Sistema em foco</span>
+      <span class="key"><span class="sw ext"></span>Sistema externo ativo</span>
+      <span class="key"><span class="sw tbd"></span>Migração (carga única)</span>
+      <span class="key"><span class="sw evo"></span>Evolução / fora do escopo</span>
+    </figcaption>
+  </figure>
+
+  <section>
+    <h2>Pessoas</h2>
+    <p class="note">As personas são figuras de referência, não papéis do sistema: o acesso é sempre por permissão <code>recurso:ação:escopo</code>. O diagrama agrupa as pessoas pelo uso típico de cada aplicação.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Elemento</th><th>Quem é</th><th>Entra por</th><th>Spec</th></tr></thead>
+      <tbody>
+        <tr><td><b>Owner e gestores</b></td><td>Dono da Smartconsig (papel de sistema, bypass total) e gestores com permissão no Admin. Configuram Cargos, Lojas, Segmentos, Funis, Ofertas e Regras.</td><td>Admin</td><td class="ref">§1.3 · §3.3</td></tr>
+        <tr><td><b>Gestor de Marketing</b></td><td>Importa bases (CSV/XLSX), cria Listas e Varreduras, aprova a injeção de Leads e acompanha o retorno.</td><td>Marketing</td><td class="ref">§1.3 · §2.1</td></tr>
+        <tr><td><b>Gestor(a) de Loja</b></td><td>Lidera Times; acompanha metas, funil e saldo de Créditos. Pode ser da Loja da Smartconsig ou de um parceiro.</td><td>CRM</td><td class="ref">§1.3 · §5</td></tr>
+        <tr><td><b>Operador de vendas</b></td><td>Recebe Leads pela distribuição, conversa no Chat, simula e formaliza a Proposta.</td><td>CRM</td><td class="ref">§1.3</td></tr>
+        <tr><td><b>Cliente final</b></td><td>Tomador do crédito. Fala só pela Huggy; não há portal do cliente.</td><td>—</td><td class="ref">§3.2</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Sistemas externos</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Elemento</th><th>Função</th><th>Situação</th><th>Spec</th></tr></thead>
+      <tbody>
+        <tr><td><b>Huggy</b></td><td>Origina Leads (Campanha, Orgânica, Recontato), cria Clientes, dispara a Simulação automática e é a fonte das mensagens do Chat. O SmartCorbans não persiste mensagens.</td><td><span class="pill on">Ativa</span></td><td class="ref">§4.4 · RN-LED-12 · RN-SIM-04</td></tr>
+        <tr><td><b>AbacatePay</b></td><td>Cobrança e confirmação de Pix na adição de crédito da Loja. Boleto fica para depois.</td><td><span class="pill on">Ativa</span></td><td class="ref">RF-CRD-03 · D-04</td></tr>
+        <tr><td><b>API do Banco Central</b></td><td>Lista oficial de bancos. Não há cadastro de Bancos no produto: Ofertas, Regras e Propostas buscam daqui.</td><td><span class="pill on">Ativa</span></td><td class="ref">RN-RGR-03 · RN-PRP-14</td></tr>
+        <tr><td><b>ViaCEP</b></td><td>Consulta de endereço pelo CEP na ficha do Cliente. Falha na consulta não bloqueia; o endereço segue manual.</td><td><span class="pill on">Ativa</span></td><td class="ref">RN-CLI-07</td></tr>
+        <tr><td><b>Keycloak</b></td><td>Login por e-mail e senha e sessão. Usuários são criados pelo SmartCorbans, sem cadastro público; quem cadastra define a senha inicial. Mesma instância e base de identidade usadas hoje, acessada direto, sem a abstração FeijucaAuth.</td><td><span class="pill on">Ativa</span></td><td class="ref">§4.2 · D-01 · D-05 · D-07</td></tr>
+        <tr><td><b>Base do sistema atual</b></td><td><b>MongoDB</b> do sistema que a Smartconsig usa hoje; a carga é transformação de documento para relacional (ADR-0003). Fonte de uma migração única e completa (configuração base, Leads, Clientes, Usuários etc.), sem integração contínua. Credenciais não migram: continuam no Keycloak.</td><td><span class="pill tbd">Transição</span></td><td class="ref">§10 · D-02 · D-06</td></tr>
+        <tr><td><b>SSO corporativo</b></td><td>Login federado, configurado no Keycloak quando entrar.</td><td><span class="pill evo">Evolução</span></td><td class="ref">D-01</td></tr>
+        <tr><td><b>Serviço de e-mail</b></td><td>E-mails de cadastro, recuperação de senha e troca obrigatória no primeiro login.</td><td><span class="pill evo">Evolução</span></td><td class="ref">D-03 · D-05</td></tr>
+        <tr><td><b>Jaéconsig</b></td><td>Simulação CLT.</td><td><span class="pill evo">Evolução</span></td><td class="ref">§3.2 · §11</td></tr>
+        <tr><td><b>Consignado Rápido</b></td><td>Consulta de dados do benefício INSS.</td><td><span class="pill evo">Evolução</span></td><td class="ref">§3.2 · §11</td></tr>
+        <tr><td><b>Meta, Google e TikTok Ads</b></td><td>Anúncios e gasto de mídia no Dashboard do Marketing.</td><td><span class="pill evo">Evolução</span></td><td class="ref">§3.2 · §11</td></tr>
+        <tr><td><b>Bancos</b></td><td>Esteira bancária: envio da Proposta, averbação e assinatura.</td><td><span class="pill evo">Fora do escopo</span></td><td class="ref">§3.2 · §11</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Decisões registradas</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>ID</th><th>Decisão</th><th>Efeito no contexto</th></tr></thead>
+      <tbody>
+        <tr><td class="ref">D-01</td><td><b>Keycloak</b> é o provedor de identidade. SSO corporativo não entra no momento.</td><td>Keycloak entra como externo ativo; SSO vai para Evolução.</td></tr>
+        <tr><td class="ref">D-02</td><td>Da transição, só a <b>base de dados</b> do sistema atual é migrada.</td><td>Relação de carga única a partir do banco, sem integração contínua.</td></tr>
+        <tr><td class="ref">D-03</td><td><b>Recuperação de senha e primeiro acesso</b> não entram na primeira versão.</td><td>Não há serviço de e-mail transacional no contexto.</td></tr>
+        <tr><td class="ref">D-04</td><td><b>AbacatePay</b> é o provedor de pagamento, só com Pix no início.</td><td>Boleto vai para Evolução; CRM · Créditos RF-CRD-03 precisa de ajuste.</td></tr>
+        <tr><td class="ref">D-05</td><td>Quem cadastra <b>define a senha</b> do novo usuário, que a troca quando quiser. Sem troca obrigatória no primeiro login e sem e-mails de cadastro ou recuperação.</td><td>Nenhum serviço de e-mail no contexto; e-mails e troca obrigatória viram evolução.</td></tr>
+        <tr><td class="ref">D-06</td><td>A migração leva <b>todos os dados</b>: configuração base, Leads, Clientes, Usuários etc.</td><td>A carga única passa a ser completa.</td></tr>
+        <tr><td class="ref">D-07</td><td>Reaproveita o <b>Keycloak e a base de identidade atuais</b>, removendo a abstração FeijucaAuth.</td><td>Usuários e senhas atuais continuam valendo; a migração de Usuários leva só dados de negócio.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">O mapeamento da migração será tratado no plano de migração, no momento da execução, e não neste documento.</p>
+    <p class="note">Registradas em 10/10/2026 e aplicadas na Especificação Geral v2.4, em Admin · Usuários v0.7, CRM · Créditos v0.6 e nos módulos que citavam Boleto ou o estado Convidado.</p>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>Regras que moldam o contexto</h2>
+      <ul>
+        <li><b>Degradação graciosa (RNF004).</b> Huggy, AbacatePay, a API do Banco Central ou o ViaCEP fora do ar não derrubam o sistema. No Chat não há alternativa local, porque as mensagens não são persistidas. O Keycloak é dependência crítica: sem ele não há login.</li>
+        <li><b>Isolamento entre Lojas (RNF002)</b> é um limite interno, não uma fronteira de contexto: todas as Lojas estão na mesma instância.</li>
+        <li><b>Sem cadastro público.</b> Usuários são criados por quem tem permissão.</li>
+        <li><b>Templates, fluxos e tags vivem na Huggy.</b> O SmartCorbans referencia, não modela.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Em aberto</h2>
+      <ol>
+        <li><b>Landing Pages (Marketing V2):</b> quando entrarem, passam a originar Leads e Clientes.</li>
+      </ol>
+    </section>
+  </div>
+</div>
+
+</body></html>

@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Carteira Ativa · Marketing — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../index.html">Especificação</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Marketing</a>
+      <span class="sep">/</span>
+      <span class="current">Carteira Ativa</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Módulos do Marketing
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <span class="pager-btn disabled">← Anterior</span>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../ActiveClientBase/index.html" selected>Carteira Ativa</option><option value="../Dashboard/index.html" >Dashboard</option><option value="../Prospection/index.html" >Prospecção</option></select>
+    <a href="../Dashboard/index.html" class="pager-btn">Dashboard <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Especificação Funcional</b> · Marketing · Geral
+    </div>
+    <h1>Carteira Ativa <span class="app-badge marketing">Marketing</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge draft">Draft</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Aplicação &amp; Seção</span>
+      <span class="meta-value">Marketing · Geral</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.9 · [a definir]</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documento Pai</span>
+      <span class="meta-value">Corban Marketing — Documento de Produto</span>
+    </div>
+  </div>
+
+  <!-- Tabs if secondary doc exists -->
+  
+                <div class="doc-tabs">
+                  <button class="doc-tab active" id="btn-tab-spec" onclick="switchDocTab('spec')">Especificação Funcional</button>
+                  <button class="doc-tab" id="btn-tab-sec" onclick="switchDocTab('sec')">Matriz de Permissões</button>
+                </div>
+                
+
+  <!-- Content Panes -->
+  
+            <div id="pane-spec" class="tab-pane">
+              <article>
+                <h1 id="corban-marketing-carteira-ativa">Corban Marketing · Carteira Ativa</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Marketing</p>
+<p><b>Documento pai:</b> Corban Marketing — Documento de Produto</p>
+<p><b>Versão:</b> 0.9</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.9</td><td>Corrige a descrição do estado <b>Ativa</b> (§6), que dizia "rodando todo dia": a Recorrente reavalia a base na frequência escolhida e só a injeção é diária (<span class="badge rule-badge">RN-CRA-08</span>).</td></tr><tr><td>0.8</td><td>Acompanha o Documento de Produto v0.9: a Varredura <b>notifica</b> quando entra em Aguardando aprovação, em Falha e quando uma execução da Recorrente falha (<span class="badge rule-badge">RN-MKT-10</span>). §7 deixa claro que só a injeção não notifica. §8 passa a expor os eventos ao sino do Shell.</td></tr><tr><td>0.7</td><td><b>Frequências confirmadas pelo usuário:</b> Semanal (7 dias), Quinzenal (15) e Mensal (30). Item 6 resolvido.</td></tr><tr><td>0.6</td><td><b>Decisões do usuário.</b> (1) A varredura <b>grava Simulação na injeção</b>, para o Cliente com Oferta aprovada (<span class="badge rule-badge">RN-CRA-02</span>, <span class="badge rule-badge">RN-CRA-04</span>; Produto, <span class="badge rule-badge">RN-MKT-02</span>). (2) <b>Base legal e declaração saem do escopo inicial</b> (campo e etapa do assistente). (3) Saem os itens abertos que são detalhe de implementação ou de migração (§9, itens 5 e 7).</td></tr><tr><td>0.5</td><td><b>Decisões do usuário.</b> (1) O motor lê o <b>histórico de contratos</b> do Cliente (Clientes v0.9, <span class="badge rule-badge">RN-CLI-13</span>), e não mais o último snapshot de Simulação; a <b>idade máxima</b> sai da Varredura, e a simulação em lote continua silenciosa (<span class="badge rule-badge">RN-CRA-02</span>). (2) A Varredura "Contínua" passa a se chamar <b>Recorrente</b> e tem <b>frequência definida na criação</b>, sem execução diária (<span class="badge rule-badge">RN-CRA-08</span>). (3) <b>Filtro de base</b> sobre o último Contrato, pela Data de pagamento ao cliente; as Canceladas ficam fora (decisão do usuário, recomendação aceita). (4) A Carga de base não existe mais. As opções de frequência e o cálculo do prazo restante são propostos [confirmar].</td></tr><tr><td>0.4</td><td><b>Acompanha as decisões da Prospecção v0.3:</b> cálculo do valor potencial em lote (parcela = margem, prazo máximo) e Região na pré-análise (qualquer Região) deixam de ser itens abertos (§9, itens 2 e 4).</td></tr><tr><td>0.3</td><td><b>Novo estado Processando pré-análise</b> (§6), como na Lista de Prospecção. A pré-análise de uma base inteira leva tempo, e o módulo não dizia em que estado a Varredura fica enquanto ela roda. Rascunho, a edição que muda o universo (<span class="badge rule-badge">RN-CRA-09</span>) e o reprocessamento passam por ele antes de Aguardando aprovação. Achado ao escrever a Fase 2</td></tr><tr><td>0.2</td><td><b>Levantamento do Marketing, decisões do usuário.</b> (1) A entidade "Campanha de Varredura" passa a se chamar <b>Varredura</b>, para não colidir com a evolução Campanhas (disparos em massa, fora da v1). (2) <b>Origem corrigida:</b> a Lead nasce com a <b>Origem da lead Carteira Ativa</b> (Leads, <span class="badge rule-badge">RN-LED-12</span>) e a referência à Varredura, e não mais com a Tag de categoria "Origem". (3) <b>Dados da pré-análise definidos:</b> último snapshot de Simulação do Cliente e Propostas Pagas (<span class="badge rule-badge">RN-CRA-02</span>). O Segmento do Cliente é o das Leads e Propostas dele. (4) <b>Injeção controlada:</b> nova aprovação na primeira execução, limite diário obrigatório na Contínua, estados Aguardando aprovação, Falha e Cancelada, transições e regras de edição (<span class="badge rule-badge">RN-CRA-06</span> a 09). (5) <b>Duplicidade completa:</b> Lead ativa, Proposta em andamento e carência (<span class="badge rule-badge">RN-MKT-04</span>). (6) <b>Conformidade:</b> Lista de bloqueio e declaração de base legal. (7) O <span class="badge rf-badge">RF-CRA-02</span> vira <b>Resultado da Varredura</b>, por Varredura, e o Dashboard agrega. (8) Texto reescrito em português do Brasil; sai a promessa de "notificação aos operadores", que o CRM não tem. As RN-CRA foram renumeradas.</td></tr><tr><td>0.1</td><td>Versão inicial. Varredura ativa da base de Clientes do tenant para gerar oportunidades por simulação em lote interna.</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Doc de módulo: entidades, campos, estados, requisitos funcionais (RF-CRA) e regras de negócio (RN-CRA) próprios. As regras compartilhadas com a Prospecção (RN-MKT) estão no Documento de Produto do Marketing e são só referenciadas aqui.</p>
+<blockquote><p><b>O motor de Farming (Cultivo).</b> Enquanto a Prospecção caça contatos novos, a Carteira Ativa trabalha o maior ativo do tenant: os Clientes que já estão dentro de casa. Varre a base, cruza o histórico de contratos de cada Cliente com as Ofertas e Regras vigentes e entrega a oportunidade "esquecida" no funil das Lojas.</p></blockquote>
+<hr class="divider">
+<h1 id="1-objetivo-do-m-dulo">1. Objetivo do módulo</h1>
+<p>Minerar a base de Clientes do tenant: encontrar quem, pelo histórico e pelas condições vigentes, está elegível a uma nova operação (ex.: Refinanciamento, Portabilidade) e injetar essas oportunidades como Leads, de forma controlada.</p>
+<hr class="divider">
+<h1 id="2-atores">2. Atores</h1>
+<ul>
+<li><b>Gestor de Marketing (tenant)</b> — configura as Varreduras, aprova a injeção, pausa e acompanha o resultado.</li>
+<li><b>Sistema</b> — executa a pré-análise e a injeção em segundo plano.</li>
+</ul>
+<hr class="divider">
+<h1 id="3-entidades-e-conceitos">3. Entidades e conceitos</h1>
+<h2 id="3-1-varredura">3.1. Varredura</h2>
+<p>Define a regra pela qual o sistema garimpa a base de Clientes.</p>
+<div class="tablewrap"><table><thead><tr><th>Campo</th><th>Obrigatório</th><th>Notas</th></tr></thead><tbody><tr><td>Nome</td><td>Sim</td><td>Identificador interno (ex.: "Refin INSS acima de 12 meses").</td></tr><tr><td>Segmento alvo</td><td>Sim</td><td>Fatia da base varrida e Funil de destino. A base é formada pelos <b>Clientes com Contrato naquele Segmento</b> (<span class="badge rule-badge">RN-CRA-01</span>).</td></tr><tr><td>Filtro de base</td><td>Sim</td><td>Ver abaixo.</td></tr><tr><td>Operações a simular</td><td>Sim</td><td>Operações que o motor tenta aprovar (ex.: Refinanciamento, Portabilidade).</td></tr><tr><td>Recorrência</td><td>Sim</td><td><b>Única</b> (roda uma vez) ou <b>Recorrente</b> (roda na frequência escolhida).</td></tr><tr><td>Frequência</td><td>Recorrente: sim</td><td><b>Semanal</b> (a cada 7 dias), <b>Quinzenal</b> (15) ou <b>Mensal</b> (30), definida na criação (<span class="badge rule-badge">RN-CRA-08</span>).</td></tr><tr><td>Limite diário de leads</td><td>Recorrente: sim · Única: não</td><td>Máximo de Leads injetadas por dia (<span class="badge rule-badge">RN-CRA-07</span>).</td></tr><tr><td>Origem de Venda</td><td>Não</td><td>Rótulo do tenant, copiado às Leads geradas (<span class="badge rule-badge">RN-MKT-01</span>).</td></tr><tr><td>Status</td><td>Sim</td><td>Ver §6.</td></tr></tbody></table></div>
+<p><b>Filtro de base.</b> Recortes sobre o <b>último Contrato</b> do Cliente no Segmento alvo (Clientes, <span class="badge rule-badge">RN-CLI-13</span>): <b>Operação</b> e tempo desde a <b>Data de pagamento ao cliente</b> (ex.: "pago há mais de 360 dias"). Propostas Canceladas não entram, porque não geram Contrato, e Clientes sem Contrato ficam fora da base.</p>
+<h2 id="3-2-pr--an-lise-da-base">3.2. Pré-análise da base</h2>
+<p><b><span class="badge rule-badge">RN-CRA-01</span> — Base e Segmento do Cliente.</b> O Cliente não tem Segmento próprio. Para a Varredura, o Segmento do Cliente é o dos <b>Contratos</b> dele. A Varredura lê o histórico de contratos dos Clientes do tenant, <b>de todas as Lojas</b>; o conteúdo lido é de uso interno do motor e não é exposto às Lojas além do resumo que viaja com a Lead (<span class="badge rule-badge">RN-MKT-08</span>).</p>
+<p><b><span class="badge rule-badge">RN-CRA-02</span> — Simulação em lote silenciosa.</b> Para cada Cliente que atende ao Filtro de base, o motor roda uma simulação em segundo plano, usando o <b>último Contrato</b> dele no Segmento: Operação, Banco, Valor, Parcela e o <b>prazo restante</b> (Prazo menos o tempo decorrido desde a Data de pagamento). Os campos que o Contrato não traz (margem, data de nascimento etc.) ficam "não avaliados" (<span class="badge rule-badge">RN-MKT-03</span>). Contrato sem Parcela ou sem Prazo deixa o Cliente em "Sem dados para análise". O motor avalia as Ofertas ativas e vigentes das Operações escolhidas e as Regras de cada uma. Durante a varredura a avaliação <b>não grava Simulação</b>; ela é gravada na injeção, para o Cliente com Oferta aprovada (<span class="badge rule-badge">RN-CRA-04</span>, <span class="badge rule-badge">RN-MKT-02</span>).</p>
+<p><b><span class="badge rule-badge">RN-CRA-03</span> — Qualificação.</b> O Cliente se qualifica se for elegível a ao menos uma Oferta testada. Campo sem valor não desclassifica (<span class="badge rule-badge">RN-MKT-03</span>).</p>
+<h2 id="3-3-inje-o-e-prote-o">3.3. Injeção e proteção</h2>
+<p><b><span class="badge rule-badge">RN-CRA-04</span> — Lead requalificada.</b> O Cliente qualificado ganha uma nova Lead, associada à ficha dele, no Stage tipo Novo do Funil do Segmento alvo, com <b>Origem da lead Carteira Ativa</b>, a referência à Varredura e a Origem de Venda da Varredura (<span class="badge rule-badge">RN-MKT-01</span>). Leva o valor potencial e o resumo das Ofertas (<span class="badge rule-badge">RN-MKT-08</span>), e a avaliação é <b>gravada como Simulação de origem Marketing</b>, ligada à Lead (Simulações, <span class="badge rule-badge">RN-SIM-01</span>).</p>
+<p><b><span class="badge rule-badge">RN-CRA-05</span> — Duplicidade e bloqueio.</b> Antes de cada injeção, vale a duplicidade completa (Lead ativa no Segmento, Proposta em andamento e carência — <span class="badge rule-badge">RN-MKT-04</span>) e a Lista de bloqueio (<span class="badge rule-badge">RN-MKT-05</span>). A recusa é contada no resultado e <b>não gera Lead</b>.</p>
+<p><b><span class="badge rule-badge">RN-CRA-06</span> — Entrada no funil.</b> A Lead entra no rodízio de Lojas e cobra como qualquer Lead de Origem com preço (Leads, <span class="badge rule-badge">RN-LED-02</span>, 03 e 13). A <b>Loja que receber passa a ter o Cliente associado</b> (Clientes, <span class="badge rule-badge">RN-CLI-04</span>).</p>
+<p><b><span class="badge rule-badge">RN-CRA-07</span> — Aprovação e ritmo.</b> A <b>primeira execução</b> de toda Varredura exige aprovação do gestor (<span class="badge rule-badge">RN-MKT-07</span>). A Varredura <b>Recorrente</b> exige <b>limite diário</b> de Leads, que é o ritmo da injeção: a execução avalia a base e as Leads qualificadas saem em fila, no máximo N por dia. O que sobrar quando chegar a próxima execução é reavaliado junto. A Varredura <b>Única</b> pode ter limite opcional.</p>
+<p><b><span class="badge rule-badge">RN-CRA-08</span> — Como a Recorrente roda.</b> Na <b>frequência escolhida na criação</b> (a cada 7, 15 ou 30 dias), à meia-noite (horário de Brasília), a Varredura <b>reavalia os Clientes que atendem ao Filtro de base naquele dia</b>. A primeira execução acontece à meia-noite seguinte à aprovação, e as seguintes 7, 15 ou 30 dias depois. Quem já foi injetado fica em carência (<span class="badge rule-badge">RN-MKT-04</span>), e quem foi recusado por colisão volta a ser avaliado na próxima execução. <b>Não há execução diária:</b> reavaliar a base inteira é um processo pesado, e a frequência existe para controlar o custo. <i>(Decisão do usuário.)</i></p>
+<p><b><span class="badge rule-badge">RN-CRA-09</span> — Editar exige reaprovar o que muda o universo.</b> Uma Recorrente só se edita <b>Pausada</b>. Mudar o Segmento, o Filtro de base ou as Operações <b>refaz a pré-análise e volta a Varredura a Aguardando aprovação</b>. Mudar só o nome, a frequência, o limite diário ou a Origem de Venda não exige reaprovação.</p>
+<hr class="divider">
+<h1 id="4-requisitos-funcionais">4. Requisitos funcionais</h1>
+<h2 id="rf-cra-01-configurar-a-varredura"><span class="badge rf-badge">RF-CRA-01</span> — Configurar a Varredura</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> configurar os parâmetros de uma varredura <b>para</b> encontrar clientes elegíveis a novas operações.</p>
+<p><b>Comportamento esperado:</b> Wizard: nome e Segmento alvo → Filtro de base (com a <b>contagem estimada</b> de Clientes que o recorte alcança) → Operações a simular → recorrência (com a frequência, quando Recorrente) e limite diário → Origem de Venda. Ao concluir, a Varredura roda a pré-análise e fica em <b>Aguardando aprovação</b>.</p>
+<h2 id="rf-cra-02-resultado-da-varredura"><span class="badge rf-badge">RF-CRA-02</span> — Resultado da Varredura</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> ver o resultado de cada Varredura <b>para</b> medir quanto a base antiga está gerando.</p>
+<p><b>Comportamento esperado:</b> Por Varredura, e por execução nas Recorrentes: <b>Clientes na base ➔ atendem ao filtro ➔ sem dados para análise ➔ elegíveis ➔ recusados (não perturbe, carência, Lead ativa, Proposta em andamento) ➔ Leads injetadas ➔ valor potencial</b>. O Dashboard do Marketing apenas agrega e leva a esta tela (<span class="badge rf-badge">RF-DMB-03</span>).</p>
+<h2 id="rf-cra-03-aprovar-a-inje-o"><span class="badge rf-badge">RF-CRA-03</span> — Aprovar a injeção</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> revisar e aprovar a primeira execução <b>para</b> não despejar a base inteira nas Lojas sem querer.</p>
+<p><b>Comportamento esperado:</b> Em <b>Aguardando aprovação</b>, mostra quantas Leads seriam injetadas, o valor potencial e os recusados. O gestor aprova ou cancela. Aprovada, a Única passa a <b>Executando</b> e a Recorrente a <b>Ativa</b>.</p>
+<h2 id="rf-cra-04-gerir-varreduras"><span class="badge rf-badge">RF-CRA-04</span> — Gerir Varreduras</h2>
+<p><b>Como</b> Gestor de Marketing, <b>eu quero</b> pausar, retomar, editar e cancelar Varreduras <b>para</b> ajustar a torneira de Leads.</p>
+<p><b>Comportamento esperado:</b> Lista de Varreduras com status, recorrência, Leads geradas e última execução. Pausar e retomar nas Recorrentes; editar conforme <span class="badge rule-badge">RN-CRA-09</span>; cancelar uma Varredura em Aguardando aprovação, Executando ou Pausada. <b>Varredura com Leads injetadas não se exclui</b>; Rascunho e Cancelada sem injeção podem ser descartadas.</p>
+<hr class="divider">
+<h1 id="5-regras-de-neg-cio-consolidado">5. Regras de negócio (consolidado)</h1>
+<ul>
+<li><b><span class="badge rule-badge">RN-CRA-01</span></b> — A base é o Cliente com Contrato no Segmento; o Segmento do Cliente é o dos Contratos dele.</li>
+<li><b><span class="badge rule-badge">RN-CRA-02</span></b> — Simulação em lote silenciosa sobre o último Contrato do Cliente; sem Parcela ou Prazo, "Sem dados para análise". Não grava Simulação na varredura; grava na injeção, se houver Oferta aprovada.</li>
+<li><b><span class="badge rule-badge">RN-CRA-03</span></b> — Elegível a ao menos uma Oferta testada qualifica.</li>
+<li><b><span class="badge rule-badge">RN-CRA-04</span></b> — A Lead nasce com Origem Carteira Ativa e referência à Varredura.</li>
+<li><b><span class="badge rule-badge">RN-CRA-05</span></b> — Duplicidade completa e Lista de bloqueio antes de cada injeção.</li>
+<li><b><span class="badge rule-badge">RN-CRA-06</span></b> — Rodízio com cobrança; a Loja que receber passa a ter o Cliente associado.</li>
+<li><b><span class="badge rule-badge">RN-CRA-07</span></b> — Primeira execução aprovada; limite diário obrigatório na Recorrente.</li>
+<li><b><span class="badge rule-badge">RN-CRA-08</span></b> — A Recorrente reavalia a base na frequência escolhida (7, 15 ou 30 dias), às 00h de Brasília.</li>
+<li><b><span class="badge rule-badge">RN-CRA-09</span></b> — Editar a Recorrente só Pausada; mudar o universo exige reaprovação.</li>
+</ul>
+<hr class="divider">
+<h1 id="6-estados-e-transi-es">6. Estados e transições</h1>
+<div class="tablewrap"><table><thead><tr><th>Estado</th><th>Significado</th><th>Sai para</th></tr></thead><tbody><tr><td><b>Rascunho</b></td><td>Configuração iniciada.</td><td>Processando pré-análise · descartada</td></tr><tr><td><b>Processando pré-análise</b></td><td>Rotina em segundo plano; Varredura trancada.</td><td>Aguardando aprovação · Falha</td></tr><tr><td><b>Aguardando aprovação</b></td><td>Pré-análise pronta, nada injetado.</td><td>Executando (Única) · Ativa (Recorrente) · Cancelada · Processando pré-análise (reprocessar ou editar)</td></tr><tr><td><b>Executando</b></td><td>Única injetando conforme o ritmo.</td><td>Concluída · Cancelada · Falha</td></tr><tr><td><b>Ativa</b></td><td>Recorrente em vigor: reavalia a base na frequência escolhida e injeta a fila no limite diário (<span class="badge rule-badge">RN-CRA-07</span>, <span class="badge rule-badge">RN-CRA-08</span>).</td><td>Pausada · Cancelada · Falha</td></tr><tr><td><b>Pausada</b></td><td>Recorrente parada pelo gestor. Pode ser editada.</td><td>Ativa · Processando pré-análise (se mudou o universo) · Cancelada</td></tr><tr><td><b>Concluída</b></td><td>Única terminou.</td><td>—</td></tr><tr><td><b>Falha</b></td><td>Erro estrutural; as execuções anteriores ficam no resultado.</td><td>Ativa ou Executando (nova tentativa) · Cancelada</td></tr><tr><td><b>Cancelada</b></td><td>Encerrada pelo gestor. As Leads já injetadas continuam.</td><td>—</td></tr></tbody></table></div>
+<hr class="divider">
+<h1 id="7-limites-do-m-dulo">7. Limites do módulo</h1>
+<p><b>Não</b> inclui: a importação de dados externos (Prospecção); o envio de mensagens aos clientes (Huggy ou evolução futura); o atendimento (CRM); e <b>notificações</b> de lead injetada (a Lead aparece no board e no pool da Loja).</p>
+<hr class="divider">
+<h1 id="8-depend-ncias-e-o-que-o-m-dulo-exp-e">8. Dependências e o que o módulo expõe</h1>
+<p><b>Depende de:</b></p>
+<ul>
+<li><b>Clientes (histórico de contratos), Propostas e Leads (CRM)</b> — a base e os Contratos (Clientes, <span class="badge rule-badge">RN-CLI-13</span>; Propostas, <span class="badge rule-badge">RN-PRP-18</span>).</li>
+<li><b>Ofertas e Regras (Admin)</b> — o motor de elegibilidade.</li>
+<li><b>Segmentos e Funis de Vendas (Admin)</b> — destino da Lead.</li>
+<li><b>Prospecção (Marketing)</b> — Lista de bloqueio, carência e os Contratos importados (<span class="badge rule-badge">RN-PRS-15</span>).</li>
+</ul>
+<p><b>Expõe para:</b></p>
+<ul>
+<li><b>Leads (CRM)</b> — o evento de injeção, que dispara o rodízio.</li>
+<li><b>Dashboard (Marketing)</b> — volume, valor potencial e conversão das Varreduras.</li>
+<li><b>Notificações (Shell Privado)</b> — Varredura em Aguardando aprovação, em Falha e execução da Recorrente com falha (<span class="badge rule-badge">RN-MKT-10</span>).</li>
+</ul>
+<hr class="divider">
+<h1 id="9-itens-abertos">9. Itens abertos</h1>
+<ol>
+<li><i>(Resolvido na v0.5.)</i> <b>Data de referência:</b> a Data de pagamento ao cliente; as Canceladas ficam fora do Filtro.</li>
+<li><i>(Removido na v0.5.)</i> A idade máxima do snapshot deixou de existir. O valor potencial em lote está resolvido (Prospecção v0.3; Produto, <span class="badge rule-badge">RN-MKT-08</span>).</li>
+<li><i>(Resolvido na v0.5.)</i> Só é minerável o Cliente com Contrato (de Proposta Paga ou importado pela Lista).</li>
+<li><i>(Resolvido na v0.4.)</i> <b>Região:</b> a pré-análise considera qualquer Região (Prospecção v0.3, §9, item 1).</li>
+<li><i>(Removido na v0.6: desempenho é detalhe de implementação.)</i></li>
+<li><i>(Resolvido na v0.7.)</i> <b>Opções de frequência:</b> Semanal, Quinzenal e Mensal (7, 15 e 30 dias).</li>
+<li><i>(Removido na v0.6: migração do histórico é detalhe de implementação.)</i></li>
+</ol>
+<hr class="divider">
+<p><i>Fim do documento. Carteira Ativa v0.9 — módulo da aplicação Marketing.</i></p>
+              </article>
+            </div>
+            
+                <div id="pane-sec" class="tab-pane" style="display:none">
+                  <article>
+                    <h1 id="corban-marketing-carteira-ativa-matriz-de-permiss-es">Corban Marketing · Carteira Ativa — Matriz de Permissões</h1>
+<p><b>Status:</b> Draft</p>
+<p><b>Aplicação:</b> Marketing</p>
+<p><b>Documento pai:</b> Corban Marketing · Carteira Ativa (módulo v0.6)</p>
+<p><b>Versão:</b> 0.4</p>
+<p><b>Data:</b> [a definir]</p>
+<h2 id="hist-rico-de-revis-es">Histórico de revisões</h2>
+<div class="tablewrap"><table><thead><tr><th>Versão</th><th>Mudanças</th></tr></thead><tbody><tr><td>0.4</td><td>Acompanha o módulo v0.6: <code>create</code> deixa de citar a base legal (saiu do escopo inicial).</td></tr><tr><td>0.3</td><td>Acompanha o módulo v0.5: a Varredura Contínua passa a se chamar Recorrente. Nenhuma chave muda.</td></tr><tr><td>0.2</td><td>Esclarece o que a ação <code>approve</code> cobre: aprovar, pausar, retomar, cancelar e <b>tentar de novo</b> uma Varredura com Falha, e liberar de novo uma Varredura que voltou a Aguardando aprovação depois de uma edição (Variações por Permissão v0.1). Acompanha o módulo v0.3</td></tr><tr><td>0.1</td><td>Versão inicial. Define os recursos do Marketing no catálogo de permissões, que o Documento de Produto do Marketing listava como "a consolidar".</td></tr></tbody></table></div>
+<h2 id="como-usar-este-documento">Como usar este documento</h2>
+<p>Cobre o recurso deste módulo: <code>sweeps</code> (Varreduras). Formato da chave: <code>recurso:ação:escopo</code>.</p>
+<p><b>Aplicação do recurso: Marketing.</b> Ter ao menos uma permissão dele dá acesso à aplicação (Usuários, <span class="badge rule-badge">RN-USR-16</span>).</p>
+<p>A tabela é compacta: uma linha por <code>recurso:ação</code>, com os escopos oferecidos. Para a chave completa, combine a ação com o escopo (ex.: <code>sweeps:view</code> → <code>sweeps:view:all</code>).</p>
+<p><b>O que diferencia um Cargo do outro não é a chave, e sim quais linhas ele recebe.</b></p>
+<hr class="divider">
+<h2 id="1-matriz">1. Matriz</h2>
+<div class="tablewrap"><table><thead><tr><th>Recurso</th><th>Ação</th><th>Escopos oferecidos</th><th>O que cobre</th></tr></thead><tbody><tr><td><code>sweeps</code></td><td><code>view</code></td><td><code>all</code></td><td>Ver a listagem das Varreduras e o Resultado de cada uma, por execução (<span class="badge rf-badge">RF-CRA-02</span>, <span class="badge rf-badge">RF-CRA-04</span>)</td></tr><tr><td><code>sweeps</code></td><td><code>create</code></td><td><code>all</code></td><td>Configurar uma Varredura: Segmento, Filtro de base, Operações, recorrência, limite diário e Origem de Venda (<span class="badge rf-badge">RF-CRA-01</span>)</td></tr><tr><td><code>sweeps</code></td><td><code>edit</code></td><td><code>all</code></td><td>Editar uma Varredura, conforme a <span class="badge rule-badge">RN-CRA-09</span> (a Recorrente só se edita Pausada)</td></tr><tr><td><code>sweeps</code></td><td><code>approve</code></td><td><code>all</code></td><td>Aprovar a injeção e controlá-la: pausar, retomar, cancelar e tentar de novo uma Varredura com Falha (<span class="badge rf-badge">RF-CRA-03</span>, <span class="badge rf-badge">RF-CRA-04</span>)</td></tr><tr><td><code>sweeps</code></td><td><code>delete</code></td><td><code>all</code></td><td>Descartar uma Varredura em Rascunho ou Cancelada, sem Leads injetadas (<span class="badge rf-badge">RF-CRA-04</span>)</td></tr></tbody></table></div>
+<hr class="divider">
+<h2 id="2-por-que-tudo-em-escopo-all">2. Por que tudo em escopo <code>all</code></h2>
+<p>A Varredura percorre a base de Clientes do <b>tenant</b>, e os Clientes do Marketing nascem sem Loja (<span class="badge rule-badge">RN-MKT-09</span>). Não existe "a Varredura da minha loja", então só o escopo <code>all</code> é oferecido.</p>
+<hr class="divider">
+<h2 id="3-notas-sobre-as-a-es">3. Notas sobre as ações</h2>
+<p><b><code>create</code>, <code>edit</code> e <code>approve</code> são separadas.</b> Configurar não é autorizar. A aprovação libera as Leads no rodízio e <b>debita o saldo das Lojas</b> (<span class="badge rule-badge">RN-MKT-07</span>). Editar uma Varredura que muda o universo a devolve para <b>Aguardando aprovação</b> (<span class="badge rule-badge">RN-CRA-09</span>): quem edita precisa de <code>approve</code> para liberá-la de novo, e quem só tem <code>edit</code> deixa a Varredura esperando.</p>
+<p><b><code>approve</code> cobre pausar, retomar e cancelar</b>, como na Prospecção (<code>prospecting_lists:approve</code>).</p>
+<p><b>Quem vê o Resultado não precisa de <code>create</code>.</b> O Resultado mostra contadores e valor potencial, não dados de contato.</p>
+<hr class="divider">
+<h2 id="4-owner-tenant">4. Owner / Tenant</h2>
+<p>Não aparece nesta matriz. Owner/Tenant tem bypass total do catálogo de permissões (Usuários, <span class="badge rule-badge">RN-USR-03</span>).</p>
+<hr class="divider">
+<p><i>Fim do documento. Matriz de Permissões — Carteira Ativa v0.4, companheira do módulo v0.6.</i></p>
+                  </article>
+                </div>
+                
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../index.html">Catálogo de Especificação</a>
+      <a href="../index.html">Módulos do Marketing</a>
+      <a href="../../../Architecture/C4/index.html">C4 Model</a>
+      <a href="../../../Architecture/ADR/index.html">ADRs</a>
+      <a href="../../../Architecture/Dados/index.html">Modelo de Dados</a>
+      <a href="spec.md" target="_blank">Ver Fonte Markdown (spec.md)</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional · Marketing</div>
+  </footer>
+</div>
+
+
+                <script>
+                  function switchDocTab(tab) {
+                    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.doc-tab').forEach(b => b.classList.remove('active'));
+                    if (tab === 'spec') {
+                      document.getElementById('pane-spec').style.display = 'block';
+                      document.getElementById('btn-tab-spec').classList.add('active');
+                    } else {
+                      document.getElementById('pane-sec').style.display = 'block';
+                      document.getElementById('btn-tab-sec').classList.add('active');
+                    }
+                  }
+                </script>
+                
+
+</body>
+</html>

@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Marketing & Prospecção · Schema `marketing` — SmartCorbans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: isDark ? 'dark' : 'neutral',
+      securityLevel: 'loose',
+      fontFamily: '"IBM Plex Sans", sans-serif'
+    });
+    updateThemeLabel();
+  });
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+    }
+  }
+
+  function toggleMermaidCode(id) {
+    const diagram = document.getElementById('diagram-' + id);
+    const code = document.getElementById('code-' + id);
+    const btn = document.getElementById('toggle-btn-' + id);
+    if (code.style.display === 'block') {
+      code.style.display = 'none';
+      diagram.style.display = 'block';
+      btn.textContent = 'Ver Código Mermaid';
+    } else {
+      code.style.display = 'block';
+      diagram.style.display = 'none';
+      btn.textContent = 'Ver Diagrama Renderizado';
+    }
+  }
+</script>
+
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs a { color: var(--muted); transition: color 0.15s ease; }
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--line); }
+.breadcrumbs .current { color: var(--ink); font-weight: 500; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--edge); background: var(--evo); }
+.theme-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover { border-color: var(--brand); color: var(--brand); }
+
+/* Quick pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.pager-btn:hover { color: var(--brand); }
+.pager-btn.disabled { opacity: 0.35; pointer-events: none; }
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  max-width: 340px;
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow b { color: var(--brand); font-weight: 600; }
+
+h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1 .schema-badge {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--brand);
+  background: var(--chip);
+  border: 1px solid var(--chip-border);
+  padding: 3px 10px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Meta Box */
+.meta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+  font-size: 13.5px;
+}
+.meta-field { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.meta-value { color: var(--ink); font-weight: 500; }
+.meta-value a { color: var(--brand); text-decoration: underline; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.accepted {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.status-badge.superseded {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+/* Sections */
+article { display: flex; flex-direction: column; gap: 28px; }
+article section { display: flex; flex-direction: column; gap: 12px; }
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 0;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+h3 { font-size: 16px; font-weight: 600; margin: 12px 0 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; }
+li { line-height: 1.55; }
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+}
+
+/* Diagram box */
+.diagram-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: auto;
+}
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 10px;
+}
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.diagram-toggle-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.diagram-toggle-btn:hover { color: var(--ink); border-color: var(--edge); }
+
+.mermaid-code-view {
+  display: none;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Tables */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin-block: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  border-spacing: 0;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(0, 0, 0, 0.02); }
+:root[data-theme="dark"] tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+}
+th {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--evo);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+td code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  word-break: break-word;
+}
+
+.badge-key {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+  margin-right: 3px;
+  vertical-align: baseline;
+}
+
+/* Schema table specific column sizing */
+table.schema-table th:nth-child(1),
+table.schema-table td:nth-child(1) {
+  white-space: nowrap;
+  font-weight: 500;
+  width: 220px;
+  min-width: 170px;
+}
+table.schema-table th:nth-child(2),
+table.schema-table td:nth-child(2) {
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  width: 140px;
+  min-width: 110px;
+}
+table.schema-table th:nth-child(3),
+table.schema-table td:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+  width: 70px;
+}
+table.schema-table th:nth-child(4),
+table.schema-table td:nth-child(4) {
+  min-width: 320px;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--brand); }
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../../../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <a href="../../C4/index.html">Arquitetura</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Persistência</a>
+      <span class="sep">/</span>
+      <span class="current">Marketing & Prospecção</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Todos os Schemas
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Pager -->
+  <div class="module-pager">
+    <a href="../09-atendimento/index.html" class="pager-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Atendimento & Chat</a>
+    <select class="pager-select" onchange="window.location.href=this.value"><option value="../01-estrutura/index.html" >01-estrutura — Estrutura Organizacional</option><option value="../02-funis/index.html" >02-funis — Funis & Etapas</option><option value="../03-catalogo/index.html" >03-catalogo — Catálogo Comercial</option><option value="../04-clientes/index.html" >04-clientes — Clientes & Contatos</option><option value="../05-leads/index.html" >05-leads — Leads & Distribuição</option><option value="../06-creditos/index.html" >06-creditos — Créditos & Financeiro</option><option value="../07-simulacao/index.html" >07-simulacao — Motor de Simulação</option><option value="../08-propostas/index.html" >08-propostas — Propostas Comerciais</option><option value="../09-atendimento/index.html" >09-atendimento — Atendimento & Chat</option><option value="../10-marketing/index.html" selected>10-marketing — Marketing & Prospecção</option><option value="../11-desempenho/index.html" >11-desempenho — Desempenho & Metas</option><option value="../12-apoio/index.html" >12-apoio — Apoio & Infraestrutura</option><option value="../01-acesso/index.html" >01-acesso — Acesso & Permissões</option></select>
+    <a href="../11-desempenho/index.html" class="pager-btn">Desempenho & Metas <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">
+      <b>Modelo de Dados Lógico</b> · Atendimento & Marketing
+    </div>
+    <h1>Marketing & Prospecção <span class="schema-badge">schema: marketing</span></h1>
+  </header>
+
+  <!-- Meta Box -->
+  <div class="meta-box">
+    <div class="meta-field">
+      <span class="meta-label">Status</span>
+      <span class="status-badge accepted">Validado</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Schema PostgreSQL</span>
+      <span class="meta-value"><code>marketing</code></span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Versão &amp; Data</span>
+      <span class="meta-value">v0.1 · 11/10/2026</span>
+    </div>
+    <div class="meta-field" style="grid-column: 1 / -1;">
+      <span class="meta-label">Documentos de Referência</span>
+      <span class="meta-value">Marketing v0.9, Prospecção v0.8, Carteira Ativa v0.9; Relacionamentos do Marketing v0.2; <a href="../../ADR/0007-worker-separado/index.html" class="inline-link"><b>ADR-0007</b></a>, <a href="../../ADR/0008-fila-de-jobs-no-postgresql/index.html" class="inline-link"><b>ADR-0008</b></a>, <a href="../../ADR/0023-sem-fk-entre-modulos/index.html" class="inline-link"><b>ADR-0023</b></a>, <a href="../../ADR/0024-armazenamento-de-arquivos-blob/index.html" class="inline-link"><b>ADR-0024</b></a></span>
+    </div>
+  </div>
+
+  <!-- Body Content -->
+  <article>
+    <h2>Histórico de revisões</h2>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Versão</th>
+<th>Mudanças</th>
+</tr></thead><tbody>
+<tr>
+<td>0.1</td>
+<td>Primeira versão.</td>
+</tr>
+</tbody></table></div>
+<h2>1. O que o módulo guarda</h2>
+<p>Listas de Prospecção com as linhas importadas e o resultado de cada uma; Varreduras com as execuções e o resultado por Cliente; a Lista de bloqueio e a carência. A <b>fila de injeção não é tabela</b>: é o conjunto de linhas e resultados qualificados ainda não injetados (Relacionamentos do Marketing). O Worker processa importação, pré-análise, execuções e injeção (<a href="../../ADR/0007-worker-separado/index.html" class="inline-link"><b>ADR-0007</b></a>, <a href="../../ADR/0008-fila-de-jobs-no-postgresql/index.html" class="inline-link"><b>ADR-0008</b></a>). Clientes, Contratos importados, Leads e Simulações são criados nos módulos donos, pelos contratos deles.</p>
+<h2>2. Diagrama</h2>
+
+                <div class="diagram-container">
+                  <div class="diagram-header">
+                    <span class="diagram-title">Diagrama Entidade-Relacionamento (ER)</span>
+                    <button id="toggle-btn-10-marketing-1" class="diagram-toggle-btn" onclick="toggleMermaidCode('10-marketing-1')">Ver Código Mermaid</button>
+                  </div>
+                  <div id="diagram-10-marketing-1" class="mermaid">
+erDiagram
+  prospecting_list ||--o{ prospecting_list_row : "rows"
+  sweep ||--o{ sweep_execution : "runs"
+  sweep_execution ||--o{ sweep_result : "results"
+
+  prospecting_list {
+    uuid id PK
+    text name
+    uuid target_segment_id "ref. lógica"
+    text base_source
+    uuid sales_origin_id "ref. lógica"
+    numeric base_cost
+    text status
+    text file_key
+    text file_name
+    jsonb column_mapping
+    text_array operations
+    jsonb macro_filters
+    timestamptz analyzed_at
+    text injection_mode "all | daily_limit"
+    int daily_limit
+    boolean injection_paused
+    text approved_by_user_id
+    timestamptz approved_at
+    text created_by_user_id
+  }
+  prospecting_list_row {
+    uuid id PK
+    uuid list_id FK
+    int row_number
+    jsonb mapped_values
+    uuid client_id "ref. lógica"
+    text result "invalid | blocked | discarded | qualified"
+    text discard_reason
+    numeric potential_value
+    jsonb eligible_offers
+    text injection_status
+    uuid lead_id "ref. lógica"
+    timestamptz injected_at
+  }
+  sweep {
+    uuid id PK
+    text name
+    uuid target_segment_id "ref. lógica"
+    text_array filter_operations
+    int filter_paid_more_than_days
+    text_array operations
+    text recurrence "once | recurring"
+    int frequency_days "7 | 15 | 30"
+    int daily_limit
+    uuid sales_origin_id "ref. lógica"
+    text status
+    timestamptz next_run_at
+    text approved_by_user_id
+    timestamptz approved_at
+    text created_by_user_id
+  }
+  sweep_execution {
+    uuid id PK
+    uuid sweep_id FK
+    text status "running | completed | failed"
+    text error
+    timestamptz started_at
+    timestamptz finished_at
+  }
+  sweep_result {
+    uuid id PK
+    uuid execution_id FK
+    uuid client_id "ref. lógica"
+    uuid contract_id "ref. lógica"
+    text result
+    text discard_reason
+    numeric potential_value
+    jsonb eligible_offers
+    text injection_status
+    uuid lead_id "ref. lógica"
+    timestamptz injected_at
+  }
+  blocklist_entry {
+    uuid id PK
+    text kind "cpf | phone"
+    text value
+    text source
+    text created_by_user_id
+    timestamptz created_at
+  }
+  marketing_settings {
+    int id PK "sempre 1"
+    int grace_period_days
+  }
+                  </div>
+                  <pre id="code-10-marketing-1" class="mermaid-code-view"><code>erDiagram
+  prospecting_list ||--o{ prospecting_list_row : "rows"
+  sweep ||--o{ sweep_execution : "runs"
+  sweep_execution ||--o{ sweep_result : "results"
+
+  prospecting_list {
+    uuid id PK
+    text name
+    uuid target_segment_id "ref. lógica"
+    text base_source
+    uuid sales_origin_id "ref. lógica"
+    numeric base_cost
+    text status
+    text file_key
+    text file_name
+    jsonb column_mapping
+    text_array operations
+    jsonb macro_filters
+    timestamptz analyzed_at
+    text injection_mode "all | daily_limit"
+    int daily_limit
+    boolean injection_paused
+    text approved_by_user_id
+    timestamptz approved_at
+    text created_by_user_id
+  }
+  prospecting_list_row {
+    uuid id PK
+    uuid list_id FK
+    int row_number
+    jsonb mapped_values
+    uuid client_id "ref. lógica"
+    text result "invalid | blocked | discarded | qualified"
+    text discard_reason
+    numeric potential_value
+    jsonb eligible_offers
+    text injection_status
+    uuid lead_id "ref. lógica"
+    timestamptz injected_at
+  }
+  sweep {
+    uuid id PK
+    text name
+    uuid target_segment_id "ref. lógica"
+    text_array filter_operations
+    int filter_paid_more_than_days
+    text_array operations
+    text recurrence "once | recurring"
+    int frequency_days "7 | 15 | 30"
+    int daily_limit
+    uuid sales_origin_id "ref. lógica"
+    text status
+    timestamptz next_run_at
+    text approved_by_user_id
+    timestamptz approved_at
+    text created_by_user_id
+  }
+  sweep_execution {
+    uuid id PK
+    uuid sweep_id FK
+    text status "running | completed | failed"
+    text error
+    timestamptz started_at
+    timestamptz finished_at
+  }
+  sweep_result {
+    uuid id PK
+    uuid execution_id FK
+    uuid client_id "ref. lógica"
+    uuid contract_id "ref. lógica"
+    text result
+    text discard_reason
+    numeric potential_value
+    jsonb eligible_offers
+    text injection_status
+    uuid lead_id "ref. lógica"
+    timestamptz injected_at
+  }
+  blocklist_entry {
+    uuid id PK
+    text kind "cpf | phone"
+    text value
+    text source
+    text created_by_user_id
+    timestamptz created_at
+  }
+  marketing_settings {
+    int id PK "sempre 1"
+    int grace_period_days
+  }</code></pre>
+                </div>
+                
+<h2>3. Tabelas</h2>
+<h3>3.1. <code>prospecting_list</code> (Lista de Prospecção)</h3>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Grupo</th>
+<th>Colunas</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td>Cadastro</td>
+<td><code>name</code>, <code>target_segment_id</code>, <code>base_source</code>, <code>sales_origin_id</code>, <code>base_cost</code></td>
+<td>Prospecção §3.1. <code>base_cost</code> alimenta o Dashboard financeiro (RN-DMB-05).</td>
+</tr>
+<tr>
+<td>Estado</td>
+<td><code>status</code></td>
+<td><code>pending_mapping</code> | <code>processing</code> | <code>awaiting_approval</code> | <code>stored</code> | <code>injecting</code> | <code>completed</code> | <code>failed</code> | <code>cancelled</code> (Prospecção §6).</td>
+</tr>
+<tr>
+<td>Arquivo</td>
+<td><code>file_key</code>, <code>file_name</code>, <code>column_mapping</code></td>
+<td>Arquivo no Blob, container <code>marketing-imports</code> (<a href="../../ADR/0024-armazenamento-de-arquivos-blob/index.html" class="inline-link"><b>ADR-0024</b></a>). O mapeamento fica guardado para reprocessar.</td>
+</tr>
+<tr>
+<td>Pré-análise</td>
+<td><code>operations</code>, <code>macro_filters</code>, <code>analyzed_at</code></td>
+<td><code>analyzed_at</code> + 7 dias = validade; passou, exige reprocessar antes de distribuir (RN-PRS-09).</td>
+</tr>
+<tr>
+<td>Injeção</td>
+<td><code>injection_mode</code>, <code>daily_limit</code>, <code>injection_paused</code>, <code>approved_by_user_id</code>, <code>approved_at</code></td>
+<td>Ritmo e controle (RN-PRS-07). A aprovação vai para a Auditoria (RNF005, grupo Dinheiro).</td>
+</tr>
+<tr>
+<td>Autoria</td>
+<td><code>created_by_user_id</code></td>
+<td>Recebe a notificação de Falha (RN-MKT-10).</td>
+</tr>
+</tbody></table></div>
+<p>Não se exclui se tiver Leads (RN-PRS-17); sem Leads, exclusão suave (<code>deleted_at</code>).</p>
+<h3>3.2. <code>prospecting_list_row</code> (linha da Lista)</h3>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Coluna</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td><code>row_number</code>, <code>mapped_values</code></td>
+<td>Posição no arquivo e valores já mapeados para os campos do catálogo (<code>jsonb</code>), entrada do motor e da criação do Cliente.</td>
+</tr>
+<tr>
+<td><code>client_id</code></td>
+<td>Cliente criado ou reaproveitado; nulo em <code>invalid</code> e <code>blocked</code> (RN-PRS-16).</td>
+</tr>
+<tr>
+<td><code>result</code>, <code>discard_reason</code></td>
+<td>Resultado da pré-análise (RN-PRS-05); o motivo é a mensagem de erro da Regra bloqueante (RN-PRS-03).</td>
+</tr>
+<tr>
+<td><code>potential_value</code>, <code>eligible_offers</code></td>
+<td>Valor potencial e Ofertas elegíveis com os requisitos não avaliados (RN-MKT-08); copiados para a Lead na injeção (<code>leads.lead_offer_summary</code>).</td>
+</tr>
+<tr>
+<td><code>injection_status</code></td>
+<td><code>pending</code> (na fila) | <code>injected</code> | <code>refused_grace</code> | <code>refused_duplicate</code> | <code>refused_blocked</code> | <code>cancelled</code>. Só linhas <code>qualified</code> entram na fila. Revalidado na hora de injetar (RN-PRS-08).</td>
+</tr>
+<tr>
+<td><code>lead_id</code>, <code>injected_at</code></td>
+<td>A Lead criada e quando.</td>
+</tr>
+</tbody></table></div>
+<p>Índices: <code>(list_id, result)</code>, <code>(list_id, injection_status)</code>, <code>(client_id)</code>. Os <b>contadores</b> do resultado (RF-PRS-03) são contagens sobre esta tabela.</p>
+<h3>3.3. <code>sweep</code> (Varredura)</h3>
+<div class="tablewrap"><table>
+<thead><tr>
+<th>Grupo</th>
+<th>Colunas</th>
+<th>Regra</th>
+</tr></thead><tbody>
+<tr>
+<td>Cadastro</td>
+<td><code>name</code>, <code>target_segment_id</code>, <code>sales_origin_id</code></td>
+<td>Carteira Ativa §3.1.</td>
+</tr>
+<tr>
+<td>Filtro de base</td>
+<td><code>filter_operations</code>, <code>filter_paid_more_than_days</code></td>
+<td>Sobre o <b>último Contrato</b> do Cliente no Segmento: Operação e tempo desde a Data de pagamento ao cliente.</td>
+</tr>
+<tr>
+<td>Simulação</td>
+<td><code>operations</code></td>
+<td>Operações a simular.</td>
+</tr>
+<tr>
+<td>Recorrência</td>
+<td><code>recurrence</code>, <code>frequency_days</code>, <code>daily_limit</code>, <code>next_run_at</code></td>
+<td>Recorrente exige frequência e limite diário (RN-CRA-07, RN-CRA-08); roda às 00h de Brasília, e o Worker usa <code>next_run_at</code>.</td>
+</tr>
+<tr>
+<td>Estado</td>
+<td><code>status</code></td>
+<td><code>draft</code> | <code>processing</code> | <code>awaiting_approval</code> | <code>running</code> (Única) | <code>active</code> | <code>paused</code> (Recorrente) | <code>completed</code> | <code>failed</code> | <code>cancelled</code> (Carteira Ativa §6).</td>
+</tr>
+<tr>
+<td>Aprovação e autoria</td>
+<td><code>approved_by_user_id</code>, <code>approved_at</code>, <code>created_by_user_id</code></td>
+<td>Primeira execução aprovada (RN-CRA-07); mudar o universo exige reaprovar (RN-CRA-09).</td>
+</tr>
+</tbody></table></div>
+<h3>3.4. <code>sweep_execution</code> e <code>sweep_result</code></h3>
+<p>Cada execução é um registro, com status e erro: base da notificação de falha de execução recorrente (RN-MKT-10). <code>sweep_result</code> tem uma linha por Cliente avaliado, com o Contrato usado (RN-CRA-02), o resultado (<code>eligible</code> \| <code>no_data</code> \| <code>discarded</code> \| <code>refused_grace</code> \| <code>refused_active_lead</code> \| <code>refused_open_proposal</code> \| <code>refused_blocked</code>), as Ofertas elegíveis e o mesmo controle de injeção da linha da Lista. O que sobra na fila quando chega a próxima execução é reavaliado nela (RN-CRA-07).</p>
+<h3>3.5. <code>blocklist_entry</code> (Lista de bloqueio)</h3>
+<p>CPF (só dígitos) ou telefone (normalizado), com a fonte (<code>manual</code> ou o nome do arquivo importado), quem e quando (RF-PRS-07). <b>Único por <code>(kind, value)</code></b>. Remover apaga a linha; a mudança vai para a Auditoria.</p>
+<h3>3.6. <code>marketing_settings</code></h3>
+<p>Uma linha só (<code>id = 1</code>, <code>CHECK</code>), com <code>grace_period_days</code>, padrão 90 (RN-MKT-04, RF-PRS-08).</p>
+<h2>4. Duplicidade na injeção</h2>
+<p>Checada no momento de injetar cada contato (RN-MKT-04), pelos contratos dos donos:</p>
+<ul>
+<li><b>Lead ativa no Segmento</b> e <b>injeção nos últimos N dias</b>: Leads (índice de <code>leads.lead</code> por Cliente e Segmento, e Leads de Origem do Marketing por <code>distributed_at</code>).</li>
+<li><b>Proposta em andamento</b>: Propostas.</li>
+<li><b>Lista de bloqueio</b>: aqui.</li>
+</ul>
+<h2>5. Decisões deste modelo</h2>
+<p>1. <b>Linhas e resultados como registros</b>, não arquivo reprocessado a cada tela: o resultado, a fila e o Dashboard leem daqui.</p>
+<p>2. <b>Valores mapeados e Ofertas elegíveis em <code>jsonb</code></b>: o conjunto de campos varia por Lista e só é lido inteiro (motor e cópia para a Lead).</p>
+<p>3. <b>Contadores calculados</b> por contagem, sem colunas de contador.</p>
+<p>4. <b>Configuração como tabela de linha única</b>, porque a instância é single-tenant.</p>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../../../index.html">← Início da Documentação</a>
+      <a href="../../C4/index.html">Hub C4 Model</a>
+      <a href="../../ADR/index.html">Decisões de Arquitetura (ADRs)</a>
+      <a href="../index.html">Catálogo de Persistência</a>
+      <a href="README.md" target="_blank">Ver Fonte Markdown (.md)</a>
+    </div>
+    <div>SmartCorbans · Banco de Dados Relacional · Schemas PostgreSQL isolados</div>
+  </footer>
+</div>
+
+</body>
+</html>

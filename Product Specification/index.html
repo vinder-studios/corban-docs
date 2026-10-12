@@ -1,0 +1,1758 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SmartCorbans — Especificação de Produto (32 Módulos)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <script>
+  (function() {
+    const saved = localStorage.getItem('smartcorbans-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('smartcorbans-theme', next);
+    updateThemeLabel();
+  }
+  function updateThemeLabel() {
+    const theme = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = theme === 'dark' ? 'Escuro' : 'Claro';
+  }
+  document.addEventListener('DOMContentLoaded', updateThemeLabel);
+</script>
+  <style>
+    
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --ink: #1b1b1d;
+  --muted: #5b5b62;
+  --line: #d4d4d8;
+  --edge: #6e6e76;
+  --brand: #900a10;
+  --brand-hover: #75080d;
+  --brand-ink: #ffffff;
+  --brand-soft: #fbf0f1;
+  --person: #212121;
+  --person-ink: #ffffff;
+  --ext: #e6e6e9;
+  --ext-ink: #1b1b1d;
+  --ext-stroke: #8b8b93;
+  --evo: #f9f9fa;
+  --chip: #efe3e3;
+  --chip-border: #d8c2c3;
+  --card-border: #e2e2e7;
+  --accent: #2e66d4;
+  --accent-soft: #eef3fc;
+  --green: #1a7f37;
+  --green-soft: #dafbe1;
+  --amber: #9a6700;
+  --amber-soft: #fff8c5;
+  --purple: #8250df;
+  --purple-soft: #fbefff;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --surface-elevated: #242429;
+    --ink: #ececef;
+    --muted: #a3a3ab;
+    --line: #3a3a40;
+    --edge: #8c8c95;
+    --brand: #b8141d;
+    --brand-hover: #c91e27;
+    --brand-ink: #ffffff;
+    --brand-soft: #381518;
+    --person: #2c2c31;
+    --person-ink: #f2f2f4;
+    --ext: #26262a;
+    --ext-ink: #ececef;
+    --ext-stroke: #6d6d75;
+    --evo: #18181b;
+    --chip: #3a1c1e;
+    --chip-border: #52272a;
+    --card-border: #2f2f35;
+    --accent: #4c82f0;
+    --accent-soft: #17243d;
+    --green: #3fb950;
+    --green-soft: #122619;
+    --amber: #d29922;
+    --amber-soft: #2d2208;
+    --purple: #a371f7;
+    --purple-soft: #2a1b3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #131315;
+  --surface: #1c1c1f;
+  --surface-elevated: #242429;
+  --ink: #ececef;
+  --muted: #a3a3ab;
+  --line: #3a3a40;
+  --edge: #8c8c95;
+  --brand: #b8141d;
+  --brand-hover: #c91e27;
+  --brand-ink: #ffffff;
+  --brand-soft: #381518;
+  --person: #2c2c31;
+  --person-ink: #f2f2f4;
+  --ext: #26262a;
+  --ext-ink: #ececef;
+  --ext-stroke: #6d6d75;
+  --evo: #18181b;
+  --chip: #3a1c1e;
+  --chip-border: #52272a;
+  --card-border: #2f2f35;
+  --accent: #4c82f0;
+  --accent-soft: #17243d;
+  --green: #3fb950;
+  --green-soft: #122619;
+  --amber: #d29922;
+  --amber-soft: #2d2208;
+  --purple: #a371f7;
+  --purple-soft: #2a1b3d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.breadcrumbs a:hover { color: var(--brand); }
+.breadcrumbs .sep { color: var(--edge); opacity: 0.7; }
+.breadcrumbs .current { color: var(--ink); font-weight: 600; }
+
+.actions { display: flex; align-items: center; gap: 10px; }
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-nav:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--edge);
+  color: var(--brand);
+}
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Header */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eyebrow b { color: var(--brand); }
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.app-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.app-badge.admin { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--chip-border); }
+.app-badge.crm { background: var(--accent-soft); color: var(--accent); border: 1px solid #c7d8fa; }
+.app-badge.marketing { background: var(--purple-soft); color: var(--purple); border: 1px solid #e1cffc; }
+
+/* Meta Box */
+.meta-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.status-badge.draft { background: var(--amber-soft); color: var(--amber); }
+.status-badge.validated { background: var(--green-soft); color: var(--green); }
+
+/* Pager */
+.module-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.pager-btn:hover:not(.disabled) {
+  background: var(--bg);
+  color: var(--brand);
+}
+.pager-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabs */
+.doc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-top: 8px;
+}
+.doc-tab {
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.doc-tab:hover { color: var(--ink); }
+.doc-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Article & Markdown Content */
+article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: 1.7;
+}
+article h1 { font-size: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-top: 24px; margin-bottom: 8px; }
+article h2 { font-size: 21px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 28px; margin-bottom: 6px; }
+article h3 { font-size: 17px; margin-top: 20px; margin-bottom: 4px; }
+article h4 { font-size: 15px; margin-top: 16px; margin-bottom: 4px; }
+article p { margin: 0; }
+article ul, article ol { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 6px; }
+article li { line-height: 1.6; }
+article hr.divider { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+article blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--evo);
+  border-left: 4px solid var(--brand);
+  border-radius: 0 6px 6px 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+article blockquote p { margin: 0; }
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 8px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+th, td {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.code-block pre { margin: 0; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.rule-badge {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--chip-border);
+}
+.rf-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #c7d8fa;
+}
+.rnf-badge {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 1px solid #e1cffc;
+}
+
+.inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-link:hover {
+  color: var(--brand-hover);
+}
+
+/* Hub Styles */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 22px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-value { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+.metric-value.brand { color: var(--brand); }
+.metric-value.accent { color: var(--accent); }
+.metric-value.purple { color: var(--purple); }
+.metric-label { font-size: 12.5px; color: var(--muted); }
+
+.hub-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.hero-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+.hero-card-link {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.search-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+.search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-input:focus { border-color: var(--brand); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-pill:hover { color: var(--ink); border-color: var(--edge); }
+.filter-pill.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mod-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 600;
+}
+.card-title a:hover { color: var(--brand); }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.card-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-meta { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px;
+  margin-left: auto;
+}
+.view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.pill-btn:hover { border-color: var(--brand); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.footer-links a:hover { color: var(--brand); }
+
+@media (max-width: 768px) {
+  article { padding: 20px; }
+  .wrap { padding-inline: 16px; }
+  h1 { font-size: 26px; }
+  .hub-hero-cards { grid-template-columns: 1fr; }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Nav -->
+  <nav class="topbar" aria-label="Navegação">
+    <div class="breadcrumbs">
+      <a href="../index.html">SmartCorbans</a>
+      <span class="sep">/</span>
+      <span class="current">Especificação de Produto</span>
+    </div>
+    <div class="actions">
+      <a href="../index.html" class="btn-nav">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Início da Doc
+      </a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Alternar tema" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow"><b>Engenharia de Produto</b> · 3 Aplicações Integradas</div>
+    <h1>Especificação de Produto &amp; Regras de Negócio</h1>
+    <p style="color:var(--muted);font-size:16px;margin:0;max-width:75ch">
+      Catálogo completo dos 32 módulos funcionais do <b>SmartCorbans</b> cobrindo as aplicações <b>Admin</b>, <b>CRM</b> e <b>Marketing</b>. Requisitos funcionais (RF), regras de negócio (RN-XXX), jornadas operacionais e matrizes de permissão por cargo e escopo.
+    </p>
+  </header>
+
+  <!-- Metrics Bar -->
+  <div class="metrics-bar">
+    <div class="metric-item">
+      <span class="metric-value brand">32</span>
+      <span class="metric-label">Módulos especificados</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value accent">3</span>
+      <span class="metric-label">Aplicações SPAs em React 19</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value purple">100%</span>
+      <span class="metric-label">Matrizes de permissões e regras</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-value">v2.6</span>
+      <span class="metric-label">Especificação Geral ativa</span>
+    </div>
+  </div>
+
+  <!-- Hero Pillars -->
+  <div class="hub-hero-cards">
+    <div class="hero-card">
+      <div class="hero-card-title">
+        <span>Especificação Geral</span>
+        <span class="status-badge validated">v2.6</span>
+      </div>
+      <p class="hero-card-desc">Visão executiva, personas, promessa de valor, regras transversais (RN-SC) e requisitos não-funcionais (RNF001 a RNF006).</p>
+      <a href="spec.html" class="hero-card-link">Ler Especificação Geral →</a>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-card-title">
+        <span>Admin</span>
+        <span class="app-badge admin">15 Módulos</span>
+      </div>
+      <p class="hero-card-desc">Cargos, Usuários, Lojas, Times, Funis de Vendas, Layout de Lead, Ofertas, Regras de Elegibilidade e Relatórios.</p>
+      <a href="Admin/index.html" class="hero-card-link">Explorar Módulos do Admin →</a>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-card-title">
+        <span>CRM</span>
+        <span class="app-badge crm">14 Módulos</span>
+      </div>
+      <p class="hero-card-desc">Operação diária dos operadores: Leads, Chat integrado, Clientes, Motor de Simulação, Propostas, Créditos e Rankings.</p>
+      <a href="CRM/index.html" class="hero-card-link">Explorar Módulos do CRM →</a>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-card-title">
+        <span>Marketing</span>
+        <span class="app-badge marketing">3 Módulos</span>
+      </div>
+      <p class="hero-card-desc">Geração e qualificação de demanda: Prospecção, importação de contatos e mineração da Carteira Ativa de clientes.</p>
+      <a href="Marketing/index.html" class="hero-card-link">Explorar Módulos do Marketing →</a>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="search-bar-wrap">
+    <div class="search-input-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar módulo por nome, aplicação, seção ou palavras-chave..." oninput="applyFilters()">
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div class="filter-pills">
+        <button class="filter-pill active" onclick="setAppFilter('all', this)">Todos (32)</button>
+        <button class="filter-pill" onclick="setAppFilter('Admin', this)">Admin (15)</button>
+        <button class="filter-pill" onclick="setAppFilter('CRM', this)">CRM (14)</button>
+        <button class="filter-pill" onclick="setAppFilter('Marketing', this)">Marketing (3)</button>
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="btnCards" onclick="setView('cards')">Cards</button>
+        <button class="view-btn" id="btnTable" onclick="setView('table')">Tabela</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards Grid View -->
+  <div id="cardsContainer" class="cards-grid">
+    
+        <div class="mod-card" data-app="Admin" data-search="admin dashboard visão geral dar ao gestor, na tela inicial do admin, uma visão imediata do que precisa de atenção na configuração do tenant, mais um acompanhamento simples da precificação de leads e de quem entrou recentemente no sistema.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Visão geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Dashboard/index.html">Dashboard</a></h3>
+          <p class="card-desc">Dar ao gestor, na tela inicial do Admin, uma visão imediata do que precisa de atenção na configuração do tenant, mais um acompanhamento simples da precificação de leads e de quem entrou recentemente no sistema.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.5</span>
+            <a href="Admin/Dashboard/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin layout de lead (card e sheet) vendas — 6ª aba do módulo funis de vendas permitir que o tenant configure, por funil, a composição do card da lead (board kanban) e do sheet de detalhe — escolhendo entre um catálogo fechado de blocos pré-construídos, sem bind livre a campos arbitrários.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Vendas — 6ª aba do módulo Funis de Vendas</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/LayoutLead/index.html">Layout de Lead (Card e Sheet)</a></h3>
+          <p class="card-desc">Permitir que o tenant configure, por Funil, a composição do Card da Lead (board kanban) e do Sheet de Detalhe — escolhendo entre um catálogo fechado de blocos pré-construídos, sem bind livre a campos arbitrários.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.8</span>
+            <a href="Admin/LayoutLead/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin ofertas oferta comercial compor e manter as ofertas — a unidade comercial que o motor de simulações avalia. uma oferta combina promotora, produto, a operação escolhida e banco com a parametrização financeira (taxa, prazo, comissão) e as regras de elegibilidade que se aplicam a ela.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Oferta comercial</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Offers/index.html">Ofertas</a></h3>
+          <p class="card-desc">Compor e manter as Ofertas — a unidade comercial que o motor de simulações avalia. Uma Oferta combina Promotora, Produto, a Operação escolhida e Banco com a parametrização financeira (taxa, prazo, comissão) e as Regras de elegibilidade que se aplicam a ela.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.16</span>
+            <a href="Admin/Offers/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin produtos cadastros manter o cadastro dos instrumentos de crédito que o tenant comercializa. é um dos componentes que a oferta combina, ao lado de promotora e banco.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Cadastros</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Products/index.html">Produtos</a></h3>
+          <p class="card-desc">Manter o cadastro dos instrumentos de crédito que o tenant comercializa. É um dos componentes que a Oferta combina, ao lado de Promotora e Banco.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.5</span>
+            <a href="Admin/Products/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin promotoras cadastros manter o cadastro das entidades pagadoras com que o tenant opera. a promotora é um dos componentes da oferta, ao lado de produto, operação e banco, e é ela que carrega o recorte geográfico que determina quais lojas enxergam quais ofertas.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Cadastros</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Promoters/index.html">Promotoras</a></h3>
+          <p class="card-desc">Manter o cadastro das entidades pagadoras com que o tenant opera. A Promotora é um dos componentes da Oferta, ao lado de Produto, Operação e Banco, e é ela que carrega o recorte geográfico que determina quais Lojas enxergam quais ofertas.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.4</span>
+            <a href="Admin/Promoters/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin status de proposta cadastros manter os status pelos quais uma proposta passa, do envio ao desfecho. cada tenant define os seus, classificando-os em quatro tipos que o sistema reconhece: novo, em negociação, pago e cancelado.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Cadastros</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/ProposalStatus/index.html">Status de Proposta</a></h3>
+          <p class="card-desc">Manter os status pelos quais uma proposta passa, do envio ao desfecho. Cada tenant define os seus, classificando-os em quatro tipos que o sistema reconhece: novo, em negociação, pago e cancelado.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.7</span>
+            <a href="Admin/ProposalStatus/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin regiões cadastros manter o cadastro dos recortes geográficos com que o tenant trabalha. a região é um qualificador: outros cadastros do produto podem ser associados a uma ou mais regiões, restringindo seu alcance geográfico.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Cadastros</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Regions/index.html">Regiões</a></h3>
+          <p class="card-desc">Manter o cadastro dos recortes geográficos com que o tenant trabalha. A Região é um qualificador: outros cadastros do produto podem ser associados a uma ou mais Regiões, restringindo seu alcance geográfico.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.7</span>
+            <a href="Admin/Regions/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin relatórios análise dar ao tenant uma visão **global** — todas as lojas — do resultado comercial, da operação de propostas, da venda de leads, das comissões devidas às lojas e do desempenho das ofertas, com filtros, agrupamento escolhível e visões salvas.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Análise</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Reports/index.html">Relatórios</a></h3>
+          <p class="card-desc">Dar ao tenant uma visão **global** — todas as Lojas — do resultado comercial, da operação de propostas, da venda de leads, das comissões devidas às Lojas e do desempenho das Ofertas, com filtros, agrupamento escolhível e Visões salvas.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.7</span>
+            <a href="Admin/Reports/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin cargos acesso manter os cargos — conjuntos nomeados de permissões, atribuíveis a usuários — que o tenant configura livremente para modelar seu próprio modelo de acesso.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Acesso</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Roles/index.html">Cargos</a></h3>
+          <p class="card-desc">Manter os Cargos — conjuntos nomeados de permissões, atribuíveis a usuários — que o tenant configura livremente para modelar seu próprio modelo de acesso.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.4</span>
+            <a href="Admin/Roles/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin regras oferta comercial manter as condições de elegibilidade que determinam se um cliente pode ou não receber uma oferta. as regras são cadastradas uma vez e reutilizadas por quantas ofertas fizer sentido — o que evita recriar a mesma condição a cada oferta nova.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Oferta comercial</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Rules/index.html">Regras</a></h3>
+          <p class="card-desc">Manter as condições de elegibilidade que determinam se um cliente pode ou não receber uma oferta. As Regras são cadastradas uma vez e reutilizadas por quantas Ofertas fizer sentido — o que evita recriar a mesma condição a cada oferta nova.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.9</span>
+            <a href="Admin/Rules/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin funis de vendas vendas configurar o funil de vendas de cada segmento: as etapas pelas quais a lead avança, as automações que a movimentam, as tags que classificam a origem de campanha, e quanto a loja paga por cada lead entregue ali.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Vendas</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/SalesFunnel/index.html">Funis de Vendas</a></h3>
+          <p class="card-desc">Configurar o funil de vendas de cada Segmento: as etapas pelas quais a lead avança, as automações que a movimentam, as tags que classificam a origem de campanha, e quanto a Loja paga por cada lead entregue ali.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.17</span>
+            <a href="Admin/SalesFunnel/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin origem de venda cadastros *(sem destino de navegação: o módulo vive no cadastro de lead)* manter o rótulo que identifica por onde uma venda chegou. é um cadastro auxiliar, gerido no ponto de uso: o operador que cadastra uma lead e não encontra a origem certa na lista cria ali mesmo, sem interromper o atendimento.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Cadastros *(sem destino de navegação: o módulo vive no cadastro de Lead)*</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/SalesOrigin/index.html">Origem de Venda</a></h3>
+          <p class="card-desc">Manter o rótulo que identifica por onde uma venda chegou. É um cadastro auxiliar, gerido no ponto de uso: o operador que cadastra uma lead e não encontra a origem certa na lista cria ali mesmo, sem interromper o atendimento.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.8</span>
+            <a href="Admin/SalesOrigin/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin segmentos cadastros manter o cadastro dos públicos pagadores com que o tenant trabalha. todo segmento nasce com seu funil de vendas — a peça que de fato organiza a operação comercial: é o funil, não o segmento, quem carrega o pipeline. lojas e times se ligam ao segmento (a loja marca, por segmento, se está ativa e quais tipos de lead recebe; o time escolhe um segmento), e como segmento e funil são 1:1, isso equivale a se ligar ao funil daquele segmento.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Cadastros</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Segments/index.html">Segmentos</a></h3>
+          <p class="card-desc">Manter o cadastro dos públicos pagadores com que o tenant trabalha. Todo Segmento nasce com seu Funil de Vendas — a peça que de fato organiza a operação comercial: é o Funil, não o Segmento, quem carrega o pipeline. Lojas e Times se ligam ao Segmento (a Loja marca, por Segmento, se está Ativa e quais tipos de lead recebe; o Time escolhe um Segmento), e como Segmento e Funil são 1:1, isso equivale a se ligar ao Funil daquele Segmento.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.8</span>
+            <a href="Admin/Segments/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin lojas vendas estruturar as unidades de venda do tenant. a loja é a unidade organizacional visível ao mercado — endereço, cnpj, identidade visual — e decide quais segmentos opera. dentro dela, times organizam os operadores e decidem, cada um, a qual funil (via segmento) têm acesso.">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Vendas</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Stores/index.html">Lojas</a></h3>
+          <p class="card-desc">Estruturar as unidades de venda do tenant. A Loja é a unidade organizacional visível ao mercado — endereço, CNPJ, identidade visual — e decide quais Segmentos opera. Dentro dela, Times organizam os operadores e decidem, cada um, a qual Funil (via Segmento) têm acesso.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.15</span>
+            <a href="Admin/Stores/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Admin" data-search="admin usuários acesso permitir que cada tenant gerencie seus usuários e o acesso de cada um — combinando o cargo atribuído (módulo de cargos) com permissões adicionais avulsas — além do controle das sessões ativas. é o módulo que responde "quem existe no sistema e o que cada um pode fazer".">
+          <div class="card-top">
+            <span class="app-badge admin">Admin</span>
+            <span class="card-meta">Acesso</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Admin/Users/index.html">Usuários</a></h3>
+          <p class="card-desc">Permitir que cada tenant gerencie seus usuários e o acesso de cada um — combinando o Cargo atribuído (módulo de Cargos) com permissões adicionais avulsas — além do controle das sessões ativas. É o módulo que responde "quem existe no sistema e o que cada um pode fazer".</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.7</span>
+            <a href="Admin/Users/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm chat geral apresentar, no contexto da lead, a conversa do canal digital de origem (huggy) — permitindo atender o cliente sem trocar de ferramenta, com notificação em tempo real de mensagens novas.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Chat/index.html">Chat</a></h3>
+          <p class="card-desc">Apresentar, no contexto da Lead, a conversa do canal digital de origem (Huggy) — permitindo atender o cliente sem trocar de ferramenta, com notificação em tempo real de mensagens novas.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.8</span>
+            <a href="CRM/Chat/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm clientes geral manter a ficha consolidada de clientes — criados automaticamente a partir de leads que reúnem dados suficientes, ou criados pelo marketing na importação de uma lista (sem loja e, às vezes, sem cpf) — com controle de acesso por associação a loja. a ficha reúne, numa única página, tudo que outros módulos já associam ao cliente (documentos, simulações, leads, conversas, propostas), sem redefinir o conteúdo de cada um.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Clients/index.html">Clientes</a></h3>
+          <p class="card-desc">Manter a ficha consolidada de Clientes — criados automaticamente a partir de Leads que reúnem dados suficientes, ou criados pelo Marketing na importação de uma Lista (sem Loja e, às vezes, sem CPF) — com controle de acesso por associação a Loja. A ficha reúne, numa única página, tudo que outros módulos já associam ao Cliente (Documentos, Simulações, Leads, Conversas, Propostas), sem redefinir o conteúdo de cada um.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.13</span>
+            <a href="CRM/Clients/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm créditos geral manter o saldo em reais de cada loja parceira, debitado automaticamente a cada lead entregue, com extrato completo dos lançamentos — e permitir que a própria loja adicione crédito (pix) e controle um limite de gasto diário.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Credits/index.html">Créditos</a></h3>
+          <p class="card-desc">Manter o saldo em reais de cada Loja parceira, debitado automaticamente a cada lead entregue, com extrato completo dos lançamentos — e permitir que a própria Loja adicione crédito (Pix) e controle um limite de gasto diário.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.7</span>
+            <a href="CRM/Credits/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm dashboard geral tela inicial do crm — conjunto de blocos, cada um condicionado por permissão (mesma filosofia já usada em todo o produto, sem telas fixas por "papel"), reunindo carteira de leads, resultados próprios do operador, progresso de meta e alertas financeiros. sem entidade própria — consome dados já existentes em outros módulos.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Dashboard/index.html">Dashboard</a></h3>
+          <p class="card-desc">Tela inicial do CRM — conjunto de blocos, cada um condicionado por permissão (mesma filosofia já usada em todo o produto, sem telas fixas por "papel"), reunindo carteira de Leads, resultados próprios do operador, progresso de Meta e alertas financeiros. Sem entidade própria — consome dados já existentes em outros módulos.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.4</span>
+            <a href="CRM/Dashboard/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm metas geral permitir que a loja configure metas de valor e de quantidade para seus times e membros, com contabilização baseada em propostas pagas, preservando histórico por período.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Goals/index.html">Metas</a></h3>
+          <p class="card-desc">Permitir que a Loja configure metas de Valor e de Quantidade para seus Times e Membros, com contabilização baseada em Propostas Pagas, preservando histórico por período.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.8</span>
+            <a href="CRM/Goals/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm leads geral gerir o pipeline comercial em funil kanban — da captação da lead (canais digitais, landing pages, módulos de marketing ou cadastro manual) à sua conclusão como ganho ou perda — passando pelas duas camadas de distribuição (loja, depois operador), com rastreabilidade completa.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Leads/index.html">Leads</a></h3>
+          <p class="card-desc">Gerir o pipeline comercial em funil kanban — da captação da lead (canais digitais, landing pages, módulos de Marketing ou cadastro manual) à sua conclusão como ganho ou perda — passando pelas duas camadas de distribuição (Loja, depois operador), com rastreabilidade completa.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.12</span>
+            <a href="CRM/Leads/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm membros geral permitir que uma loja parceira gerencie os próprios usuários — cadastro, cargo, time (no máximo um, dentro da loja), permissões adicionais — sem depender do tenant operador nem de acesso ao admin.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Members/index.html">Membros</a></h3>
+          <p class="card-desc">Permitir que uma Loja parceira gerencie os próprios usuários — cadastro, Cargo, Time (no máximo um, dentro da Loja), permissões adicionais — sem depender do tenant operador nem de acesso ao Admin.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.5</span>
+            <a href="CRM/Members/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm tabelas multiplicadoras geral permitir que cada loja configure, para cada oferta que ela enxerga, um multiplicador que ajusta o quanto uma proposta fechada naquela oferta conta para as metas de time e de usuário.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/MultiplierTable/index.html">Tabelas Multiplicadoras</a></h3>
+          <p class="card-desc">Permitir que cada Loja configure, para cada Oferta que ela enxerga, um multiplicador que ajusta o quanto uma Proposta fechada naquela Oferta conta para as metas de Time e de usuário.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.6</span>
+            <a href="CRM/MultiplierTable/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm propostas geral formalizar e acompanhar a proposta de crédito — do nascimento (automático, ao entrar a lead em formalização, ou manual/duplicado/importado) até o desfecho (pago ou cancelado), que move a lead de volta quando aplicável.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Proposals/index.html">Propostas</a></h3>
+          <p class="card-desc">Formalizar e acompanhar a Proposta de crédito — do nascimento (automático, ao entrar a Lead em Formalização, ou manual/duplicado/importado) até o desfecho (Pago ou Cancelado), que move a Lead de volta quando aplicável.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.14</span>
+            <a href="CRM/Proposals/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm rankings geral permitir que o gestor **crie e mantenha seus próprios rankings** — combinando tipo (membros ou times), critério (valor de meta, quantidade, % de atingimento de meta) e, opcionalmente, um filtro de cargo — e exiba qualquer um deles numa tela compartilhada da operação (**modo tv**), sem necessidade de login.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Rankings/index.html">Rankings</a></h3>
+          <p class="card-desc">Permitir que o gestor **crie e mantenha seus próprios Rankings** — combinando Tipo (Membros ou Times), Critério (Valor de meta, Quantidade, % de atingimento de Meta) e, opcionalmente, um filtro de Cargo — e exiba qualquer um deles numa tela compartilhada da operação (**Modo TV**), sem necessidade de login.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.5</span>
+            <a href="CRM/Rankings/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm relatórios análise dar ao tenant uma visão **global** — todas as lojas — do resultado comercial, da operação de propostas, da venda de leads, das comissões devidas às lojas e do desempenho das ofertas, com filtros, agrupamento escolhível e visões salvas.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Análise</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Reports/index.html">Relatórios</a></h3>
+          <p class="card-desc">Dar ao tenant uma visão **global** — todas as Lojas — do resultado comercial, da operação de propostas, da venda de leads, das comissões devidas às Lojas e do desempenho das Ofertas, com filtros, agrupamento escolhível e Visões salvas.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.5</span>
+            <a href="CRM/Reports/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm configurações geral permitir que a própria loja edite os dados cadastrais básicos e controle quais segmentos está ativamente operando e recebendo leads — sem que o tenant precise ser acionado para isso, e sem dar à loja acesso à aplicação admin.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Settings/index.html">Configurações</a></h3>
+          <p class="card-desc">Permitir que a própria Loja edite os dados cadastrais básicos e controle quais Segmentos está ativamente operando e recebendo leads — sem que o tenant precise ser acionado para isso, e sem dar à Loja acesso à aplicação Admin.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.5</span>
+            <a href="CRM/Settings/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm simulações geral calcular e registrar, de forma comparável, as condições de crédito disponíveis para uma lead ou cliente — manualmente, pelo operador, ou automaticamente, ao vir de uma lead.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Simulations/index.html">Simulações</a></h3>
+          <p class="card-desc">Calcular e registrar, de forma comparável, as condições de crédito disponíveis para uma Lead ou Cliente — manualmente, pelo operador, ou automaticamente, ao vir de uma Lead.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.14</span>
+            <a href="CRM/Simulations/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="CRM" data-search="crm times geral permitir que uma loja parceira gerencie os próprios times — criar, editar, associar segmento, compor com membros — sem depender do tenant operador nem de acesso ao admin.">
+          <div class="card-top">
+            <span class="app-badge crm">CRM</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="CRM/Teams/index.html">Times</a></h3>
+          <p class="card-desc">Permitir que uma Loja parceira gerencie os próprios Times — criar, editar, associar Segmento, compor com Membros — sem depender do tenant operador nem de acesso ao Admin.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.3</span>
+            <a href="CRM/Teams/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Marketing" data-search="marketing carteira ativa geral minerar a base de clientes do tenant: encontrar quem, pelo histórico e pelas condições vigentes, está elegível a uma nova operação (ex.: refinanciamento, portabilidade) e injetar essas oportunidades como leads, de forma controlada.">
+          <div class="card-top">
+            <span class="app-badge marketing">Marketing</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Marketing/ActiveClientBase/index.html">Carteira Ativa</a></h3>
+          <p class="card-desc">Minerar a base de Clientes do tenant: encontrar quem, pelo histórico e pelas condições vigentes, está elegível a uma nova operação (ex.: Refinanciamento, Portabilidade) e injetar essas oportunidades como Leads, de forma controlada.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.9</span>
+            <a href="Marketing/ActiveClientBase/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Marketing" data-search="marketing dashboard geral dar ao gestor de marketing uma visão única do volume e da qualidade das leads geradas pela prospecção e pela carteira ativa, da conversão delas até o pagamento e, para quem tem permissão, do retorno financeiro.">
+          <div class="card-top">
+            <span class="app-badge marketing">Marketing</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Marketing/Dashboard/index.html">Dashboard</a></h3>
+          <p class="card-desc">Dar ao Gestor de Marketing uma visão única do volume e da qualidade das Leads geradas pela Prospecção e pela Carteira Ativa, da conversão delas até o pagamento e, para quem tem permissão, do retorno financeiro.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.3</span>
+            <a href="Marketing/Dashboard/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mod-card" data-app="Marketing" data-search="marketing prospecção geral permitir que o tenant importe bases de contatos, crie os clientes, analise cada contato contra as regras comerciais do admin e, **se quiser**, distribua os aprovados como leads, de forma controlada. a lista fica guardada para ser distribuída em outro momento.">
+          <div class="card-top">
+            <span class="app-badge marketing">Marketing</span>
+            <span class="card-meta">Geral</span>
+            <span class="status-badge draft">Draft</span>
+          </div>
+          <h3 class="card-title"><a href="Marketing/Prospection/index.html">Prospecção</a></h3>
+          <p class="card-desc">Permitir que o tenant importe bases de contatos, crie os Clientes, analise cada contato contra as regras comerciais do Admin e, **se quiser**, distribua os aprovados como Leads, de forma controlada. A Lista fica guardada para ser distribuída em outro momento.</p>
+          <div class="card-bottom">
+            <span class="card-meta">v0.8</span>
+            <a href="Marketing/Prospection/index.html" class="card-link">
+              <span>Abrir Spec</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+  </div>
+
+  <!-- Table View -->
+  <div id="tableContainer" class="tablewrap" style="display:none">
+    <table>
+      <thead>
+        <tr>
+          <th>App</th>
+          <th>Módulo</th>
+          <th>Seção</th>
+          <th>Versão</th>
+          <th>Status</th>
+          <th>Acesso</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr data-app="Admin" data-search="admin dashboard visão geral">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Dashboard/index.html"><b>Dashboard</b></a></td>
+          <td><code>Visão geral</code></td>
+          <td>v0.5</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Dashboard/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin layout de lead (card e sheet) vendas — 6ª aba do módulo funis de vendas">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/LayoutLead/index.html"><b>Layout de Lead (Card e Sheet)</b></a></td>
+          <td><code>Vendas — 6ª aba do módulo Funis de Vendas</code></td>
+          <td>v0.8</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/LayoutLead/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin ofertas oferta comercial">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Offers/index.html"><b>Ofertas</b></a></td>
+          <td><code>Oferta comercial</code></td>
+          <td>v0.16</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Offers/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin produtos cadastros">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Products/index.html"><b>Produtos</b></a></td>
+          <td><code>Cadastros</code></td>
+          <td>v0.5</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Products/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin promotoras cadastros">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Promoters/index.html"><b>Promotoras</b></a></td>
+          <td><code>Cadastros</code></td>
+          <td>v0.4</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Promoters/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin status de proposta cadastros">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/ProposalStatus/index.html"><b>Status de Proposta</b></a></td>
+          <td><code>Cadastros</code></td>
+          <td>v0.7</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/ProposalStatus/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin regiões cadastros">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Regions/index.html"><b>Regiões</b></a></td>
+          <td><code>Cadastros</code></td>
+          <td>v0.7</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Regions/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin relatórios análise">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Reports/index.html"><b>Relatórios</b></a></td>
+          <td><code>Análise</code></td>
+          <td>v0.7</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Reports/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin cargos acesso">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Roles/index.html"><b>Cargos</b></a></td>
+          <td><code>Acesso</code></td>
+          <td>v0.4</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Roles/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin regras oferta comercial">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Rules/index.html"><b>Regras</b></a></td>
+          <td><code>Oferta comercial</code></td>
+          <td>v0.9</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Rules/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin funis de vendas vendas">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/SalesFunnel/index.html"><b>Funis de Vendas</b></a></td>
+          <td><code>Vendas</code></td>
+          <td>v0.17</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/SalesFunnel/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin origem de venda cadastros *(sem destino de navegação: o módulo vive no cadastro de lead)*">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/SalesOrigin/index.html"><b>Origem de Venda</b></a></td>
+          <td><code>Cadastros *(sem destino de navegação: o módulo vive no cadastro de Lead)*</code></td>
+          <td>v0.8</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/SalesOrigin/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin segmentos cadastros">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Segments/index.html"><b>Segmentos</b></a></td>
+          <td><code>Cadastros</code></td>
+          <td>v0.8</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Segments/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin lojas vendas">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Stores/index.html"><b>Lojas</b></a></td>
+          <td><code>Vendas</code></td>
+          <td>v0.15</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Stores/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Admin" data-search="admin usuários acesso">
+          <td><span class="app-badge admin">Admin</span></td>
+          <td><a href="Admin/Users/index.html"><b>Usuários</b></a></td>
+          <td><code>Acesso</code></td>
+          <td>v0.7</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Admin/Users/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm chat geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Chat/index.html"><b>Chat</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.8</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Chat/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm clientes geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Clients/index.html"><b>Clientes</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.13</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Clients/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm créditos geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Credits/index.html"><b>Créditos</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.7</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Credits/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm dashboard geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Dashboard/index.html"><b>Dashboard</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.4</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Dashboard/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm metas geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Goals/index.html"><b>Metas</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.8</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Goals/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm leads geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Leads/index.html"><b>Leads</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.12</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Leads/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm membros geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Members/index.html"><b>Membros</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.5</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Members/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm tabelas multiplicadoras geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/MultiplierTable/index.html"><b>Tabelas Multiplicadoras</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.6</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/MultiplierTable/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm propostas geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Proposals/index.html"><b>Propostas</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.14</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Proposals/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm rankings geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Rankings/index.html"><b>Rankings</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.5</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Rankings/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm relatórios análise">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Reports/index.html"><b>Relatórios</b></a></td>
+          <td><code>Análise</code></td>
+          <td>v0.5</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Reports/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm configurações geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Settings/index.html"><b>Configurações</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.5</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Settings/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm simulações geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Simulations/index.html"><b>Simulações</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.14</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Simulations/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="CRM" data-search="crm times geral">
+          <td><span class="app-badge crm">CRM</span></td>
+          <td><a href="CRM/Teams/index.html"><b>Times</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.3</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="CRM/Teams/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Marketing" data-search="marketing carteira ativa geral">
+          <td><span class="app-badge marketing">Marketing</span></td>
+          <td><a href="Marketing/ActiveClientBase/index.html"><b>Carteira Ativa</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.9</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Marketing/ActiveClientBase/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Marketing" data-search="marketing dashboard geral">
+          <td><span class="app-badge marketing">Marketing</span></td>
+          <td><a href="Marketing/Dashboard/index.html"><b>Dashboard</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.3</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Marketing/Dashboard/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+        <tr data-app="Marketing" data-search="marketing prospecção geral">
+          <td><span class="app-badge marketing">Marketing</span></td>
+          <td><a href="Marketing/Prospection/index.html"><b>Prospecção</b></a></td>
+          <td><code>Geral</code></td>
+          <td>v0.8</td>
+          <td><span class="status-badge draft">Draft</span></td>
+          <td><a href="Marketing/Prospection/index.html" class="pill-btn" style="padding:2px 8px">Abrir →</a></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="../index.html">← Início da Documentação</a>
+      <a href="spec.html">Especificação Geral (v2.6)</a>
+      <a href="Admin/index.html">Admin</a>
+      <a href="CRM/index.html">CRM</a>
+      <a href="Marketing/index.html">Marketing</a>
+      <a href="../Architecture/C4/index.html">C4 Model</a>
+      <a href="../Architecture/ADR/index.html">ADRs</a>
+      <a href="../Architecture/Dados/index.html">Modelo de Dados</a>
+    </div>
+    <div>SmartCorbans · Especificação Funcional &amp; Regras de Negócio</div>
+  </footer>
+</div>
+
+<script>
+  let activeApp = 'all';
+  let activeView = 'cards';
+
+  function setAppFilter(app, btn) {
+    activeApp = app;
+    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function setView(view) {
+    activeView = view;
+    document.getElementById('cardsContainer').style.display = view === 'cards' ? 'grid' : 'none';
+    document.getElementById('tableContainer').style.display = view === 'cards' ? 'none' : 'block';
+    document.getElementById('btnCards').classList.toggle('active', view === 'cards');
+    document.getElementById('btnTable').classList.toggle('active', view === 'table');
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    document.querySelectorAll('.mod-card').forEach(c => {
+      const matchApp = (activeApp === 'all' || c.getAttribute('data-app') === activeApp);
+      const matchSearch = (!q || c.getAttribute('data-search').includes(q));
+      c.style.display = (matchApp && matchSearch) ? 'flex' : 'none';
+    });
+    document.querySelectorAll('#tableContainer tbody tr').forEach(r => {
+      const matchApp = (activeApp === 'all' || r.getAttribute('data-app') === activeApp);
+      const matchSearch = (!q || r.getAttribute('data-search').includes(q));
+      r.style.display = (matchApp && matchSearch) ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
