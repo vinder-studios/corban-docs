@@ -4,7 +4,7 @@
 **Data:** 2026-10-11
 **Decisores:** Rafael da Conceição; revisão do time de backend
 **Origem:** Modelo de dados · Acesso (`Dados/01-acesso.md`, suspenso) e `Dados/01-estrutura.md` §6, item 2
-**Afeta:** Usuários (RN-USR-16); ADR-0001 (substitui a parte "Loja = Organização"); ADR-0002; C4 · Componentes da API (Acesso, Endpoints e autorização, Adaptadores externos); Modelo de dados (Acesso volta ao modelo; Estrutura); front (`@corban/permissions`, Shell)
+**Afeta:** ADR-0001 (substitui a parte "Loja = Organização"); ADR-0002; C4 · Componentes da API (Acesso, Endpoints e autorização, Adaptadores externos); Modelo de dados (Acesso volta ao modelo; Estrutura); front (`@corban/permissions`, Shell)
 
 ## 1. Contexto
 
@@ -45,12 +45,6 @@ Ao mesmo tempo, há duas necessidades práticas: o **front** precisa saber as pe
 - Quando as permissões do usuário mudam, a API envia o evento **"permissões alteradas"** pelo hub de tempo real (ADR-0025). O front invalida a consulta e o menu se ajusta sem novo login.
 - No front, a permissão só **esconde**; quem protege é a API.
 
-**Catálogo de permissões e acesso a cada aplicação**
-- O catálogo é **dado do backend**: uma tabela com, para cada recurso, as ações, os escopos oferecidos e **em que aplicação cada recurso + escopo vale**. É mantido pelo console de configuração, que fica fora do escopo do produto; as Matrizes de Permissões dos módulos definem o conteúdo inicial.
-- Nos recursos compartilhados entre Admin e CRM — `users`, `sessions`, `teams` e os relatórios de Produção, Funil e Conversão e Esteira de Propostas — **o escopo decide a aplicação**: `all` vale no Admin; `store`, `team` e `self`, no CRM. `sale_origins` vale no CRM e no Marketing. Os demais recursos têm uma aplicação só.
-- **A validação de acesso à aplicação é toda do backend** (Usuários, RN-USR-16): no login e em `/me/access`, a API calcula as aplicações que as permissões efetivas alcançam e as devolve junto com as permissões. O login numa aplicação sem nenhuma permissão que valha nela falha na API. O front não guarda o mapa recurso → aplicação: só usa a lista pronta para o app switcher e para esconder o que não deve aparecer.
-- O evento "permissões alteradas" também recalcula as aplicações alcançadas.
-
 ## 3. Alternativas consideradas
 
 | Alternativa | A favor | Contra | Por que não |
@@ -75,4 +69,3 @@ Se a API ganhar réplicas (o cache de permissões precisa de invalidação distr
 | Data | Status | Observação |
 |---|---|---|
 | 2026-10-11 | Proposta | Proposta na revisão do módulo Acesso, para comentários do time de backend antes de aceitar. |
-| 2026-10-13 | Proposta | Acrescenta o catálogo de permissões como dado do backend, o escopo decidindo a aplicação nos recursos compartilhados e o cálculo das aplicações alcançadas na API (validação do catálogo de permissões). |
